@@ -32,9 +32,7 @@ namespace Assets.Scripts.AI.Nodes
         public int UpdateSelfPositionTickInterval = 5;
 
         public MoveEnemyIfCloseToPlayer(string name, int depth, int id) : base(name, depth, id)
-        {
-            
-        }
+        { }
 
         public override IEnumerator Tick(WaitForSeconds delayStart = null)
         {
@@ -55,7 +53,7 @@ namespace Assets.Scripts.AI.Nodes
                 var targetPosition = closestPlayer.position;
                 var currentPosition = myPos.position;
 
-                if (Vector3.Distance(currentPosition, targetPosition) > myPos.GetComponentInParent<BoxCollider2D>().size.magnitude*2)
+                if (Vector3.Distance(currentPosition, targetPosition) > myPos.GetComponentInParent<BoxCollider>().size.magnitude*2)
                 {
                     var directionOfTravel = targetPosition - currentPosition;
                     CurrentState = BehaviorState.Running;

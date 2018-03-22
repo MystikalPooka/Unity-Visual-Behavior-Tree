@@ -40,8 +40,6 @@ namespace Assets.Scripts.AI
                     Type type = Assembly.GetAssembly(typeof(BehaviorTreeElement)).GetType(typeName);
                     dynamic newBehavior = Activator.CreateInstance(type, (string)el.Name, (int)el.Depth, (int)el.ID);
 
-                    FieldInfo[] fields = type.GetFields();
-
                     JsonConvert.PopulateObject(JsonConvert.SerializeObject(el), newBehavior);
                     newElements.Add(newBehavior);
                 }

@@ -18,14 +18,14 @@ MonoBehaviour:
     \   \"Depth\": -1,\r\n    \"HasChildren\": true,\r\n    \"Name\": \"New Root\",\r\n
     \   \"ID\": -1\r\n  },\r\n  {\r\n    \"ElementType\": \"Assets.Scripts.AI.Components.Selector\",\r\n
     \   \"Depth\": 0,\r\n    \"HasChildren\": true,\r\n    \"Name\": \"Selector 0\",\r\n
-    \   \"ID\": 0\r\n  },\r\n  {\r\n    \"ElementType\": \"Assets.Scripts.AI.Decorators.Inverter\",\r\n
+    \   \"ID\": 0\r\n  },\r\n  {\r\n    \"MoveSpeed\": 2.5,\r\n    \"UpdatePlayersTickInterval\":
+    6,\r\n    \"UpdateSelfPositionTickInterval\": 3,\r\n    \"ElementType\": \"Assets.Scripts.AI.Nodes.MoveEnemyIfCloseToPlayer\",\r\n
+    \   \"Depth\": 1,\r\n    \"HasChildren\": false,\r\n    \"Name\": \"MoveEnemyIfCloseToPlayer
+    3\",\r\n    \"ID\": 3\r\n  },\r\n  {\r\n    \"ElementType\": \"Assets.Scripts.AI.Decorators.Inverter\",\r\n
     \   \"Depth\": 1,\r\n    \"HasChildren\": true,\r\n    \"Name\": \"Inverter 4\",\r\n
     \   \"ID\": 4\r\n  },\r\n  {\r\n    \"ElementType\": \"Assets.Scripts.AI.Components.Sequencer\",\r\n
     \   \"Depth\": 2,\r\n    \"HasChildren\": true,\r\n    \"Name\": \"Sequencer 5\",\r\n
-    \   \"ID\": 5\r\n  },\r\n  {\r\n    \"MoveSpeed\": 2.5,\r\n    \"UpdatePlayersTickInterval\":
-    6,\r\n    \"UpdateSelfPositionTickInterval\": 3,\r\n    \"ElementType\": \"Assets.Scripts.AI.Nodes.MoveEnemyIfCloseToPlayer\",\r\n
-    \   \"Depth\": 3,\r\n    \"HasChildren\": false,\r\n    \"Name\": \"MoveEnemyIfCloseToPlayer
-    3\",\r\n    \"ID\": 3\r\n  },\r\n  {\r\n    \"ElementType\": \"Assets.Scripts.AI.Nodes.DebugOutNode\",\r\n
+    \   \"ID\": 5\r\n  },\r\n  {\r\n    \"ElementType\": \"Assets.Scripts.AI.Nodes.DebugOutNode\",\r\n
     \   \"Depth\": 3,\r\n    \"HasChildren\": false,\r\n    \"Name\": \"DebugOutNode
     7\",\r\n    \"ID\": 7\r\n  },\r\n  {\r\n    \"ElementType\": \"Assets.Scripts.AI.Nodes.DebugOutNode\",\r\n
     \   \"Depth\": 3,\r\n    \"HasChildren\": false,\r\n    \"Name\": \"DebugOutNode

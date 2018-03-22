@@ -1,9 +1,7 @@
 ﻿using Assets.Scripts.AI.Components;
-using Assets.Scripts.AI.Tree;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
 using Newtonsoft.Json;
 using System.ComponentModel;
@@ -17,6 +15,7 @@ namespace Assets.Scripts.AI
         /// The file to actually save/load to/from.
         /// </summary>
         [JsonIgnore]
+        [Description("The currently loaded tree asset that will be run.")]
         public BehaviorTreeManagerAsset BehaviorTreeFile;
 
         /// <summary>
@@ -48,13 +47,13 @@ namespace Assets.Scripts.AI
         /// Number of times to tick the full trees. Set to a negative number to make an infinitely running behavior tree.
         /// </summary>
         [SerializeField]
-
+        [Description("Times to tick this tree before stopping. Negative values indicate infinitely running behavior.")]
         public int TimesToTick = 10;
 
-
+        [Description("Open a list to splice other trees into this tree.")]
         public bool spliceNewIntoTree = false;
         /// <summary>
-        /// A list of trees to splice into the current tree. These are not directly editable.
+        /// A list of trees to splice into the current tree. These trees are not directly editable.
         /// </summary>
         [JsonIgnore]
         public List<BehaviorTreeManagerAsset> SpliceList;
