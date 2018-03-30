@@ -59,6 +59,7 @@ namespace Assets.Scripts.AI
             protected set
             {
                 _CurrentState = value;
+
             }
         }
 
@@ -79,7 +80,7 @@ namespace Assets.Scripts.AI
             }
             var retString = depthPad + "ID: " + ID + "\n" +
                             depthPad + "Name: " + this.Name + "\n" +
-                            depthPad +"Depth: " + Depth + "\n" +
+                            depthPad + "Depth: " + Depth + "\n" +
                             depthPad + "Type: " + ElementType.ToString() + "\n" +
                             depthPad + "NumChildren: " + (HasChildren ? Children.Count : 0) + "\n";
 

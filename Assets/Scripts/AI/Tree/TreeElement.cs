@@ -7,7 +7,7 @@ namespace Assets.Scripts.AI.Tree
 {
     [Serializable]
 	public class TreeElement
-	{
+    {
 		[SerializeField] int _ID;
 		[SerializeField] string _Name;
 		[SerializeField] int _Depth;
@@ -59,16 +59,6 @@ namespace Assets.Scripts.AI.Tree
 			_ID = id;
 			_Depth = depth;
 		}
-
-        public virtual void OnBeforeSerialize()
-        {
-            throw new NotImplementedException();
-        }
-
-        public virtual void OnAfterDeserialize()
-        {
-            throw new NotImplementedException();
-        }
     }
 
 }

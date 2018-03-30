@@ -5,10 +5,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using Newtonsoft.Json;
 using System.ComponentModel;
+using UniRx.Triggers;
 
 namespace Assets.Scripts.AI
 {
-    public class BehaviorManager : MonoBehaviour, ILo
+    public class BehaviorManager : MonoBehaviour
     {
         public string FileName = "";
         /// <summary>
