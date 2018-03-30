@@ -26,7 +26,7 @@ namespace Assets.Scripts.AI
         /// </summary>
         [SerializeField]
         [Description("Seconds between every tick. At 0 this will tick every frame")]
-        public float SecondsBetweenTicks = 0.1f;
+        public double SecondsBetweenTicks = 0.1f;
 
         /// <summary>
         /// Number of times to tick the full trees. Set to a negative number to make an infinitely running behavior tree.
@@ -78,33 +78,10 @@ namespace Assets.Scripts.AI
         /// <returns></returns>
         IEnumerator Start()
         {
-            WaitForSeconds wfs = new WaitForSeconds(SecondsBetweenTicks);
-
-            Debug.Log("Starting ticks on Runner: \n\t" + Runner.ToString());
-            var behaviors = Observable.EveryUpdate().DoOnSubscribe(() => Debug.Log("Subscribed!!!")).Subscribe().AddTo(this);
-
-            
-            Runner.ObserveEveryValueChanged(x => x.CurrentState).Subscribe(x => Debug.Log(x));
-            
-
-            while(TimesToTick > 0)
-            {
-                Observable.FromCoroutine(() => Runner.Tick()).Subscribe(xr => Debug.Log("Subscribed to " + xr), xd => Debug.Log("Destroyed " + xd)).AddTo(this);
-                --TimesToTick;
-                yield return wfs;
-            }
-                
-
-
-            yield return null;
-
-            //yield return StartCoroutine(Runner.Tick(wfs));
-            //if (TimesToTick > 0) --TimesToTick;
-
-            
-
-            //Debug.Log("All Coroutines Should be DONE now! Ending all to make sure....");
-            StopAllCoroutines();
+            while(TimesToTick-- > 0)
+                yield return Runner.Tick()
+                                   .ToObservable()
+                                   .Subscribe(xr => Debug.Log("OnNxt called " + xr), xd => Debug.Log("Destroyed " + xd)).AddTo(this);
         }
 
         /// <summary>

@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.ComponentModel;
+using System.Linq;
+using UniRx;
+using UnityEngine;
 
 namespace Assets.Scripts.AI.Components
 {
@@ -18,9 +21,9 @@ namespace Assets.Scripts.AI.Components
 
         public override IEnumerator Tick(UnityEngine.WaitForSeconds delayStart = null)
         {
-            base.Tick();
-            UnityEngine.Debug.LogError("Selector START");
-            
+            base.Tick().ToObservable().Subscribe(xb => Debug.Log("Subscribed to Selector at start (base.tick()"));
+
+
             CurrentState = (BehaviorState.Running);
             foreach (BehaviorTreeElement behavior in Children)
             {
@@ -37,12 +40,11 @@ namespace Assets.Scripts.AI.Components
                         yield break;
                     }
                 }
-                UnityEngine.Debug.LogError("Selector is fail");
+                Debug.LogError("Selector is fail");
             }
             //if it gets here, it went through all subbehaviors and had no successes
             CurrentState = BehaviorState.Fail;
             yield break;
         }
-
     } 
 }

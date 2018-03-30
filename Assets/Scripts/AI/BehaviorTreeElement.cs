@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UniRx;
 using UnityEngine;
 
@@ -53,13 +54,29 @@ namespace Assets.Scripts.AI
         [Newtonsoft.Json.JsonIgnore]
         public BehaviorState CurrentState;
 
+        public bool Initialized = false;
         public virtual IEnumerator Tick(WaitForSeconds delayStart = null)
         {
+            if (!Initialized) Initialize();
             if (delayStart != null)
             {
                 yield return delayStart;
             }
         }
+
+        public virtual void Initialize()
+        {
+            var allChildrenToRun = from x in Children
+                                   select x as BehaviorTreeElement;
+
+            foreach(var ch in allChildrenToRun)
+            {
+                ch.ObserveEveryValueChanged(x => x.CurrentState).Subscribe(x => Debug.Log(ElementType + " state changed: " + x));
+            }
+
+            Initialized = true;
+        }
+
 
         public override string ToString()
         {

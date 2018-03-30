@@ -12,7 +12,7 @@ namespace Assets.Scripts.AI
     public class BehaviorTreeManagerAsset : ScriptableObject
     {
         public int TimesToTick;
-        public float SecondsBetweenTicks = 0.1f;
+        public double SecondsBetweenTicks = 10;
 
         public string RunnerElementsJSON;
     }

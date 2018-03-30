@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.ComponentModel;
+using UniRx;
 using UnityEngine;
 
 namespace Assets.Scripts.AI.Components
@@ -30,7 +31,7 @@ namespace Assets.Scripts.AI.Components
 
         public override IEnumerator Tick(WaitForSeconds delayStart = null)
         {
-            yield return delayStart;
+            base.Tick().ToObservable().Subscribe(xb => Debug.Log("Subscribed to ParallelRunner at start (base.tick()"));
             CurrentState = (BehaviorState.Running);
             if (Children == null || Children.Count <=0)
             {
