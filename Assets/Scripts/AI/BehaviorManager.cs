@@ -6,6 +6,7 @@ using UnityEngine;
 using Newtonsoft.Json;
 using System.ComponentModel;
 using UniRx.Triggers;
+using UniRx;
 
 namespace Assets.Scripts.AI
 {
@@ -78,16 +79,31 @@ namespace Assets.Scripts.AI
         IEnumerator Start()
         {
             WaitForSeconds wfs = new WaitForSeconds(SecondsBetweenTicks);
-            
-            Debug.Log("Starting ticks on Runner: \n\t" + Runner.ToString());
-            yield return Runner.Tick();
-            while (Runner.CurrentState.Equals(BehaviorState.Running) && (TimesToTick != 0))
-            {
-                yield return StartCoroutine(Runner.Tick(wfs));
-                if(TimesToTick > 0) --TimesToTick;
-            }
 
-            Debug.Log("All Coroutines Should be DONE now! Ending all to make sure....");
+            Debug.Log("Starting ticks on Runner: \n\t" + Runner.ToString());
+            var behaviors = Observable.EveryUpdate().DoOnSubscribe(() => Debug.Log("Subscribed!!!")).Subscribe().AddTo(this);
+
+            
+            Runner.ObserveEveryValueChanged(x => x.CurrentState).Subscribe(x => Debug.Log(x));
+            
+
+            while(TimesToTick > 0)
+            {
+                Observable.FromCoroutine(() => Runner.Tick()).Subscribe(xr => Debug.Log("Subscribed to " + xr), xd => Debug.Log("Destroyed " + xd)).AddTo(this);
+                --TimesToTick;
+                yield return wfs;
+            }
+                
+
+
+            yield return null;
+
+            //yield return StartCoroutine(Runner.Tick(wfs));
+            //if (TimesToTick > 0) --TimesToTick;
+
+            
+
+            //Debug.Log("All Coroutines Should be DONE now! Ending all to make sure....");
             StopAllCoroutines();
         }
 

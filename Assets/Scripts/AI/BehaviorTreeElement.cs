@@ -53,8 +53,6 @@ namespace Assets.Scripts.AI
         [Newtonsoft.Json.JsonIgnore]
         public BehaviorState CurrentState;
 
-        
-
         public virtual IEnumerator Tick(WaitForSeconds delayStart = null)
         {
             if (delayStart != null)

@@ -18,7 +18,7 @@ MonoBehaviour:
     \   \"Depth\": -1,\r\n    \"HasChildren\": true,\r\n    \"Name\": \"New Root\",\r\n
     \   \"ID\": -1\r\n  },\r\n  {\r\n    \"ElementType\": \"Assets.Scripts.AI.Components.Selector\",\r\n
     \   \"Depth\": 0,\r\n    \"HasChildren\": true,\r\n    \"Name\": \"Selector 0\",\r\n
-    \   \"ID\": 0\r\n  },\r\n  {\r\n    \"MoveSpeed\": 10.0,\r\n    \"UpdatePlayersTickInterval\":
+    \   \"ID\": 0\r\n  },\r\n  {\r\n    \"MoveSpeed\": 6.0,\r\n    \"UpdatePlayersTickInterval\":
     6,\r\n    \"UpdateSelfPositionTickInterval\": 3,\r\n    \"ElementType\": \"Assets.Scripts.AI.Nodes.MoveEnemyIfCloseToPlayer\",\r\n
     \   \"Depth\": 1,\r\n    \"HasChildren\": false,\r\n    \"Name\": \"MoveEnemyIfCloseToPlayer
     3\",\r\n    \"ID\": 3\r\n  },\r\n  {\r\n    \"ElementType\": \"Assets.Scripts.AI.Decorators.Inverter\",\r\n
