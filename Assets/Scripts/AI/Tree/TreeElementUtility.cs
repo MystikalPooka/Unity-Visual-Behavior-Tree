@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UniRx;
 
 namespace Assets.Scripts.AI.Tree
 {
@@ -68,8 +69,8 @@ namespace Assets.Scripts.AI.Tree
 						break;
 				}
 
-				// Fill child array
-				List<TreeElement> childList = null;
+                // Fill child array
+                List<TreeElement> childList = null;
 				if (childCount != 0)
 				{
 					childList = new List<TreeElement>(childCount); // Allocate once

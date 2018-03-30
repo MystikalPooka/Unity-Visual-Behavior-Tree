@@ -56,7 +56,7 @@ namespace Assets.Scripts.AI.Nodes
                 if (Vector3.Distance(currentPosition, targetPosition) > myPos.GetComponentInParent<BoxCollider>().size.magnitude*2)
                 {
                     var directionOfTravel = targetPosition - currentPosition;
-                    CurrentState = BehaviorState.Running;
+                    CurrentState = (BehaviorState.Running);
                     float step = (MoveSpeed / directionOfTravel.magnitude) * Time.fixedDeltaTime;
                     float t = 0;
                     while (t <= 1.0f)
@@ -66,11 +66,11 @@ namespace Assets.Scripts.AI.Nodes
                         yield return new WaitForFixedUpdate();         // Leave the routine and return here in the next frame
                     }
                 }
-                CurrentState = BehaviorState.Success;
+                CurrentState = (BehaviorState.Success);
                 yield return null;
             }
 
-            CurrentState = BehaviorState.Success;
+            CurrentState = (BehaviorState.Success);
             yield return null;
         }
 

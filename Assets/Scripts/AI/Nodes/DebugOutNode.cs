@@ -17,7 +17,7 @@ namespace Assets.Scripts.AI.Nodes
             Debug.Log(Name + "node starting... waiting...");
             yield return delayStart;
             Debug.Log("BEHAVIOR NODE DOIN THE THANG!");
-            CurrentState = BehaviorState.Success;
+            CurrentState = (BehaviorState.Success);
             yield return null;
         }
     }

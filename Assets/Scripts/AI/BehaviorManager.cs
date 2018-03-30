@@ -78,10 +78,10 @@ namespace Assets.Scripts.AI
         IEnumerator Start()
         {
             WaitForSeconds wfs = new WaitForSeconds(SecondsBetweenTicks);
-
+            
             Debug.Log("Starting ticks on Runner: \n\t" + Runner.ToString());
             yield return Runner.Tick();
-            while (Runner.CurrentState == BehaviorState.Running && (TimesToTick != 0))
+            while (Runner.CurrentState.Equals(BehaviorState.Running) && (TimesToTick != 0))
             {
                 yield return StartCoroutine(Runner.Tick(wfs));
                 if(TimesToTick > 0) --TimesToTick;

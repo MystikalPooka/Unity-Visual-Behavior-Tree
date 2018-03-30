@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UniRx;
 using UnityEngine;
 
 namespace Assets.Scripts.AI
@@ -44,24 +45,15 @@ namespace Assets.Scripts.AI
             : base(name, depth, id)
         {
             ElementType = this.GetType().ToString();
-            _CurrentState = BehaviorState.Null;
+            CurrentState = (BehaviorState.Null);
             Children = new List<TreeElement>();
         }
 
-        private BehaviorState _CurrentState;
-        [Newtonsoft.Json.JsonIgnore]
-        public BehaviorState CurrentState
-        {
-            get
-            {
-                return _CurrentState;
-            }
-            protected set
-            {
-                _CurrentState = value;
 
-            }
-        }
+        [Newtonsoft.Json.JsonIgnore]
+        public BehaviorState CurrentState;
+
+        
 
         public virtual IEnumerator Tick(WaitForSeconds delayStart = null)
         {

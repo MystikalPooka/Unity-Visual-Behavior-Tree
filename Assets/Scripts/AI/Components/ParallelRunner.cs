@@ -31,11 +31,11 @@ namespace Assets.Scripts.AI.Components
         public override IEnumerator Tick(WaitForSeconds delayStart = null)
         {
             yield return delayStart;
-            CurrentState = BehaviorState.Running;
+            CurrentState = (BehaviorState.Running);
             if (Children == null || Children.Count <=0)
             {
                 Debug.LogWarning("Children Null in parallel runner");
-                CurrentState = BehaviorState.Null;
+                CurrentState = (BehaviorState.Null);
                 yield return null;
             }
 
@@ -49,7 +49,7 @@ namespace Assets.Scripts.AI.Components
                     ++NumberOfFailures;
                     if(NumberOfFailures >= NumberOfFailuresBeforeFail)
                     {
-                        CurrentState = BehaviorState.Fail;
+                        CurrentState = (BehaviorState.Fail);
                         yield break;
                     }
                 }
@@ -60,12 +60,12 @@ namespace Assets.Scripts.AI.Components
                     ++NumberOfSuccesses;
                     if (NumberOfSuccesses >= NumberOfSuccessBeforeSucceed)
                     {
-                        CurrentState = BehaviorState.Success;
+                        CurrentState = (BehaviorState.Success);
                         yield break;
                     }
                 }
                 Debug.LogWarning("Ending Parallel Tick in Run State.");
-                CurrentState = BehaviorState.Running;
+                CurrentState = (BehaviorState.Running);
                 yield return null;
             }
         }

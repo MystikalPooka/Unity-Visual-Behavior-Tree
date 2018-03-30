@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using UniRx;
 using UnityEngine;
 
 namespace Assets.Scripts.AI.Tree
@@ -60,5 +61,4 @@ namespace Assets.Scripts.AI.Tree
 			_Depth = depth;
 		}
     }
-
 }

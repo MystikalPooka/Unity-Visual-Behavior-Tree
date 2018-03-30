@@ -20,13 +20,13 @@ namespace Assets.Scripts.AI.Decorators
             switch (behavior.CurrentState)
             {
                 case BehaviorState.Fail:
-                    this.CurrentState = BehaviorState.Success;
+                    this.CurrentState = (BehaviorState.Success);
                     break;
                 case BehaviorState.Success:
-                    CurrentState = BehaviorState.Fail;
+                    CurrentState = (BehaviorState.Fail);
                     break;
                 case BehaviorState.Running:
-                    this.CurrentState = BehaviorState.Running;
+                    this.CurrentState = (BehaviorState.Running);
                     break;
                 default:
                     Debug.LogError("Something went wrong in an inverter.");

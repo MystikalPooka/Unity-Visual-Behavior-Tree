@@ -21,7 +21,7 @@ namespace Assets.Scripts.AI.Components
             base.Tick();
             UnityEngine.Debug.LogError("Selector START");
             
-            CurrentState = BehaviorState.Running;
+            CurrentState = (BehaviorState.Running);
             foreach (BehaviorTreeElement behavior in Children)
             {
                 yield return BehaviorTreeManager.StartCoroutine(behavior.Tick());

@@ -21,7 +21,5 @@ namespace Assets.Scripts.AI.Components
             element.BehaviorTreeManager = BehaviorTreeManager;
             Children.Add(element);
         }
-
-
     }
 }
