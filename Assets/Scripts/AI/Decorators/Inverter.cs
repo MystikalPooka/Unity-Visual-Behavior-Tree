@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using UniRx;
 using UnityEngine;
 
 namespace Assets.Scripts.AI.Decorators
@@ -10,28 +11,38 @@ namespace Assets.Scripts.AI.Decorators
             : base(name, depth, id)
         { }
 
-        public override IEnumerator Tick(WaitForSeconds delaySTart = null)
+        public override IEnumerator Tick(WaitForSeconds delayStart = null)
         {
+            base.Tick(delayStart).ToObservable().Subscribe(xb => Debug.Log("Subscribed to ParallelRunner at start (base.tick()"));
+
+            CurrentState = BehaviorState.Null;
             if (Children == null) yield return null;
-            if (Children.Count <= 0) yield return null;
+            if (Children.Count == 0) yield return null;
             var behavior = Children[0] as BehaviorTreeElement;
-            yield return BehaviorTreeManager.StartCoroutine(behavior.Tick());
-            Debug.Log("Inverting " + behavior.Name);
-            switch (behavior.CurrentState)
+
+            yield return behavior.Tick().ToObservable().Subscribe(_ =>
             {
-                case BehaviorState.Fail:
-                    this.CurrentState = (BehaviorState.Success);
-                    break;
-                case BehaviorState.Success:
-                    CurrentState = (BehaviorState.Fail);
-                    break;
-                case BehaviorState.Running:
-                    this.CurrentState = (BehaviorState.Running);
-                    break;
-                default:
-                    Debug.LogError("Something went wrong in an inverter.");
-                    break;
+                Debug.Log("Inverting " + behavior);
+                switch (behavior.CurrentState)
+                {
+                    case BehaviorState.Fail:
+                        this.CurrentState = BehaviorState.Success;
+                        break;
+                    case BehaviorState.Success:
+                        CurrentState = BehaviorState.Fail;
+                        break;
+                    case BehaviorState.Running:
+                        this.CurrentState = BehaviorState.Running;
+                        break;
+                    default:
+                        Debug.LogError("Something went wrong in an inverter.");
+                        break;
+                }
             }
+
+                
+                );
+
         }
     }
 }

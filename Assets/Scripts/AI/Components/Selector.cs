@@ -22,8 +22,7 @@ namespace Assets.Scripts.AI.Components
         public override IEnumerator Tick(UnityEngine.WaitForSeconds delayStart = null)
         {
             base.Tick().ToObservable().Subscribe(xb => Debug.Log("Subscribed to Selector at start (base.tick()"));
-
-
+            
             CurrentState = (BehaviorState.Running);
             foreach (BehaviorTreeElement behavior in Children)
             {

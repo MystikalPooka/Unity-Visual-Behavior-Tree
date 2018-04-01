@@ -12,7 +12,6 @@ namespace Assets.Scripts.AI
 {
     public class BehaviorManager : MonoBehaviour
     {
-        public string FileName = "";
         /// <summary>
         /// The file to actually save/load to/from.
         /// </summary>
@@ -26,7 +25,7 @@ namespace Assets.Scripts.AI
         /// </summary>
         [SerializeField]
         [Description("Seconds between every tick. At 0 this will tick every frame")]
-        public double SecondsBetweenTicks = 0.1f;
+        public float SecondsBetweenTicks = 0.1f;
 
         /// <summary>
         /// Number of times to tick the full trees. Set to a negative number to make an infinitely running behavior tree.
@@ -68,7 +67,7 @@ namespace Assets.Scripts.AI
             initialized = true;
         }
 
-        //TODO: Add ILogger *(perhaps Observer pattern? This is our "singleton")*
+        //TODO: Add ILogger *(perhaps Observer pattern?)*
         //Dispatch messages to observed classes and receive that information here...
         //How to store? List? Dictionary? My face? Cat Pictures?
 
@@ -78,10 +77,14 @@ namespace Assets.Scripts.AI
         /// <returns></returns>
         IEnumerator Start()
         {
-            while(TimesToTick-- > 0)
+            while(TimesToTick != 0)
+            {
                 yield return Runner.Tick()
-                                   .ToObservable()
-                                   .Subscribe(xr => Debug.Log("OnNxt called " + xr), xd => Debug.Log("Destroyed " + xd)).AddTo(this);
+                                   .ToObservable(true)
+                                   .Subscribe(xr => Debug.Log("Starting Tick on Runner"), e => Debug.LogError("Error: " + e)).AddTo(this);
+                yield return new WaitForSeconds(SecondsBetweenTicks);
+                if (TimesToTick > 1) --TimesToTick;
+            }
         }
 
         /// <summary>

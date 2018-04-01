@@ -70,7 +70,7 @@ namespace Assets.Scripts.AI.Nodes
                 yield return null;
             }
 
-            CurrentState = (BehaviorState.Success);
+            CurrentState = BehaviorState.Fail;
             yield return null;
         }
 

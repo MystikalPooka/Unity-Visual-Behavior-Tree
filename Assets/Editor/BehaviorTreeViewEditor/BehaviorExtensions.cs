@@ -74,7 +74,6 @@ namespace Assets.Editor.BehaviorTreeViewEditor
 
             if(behaviorManager != null)
             {
-                behaviorManager.FileName = asset.name;
                 behaviorManager.Reinitialize();
                 asset.SecondsBetweenTicks = behaviorManager.SecondsBetweenTicks;
                 asset.TimesToTick = behaviorManager.TimesToTick;

@@ -71,12 +71,12 @@ namespace Assets.Scripts.AI
 
             foreach(var ch in allChildrenToRun)
             {
+                //TODO: will be changed to an actual debugger instead of just unity logs. Issue #3
                 ch.ObserveEveryValueChanged(x => x.CurrentState).Subscribe(x => Debug.Log(ElementType + " state changed: " + x));
             }
 
             Initialized = true;
         }
-
 
         public override string ToString()
         {
