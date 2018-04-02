@@ -14,7 +14,7 @@ namespace Assets.Scripts.AI.Components
         {
         }
 
-        public override IEnumerator Tick(UnityEngine.WaitForSeconds delayStart = null)
+        public override IEnumerator Tick(WaitForSeconds delayStart = null)
         {
             yield return delayStart;
             CurrentState = BehaviorState.Running;

@@ -22,7 +22,7 @@ namespace Assets.Scripts.AI.Decorators
 
             yield return behavior.Tick().ToObservable().Subscribe(_ =>
             {
-                Debug.Log("Inverting " + behavior);
+                Debug.LogError("Inverting " + behavior);
                 switch (behavior.CurrentState)
                 {
                     case BehaviorState.Fail:
@@ -38,11 +38,7 @@ namespace Assets.Scripts.AI.Decorators
                         Debug.LogError("Something went wrong in an inverter.");
                         break;
                 }
-            }
-
-                
-                );
-
+            });
         }
     }
 }

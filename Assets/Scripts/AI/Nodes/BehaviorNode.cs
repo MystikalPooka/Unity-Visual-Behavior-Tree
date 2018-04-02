@@ -12,7 +12,7 @@ namespace Assets.Scripts.AI.Nodes
 
         public override IEnumerator Tick(WaitForSeconds delayStart = null)
         {
-            return base.Tick(delayStart);
+            yield return base.Tick(delayStart);
         }
     }
 }
