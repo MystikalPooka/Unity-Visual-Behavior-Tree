@@ -9,21 +9,10 @@ using UnityEngine;
 namespace Assets.Scripts.AI
 {
     [Serializable]
-    public class BehaviorTreeElement : TreeElement
+    public class BehaviorTreeElement : TreeElement, IDisposable
     {
-        private string _ElementType;
-        public string ElementType
-        {
-            get
-            {
-                return _ElementType;
-            }
-
-            set
-            {
-                _ElementType = value;
-            }
-        }
+        protected static readonly UniRx.Diagnostics.Logger BehaviorLogger = new UniRx.Diagnostics.Logger("Behavior Debugger");
+        public string ElementType { get; set; }
 
         [Newtonsoft.Json.JsonIgnore]
         [SerializeField]
@@ -72,7 +61,9 @@ namespace Assets.Scripts.AI
             foreach(var ch in allChildrenToRun)
             {
                 //TODO: will be changed to an actual debugger instead of just unity logs. Issue #3
-                ch.ObserveEveryValueChanged(x => x.CurrentState).Subscribe(x => Debug.Log(ElementType + " state changed: " + x));
+                ch.ObserveEveryValueChanged(x => x.CurrentState)
+                    .Subscribe(x => BehaviorLogger.Log(ElementType + " state changed: " + x))
+                    .AddTo(Disposables);
             }
 
             Initialized = true;
@@ -103,5 +94,37 @@ namespace Assets.Scripts.AI
             return retString;
 
         }
+
+        #region IDisposable Support
+
+        // CompositeDisposable is similar with List<IDisposable>, manage multiple IDisposable
+        protected CompositeDisposable Disposables = new CompositeDisposable(); // field
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    Disposables.Clear();
+                }
+
+                // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
+                // TODO: set large fields to null.
+                Children.Clear();
+                Children = null;
+
+                disposedValue = true;
+            }
+        }
+
+        // This code added to correctly implement the disposable pattern.
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(true);
+        }
+        #endregion
     }
 }

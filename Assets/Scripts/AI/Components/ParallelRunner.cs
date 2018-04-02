@@ -9,10 +9,10 @@ using UnityEngine;
 namespace Assets.Scripts.AI.Components
 {
     [Serializable]
-    [Description("Runs all children at the same time.")]
+    [Description("Runs all children at same time. Fails if NumFailures are >0 and children failed reach that number. Succeeds otherwise.")]
     public class ParallelRunner : BehaviorComponent
     {
-        private static readonly UniRx.Diagnostics.Logger logger = new UniRx.Diagnostics.Logger("RunnerDebug");
+       
         /// <summary>
         /// Number of times the children return fail before the parallel runner returns in a fail state.
         /// 0 means ignore number of failures.
@@ -37,16 +37,16 @@ namespace Assets.Scripts.AI.Components
             //Initialize and start tick
             base.Tick(delayStart).ToObservable().Subscribe(xb => Debug.Log("Subscribed to ParallelRunner at start (base.tick()"));
             CurrentState = (BehaviorState.Running);
-            if (Children == null || Children.Count <= 0)
+            if (Children == null || Children.Count == 0)
             {
                 Debug.LogWarning("Children Null in parallel runner");
-                CurrentState = (BehaviorState.Null);
+                CurrentState = (BehaviorState.Fail);
                 yield break;
             }
 
             foreach(var ch in Children)
             {
-                ((BehaviorTreeElement)ch).Tick().ToObservable().Debug().Subscribe(_ =>
+                ((BehaviorTreeElement)ch).Tick().ToObservable().Subscribe(_ =>
                 {
                     Debug.Log("parallel? Num Succeed: " + NumberOfSuccesses.Value);
                     Debug.Log("parallel? Num Fail: " + NumberOfFailures.Value);
@@ -63,6 +63,7 @@ namespace Assets.Scripts.AI.Components
                     }
                 });
             }
+            CurrentState = BehaviorState.Success;
         }
 
         public override void Initialize()
@@ -77,8 +78,7 @@ namespace Assets.Scripts.AI.Components
                 //TODO: will be changed to an actual debugger instead of just unity logs. Issue #3
                 ch.ObserveEveryValueChanged(x => x.CurrentState).Subscribe(x =>
                 {
-                    
-                    logger.Warning(ElementType + " state changed: " + x);
+                    BehaviorLogger.Warning(ElementType + " state changed: " + x);
                     if (x == BehaviorState.Fail)
                     {
                         NumberOfFailures.SetValueAndForceNotify(NumberOfFailures.Value + 1);
@@ -87,7 +87,7 @@ namespace Assets.Scripts.AI.Components
                     {
                         NumberOfSuccesses.SetValueAndForceNotify(NumberOfSuccesses.Value + 1);
                     }
-                });
+                }).AddTo(Disposables);
             }
 
             Initialized = true;

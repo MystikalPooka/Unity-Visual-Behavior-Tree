@@ -1,4 +1,6 @@
 ﻿using System.Collections;
+using System.ComponentModel;
+using UniRx;
 using UnityEngine;
 
 namespace Assets.Scripts.AI.Components
@@ -7,6 +9,7 @@ namespace Assets.Scripts.AI.Components
     /// Runs until a child returns in a fail state
     /// </summary>
     [System.Serializable]
+    [Description("Continually runs children in sequence until a child fails. Succeeds if no children fail. Fails if any child fails.")]
     public class Sequencer : BehaviorComponent
     {
         public Sequencer(string name, int depth, int id) 
@@ -17,23 +20,21 @@ namespace Assets.Scripts.AI.Components
         public override IEnumerator Tick(WaitForSeconds delayStart = null)
         {
             yield return delayStart;
-            CurrentState = BehaviorState.Running;
+            CurrentState = (BehaviorState.Running);
             foreach (BehaviorTreeElement behavior in Children)
             {
-                yield return BehaviorTreeManager.StartCoroutine(behavior.Tick());
+                if (CurrentState != BehaviorState.Running) yield break;
 
-                if (behavior.CurrentState != BehaviorState.Success)
+                yield return behavior.Tick().ToObservable().Subscribe(_ =>
                 {
-                    this.CurrentState = behavior.CurrentState;
-
-                    if (this.CurrentState == BehaviorState.Fail)
+                    if (behavior.CurrentState == BehaviorState.Fail)
                     {
-                        //This selector has completed, break out of the operation
-                        yield break;
+                        this.CurrentState = BehaviorState.Fail;
+                        return;
                     }
-                }
+                }).AddTo(Disposables);
             }
-            //if it gets here, it went through all subbehaviors and had no fails
+            //if it gets here, it went through all subbehaviors and had no failures
             CurrentState = BehaviorState.Success;
             yield break;
         }

@@ -12,7 +12,7 @@ namespace Assets.Scripts.AI.Components
     /// Returns and is in success state if a child was successful, otherwise returns in fail state
     /// </summary>
     [Serializable]
-    [Description("Runs children in order. Succeeds on first child that succeeds.")]
+    [Description("Runs children in order. Succeeds on first child that succeeds. Fails if no children succeed.")]
     public class Selector : BehaviorComponent
     {
         public Selector(string name, int depth, int id) 
@@ -36,7 +36,6 @@ namespace Assets.Scripts.AI.Components
                         return;
                     }
                 });
-
             }
             //if it gets here, it went through all subbehaviors and had no successes
             CurrentState = BehaviorState.Fail;

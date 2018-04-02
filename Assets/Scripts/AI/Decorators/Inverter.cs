@@ -13,7 +13,7 @@ namespace Assets.Scripts.AI.Decorators
 
         public override IEnumerator Tick(WaitForSeconds delayStart = null)
         {
-            base.Tick(delayStart).ToObservable().Subscribe(xb => Debug.Log("Subscribed to ParallelRunner at start (base.tick()"));
+            base.Tick(delayStart).ToObservable().Subscribe(xb => Debug.Log("OnNext Inverter at start (base.tick()"));
 
             CurrentState = BehaviorState.Null;
             if (Children == null) yield return null;
@@ -38,7 +38,7 @@ namespace Assets.Scripts.AI.Decorators
                         Debug.LogError("Something went wrong in an inverter.");
                         break;
                 }
-            });
+            }).AddTo(Disposables);
         }
     }
 }
