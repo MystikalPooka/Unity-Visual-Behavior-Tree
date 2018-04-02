@@ -81,7 +81,7 @@ namespace Assets.Scripts.AI
             {
                 yield return Runner.Tick()
                                    .ToObservable(true)
-                                   .Subscribe(xr => Debug.Log("Starting Tick on Runner"), e => Debug.LogError("Error: " + e)).AddTo(this);
+                                   .Subscribe(xr => { }, e => Debug.LogError("Error: " + e)).AddTo(this);
                 yield return new WaitForSeconds(SecondsBetweenTicks);
                 if (TimesToTick > 1) --TimesToTick;
             }

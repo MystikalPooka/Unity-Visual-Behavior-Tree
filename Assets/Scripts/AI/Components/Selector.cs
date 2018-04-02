@@ -26,23 +26,17 @@ namespace Assets.Scripts.AI.Components
             CurrentState = (BehaviorState.Running);
             foreach (BehaviorTreeElement behavior in Children)
             {
+                if (CurrentState != BehaviorState.Running) yield break;
+
                 yield return behavior.Tick().ToObservable().Subscribe(_ =>
                 {
-
+                    if (behavior.CurrentState == BehaviorState.Success)
+                    {
+                        this.CurrentState = behavior.CurrentState;
+                        return;
+                    }
                 });
 
-                if (behavior.CurrentState != BehaviorState.Fail)
-                {
-                    this.CurrentState = behavior.CurrentState;
-
-                    if (this.CurrentState == BehaviorState.Success)
-                    {
-                        UnityEngine.Debug.LogError("Selector is success");
-                        //This selector has completed, break out of the operation
-                        yield break;
-                    }
-                }
-                Debug.LogError("Selector is fail");
             }
             //if it gets here, it went through all subbehaviors and had no successes
             CurrentState = BehaviorState.Fail;
