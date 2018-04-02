@@ -28,7 +28,7 @@ namespace Assets.Scripts.AI
         public float SecondsBetweenTicks = 0.1f;
 
         /// <summary>
-        /// Number of times to tick the full trees. Set to a negative number to make an infinitely running behavior tree.
+        /// Number of times to tick the full tree. Set to a negative number to make an infinitely running behavior tree.
         /// </summary>
         [SerializeField]
         [Description("Times to tick this tree before stopping. Negative values indicate infinitely running behavior.")]
@@ -37,7 +37,7 @@ namespace Assets.Scripts.AI
         [Description("Open a list to splice other trees into this tree.")]
         public bool spliceNewIntoTree = false;
         /// <summary>
-        /// A list of trees to splice into the current tree. These trees are not directly editable.
+        /// A list of trees to splice into the current tree. These trees are not directly editable from here.
         /// </summary>
         [JsonIgnore]
         public List<BehaviorTreeManagerAsset> SpliceList;
@@ -67,10 +67,6 @@ namespace Assets.Scripts.AI
             initialized = true;
         }
 
-        //TODO: Add ILogger *(perhaps Observer pattern?)*
-        //Dispatch messages to observed classes and receive that information here...
-        //How to store? List? Dictionary? My face? Cat Pictures?
-
         /// <summary>
         /// Ticks on the aggregate ParallelRunner then continues ticking for as long as the runner is in running state
         /// </summary>
@@ -81,7 +77,8 @@ namespace Assets.Scripts.AI
             {
                 yield return Runner.Tick()
                                    .ToObservable(true)
-                                   .Subscribe(xr => { }, e => Debug.LogError("Error: " + e)).AddTo(this);
+                                   .Subscribe(_ => { }, e => Debug.LogError("Error: " + e))
+                                   .AddTo(this);
                 yield return new WaitForSeconds(SecondsBetweenTicks);
                 if (TimesToTick > 1) --TimesToTick;
             }

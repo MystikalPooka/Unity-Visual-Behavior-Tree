@@ -19,23 +19,30 @@ namespace Assets.Scripts.AI.Components
 
         public override IEnumerator Tick(WaitForSeconds delayStart = null)
         {
+            base.Tick().ToObservable()
+                //.Do(_ => BehaviorLogger.Log("Subscribed to Sequencer at start (base.tick()"))
+                .Subscribe();
+
             yield return delayStart;
             CurrentState = (BehaviorState.Running);
             foreach (BehaviorTreeElement behavior in Children)
             {
                 if (CurrentState != BehaviorState.Running) yield break;
 
-                yield return behavior.Tick().ToObservable().Subscribe(_ =>
-                {
-                    if (behavior.CurrentState == BehaviorState.Fail)
+                yield return behavior.Tick().ToObservable()
+                    .Do(_ => 
                     {
-                        this.CurrentState = BehaviorState.Fail;
-                        return;
-                    }
-                }).AddTo(Disposables);
+                        if (behavior.CurrentState == BehaviorState.Fail)
+                        {
+                            CurrentState = BehaviorState.Fail;
+                            return;
+                        }
+                    })
+                    .Subscribe()
+                    .AddTo(Disposables);
             }
             //if it gets here, it went through all subbehaviors and had no failures
-            CurrentState = BehaviorState.Success;
+            if (CurrentState == BehaviorState.Running) CurrentState = BehaviorState.Success;
             yield break;
         }
     }

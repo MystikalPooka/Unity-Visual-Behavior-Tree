@@ -61,8 +61,10 @@ namespace Assets.Scripts.AI
             foreach(var ch in allChildrenToRun)
             {
                 //TODO: will be changed to an actual debugger instead of just unity logs. Issue #3
+                //Subscribes to updates to state changes from all children
                 ch.ObserveEveryValueChanged(x => x.CurrentState)
-                    .Subscribe(x => BehaviorLogger.Log(ElementType + " state changed: " + x))
+                    //.Do(x => BehaviorLogger.Log(ElementType + " state changed: " + x))
+                    .Subscribe()
                     .AddTo(Disposables);
             }
 
