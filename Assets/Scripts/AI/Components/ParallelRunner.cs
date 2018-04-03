@@ -12,7 +12,6 @@ namespace Assets.Scripts.AI.Components
     [Description("Runs all children at same time. Fails if NumFailures are >0 and children failed reach that number. Succeeds otherwise.")]
     public class ParallelRunner : BehaviorComponent
     {
-       
         /// <summary>
         /// Number of times the children return fail before the parallel runner returns in a fail state.
         /// 0 means ignore number of failures.

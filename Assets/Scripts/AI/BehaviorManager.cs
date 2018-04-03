@@ -61,8 +61,6 @@ namespace Assets.Scripts.AI
         {
             //TODO: Change to runner extension (?)
             Runner = BehaviorTreeFile.LoadFromJSON(this);
-
-            
             if(spliceNewIntoTree) SpliceIntoRunner();
             initialized = true;
         }
@@ -108,7 +106,6 @@ namespace Assets.Scripts.AI
                         Runner.AddChild(newBehavior);
                     }
                 }
-
                 return true;
             }
             else return false;

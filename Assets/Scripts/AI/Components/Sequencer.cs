@@ -24,13 +24,12 @@ namespace Assets.Scripts.AI.Components
                 .Subscribe();
 
             yield return delayStart;
-            CurrentState = (BehaviorState.Running);
+            CurrentState = BehaviorState.Running;
             foreach (BehaviorTreeElement behavior in Children)
             {
                 if (CurrentState != BehaviorState.Running) yield break;
-
                 yield return behavior.Tick().ToObservable()
-                    .Do(_ => 
+                    .Do(_ =>
                     {
                         if (behavior.CurrentState == BehaviorState.Fail)
                         {
