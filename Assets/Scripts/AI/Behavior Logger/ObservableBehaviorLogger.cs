@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using UniRx;
-using UnityEngine;
 
 namespace Assets.Scripts.AI.Behavior_Logger
 {

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using UniRx;
 using UnityEngine;
 
 namespace Assets.Scripts.AI.Nodes

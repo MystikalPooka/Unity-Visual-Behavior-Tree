@@ -134,7 +134,7 @@ namespace Assets.Editor.BehaviorTreeViewEditor.BackendData
             CustomAssetUtility.CreateAsset<BehaviorTreeManagerAsset>();
             _BehaviorTreeManagerAsset = (BehaviorTreeManagerAsset)Selection.activeObject;
             BehaviorExtensions.SaveBehaviorAsset(null, AssetDatabase.GetAssetPath(_BehaviorTreeManagerAsset),
-                                                _BehaviorTreeManagerAsset,(ParallelRunner)_TreeView.treeModel.root);
+                                                _BehaviorTreeManagerAsset,(ParallelRunner)_TreeView.treeModel.Root);
         }
 
         void OnSelectionChange()
@@ -199,7 +199,7 @@ namespace Assets.Editor.BehaviorTreeViewEditor.BackendData
                 if (GUILayout.Button("Save Tree"))
                 {
                     FilePath = EditorUtility.SaveFilePanel("", FileDir, "New Behavior Tree", "asset");
-                    BehaviorExtensions.SaveBehaviorAsset(null, FilePath, _BehaviorTreeManagerAsset, (ParallelRunner)_TreeView.treeModel.root);
+                    BehaviorExtensions.SaveBehaviorAsset(null, FilePath, _BehaviorTreeManagerAsset, (ParallelRunner)_TreeView.treeModel.Root);
                 }
             }
 
@@ -209,7 +209,7 @@ namespace Assets.Editor.BehaviorTreeViewEditor.BackendData
         private void OnTypeSelected(object typeName)
         {
             var selection = _TreeView.GetSelection();
-            BehaviorTreeElement parent = (selection.Count == 1 ? _TreeView.treeModel.Find(selection[0]) : null) ?? _TreeView.treeModel.root;
+            BehaviorTreeElement parent = (selection.Count == 1 ? _TreeView.treeModel.Find(selection[0]) : null) ?? _TreeView.treeModel.Root;
             int depth = parent != null ? parent.Depth + 1 : 0;
             int id = _TreeView.treeModel.GenerateUniqueID();
             

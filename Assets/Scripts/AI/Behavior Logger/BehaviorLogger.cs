@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using UniRx.Diagnostics;
 using UnityEngine;
 
 namespace Assets.Scripts.AI.Behavior_Logger

@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using Newtonsoft.Json;
 using System.ComponentModel;
-using UniRx.Triggers;
 using UniRx;
 using Assets.Scripts.AI.Tree;
 using System.Linq;
@@ -13,7 +12,7 @@ using Assets.Scripts.AI.Behavior_Logger;
 
 namespace Assets.Scripts.AI
 {
-    public class BehaviorManager : MonoBehaviour
+    public class BehaviorManager : MonoBehaviour, IDisposable
     {
         public BehaviorLogger BehaviorLogger { get; private set;}
 
@@ -64,7 +63,7 @@ namespace Assets.Scripts.AI
         }
 
 
-        public IObservable<BehaviorTreeElement> treeStream { get; private set; }
+        public IObservable<BehaviorTreeElement> TreeStream { get; private set; }
         public void Reinitialize()
         {
             //TODO: Change to runner extension (?)
@@ -81,7 +80,7 @@ namespace Assets.Scripts.AI
 
 
             BehaviorLogger = new BehaviorLogger(gameObject.name + " Logger");
-            treeStream =
+            TreeStream =
                 treeQuery
                 .ToObservable()
                 .Do(xr =>
@@ -95,7 +94,7 @@ namespace Assets.Scripts.AI
                     .AddTo(this);
                 });
 
-            treeStream.Subscribe().AddTo(this);
+            TreeStream.Subscribe().AddTo(this);
 
             initialized = true;
         }
@@ -112,7 +111,7 @@ namespace Assets.Scripts.AI
                                    .ToObservable(true)
                                    .Subscribe(_ => { }, e => Debug.LogError("Error: " + e))
                                    .AddTo(this);
-                treeStream.Subscribe().AddTo(this);
+                TreeStream.Subscribe().AddTo(this);
                 yield return new WaitForSeconds(SecondsBetweenTicks);
                 if (TimesToTick > 1) --TimesToTick;
             }
@@ -147,6 +146,11 @@ namespace Assets.Scripts.AI
                 return true;
             }
             else return false;
+        }
+
+        public void Dispose()
+        {
+            Runner.Dispose();
         }
     }
 }

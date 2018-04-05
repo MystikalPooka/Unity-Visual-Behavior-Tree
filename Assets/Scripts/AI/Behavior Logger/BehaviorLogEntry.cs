@@ -1,7 +1,4 @@
-﻿using Assets.Scripts.AI;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
 using UnityEngine;
 
 namespace Assets.Scripts.AI.Behavior_Logger

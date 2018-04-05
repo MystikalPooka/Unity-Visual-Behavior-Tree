@@ -1,10 +1,8 @@
-﻿using Assets.Scripts.AI.Behavior_Logger;
-using System;
+﻿using System;
 using System.Collections;
 using System.ComponentModel;
 using System.Linq;
 using UniRx;
-using UniRx.Diagnostics;
 using UnityEngine;
 
 namespace Assets.Scripts.AI.Components

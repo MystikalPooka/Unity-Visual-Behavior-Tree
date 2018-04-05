@@ -1,11 +1,9 @@
-﻿using Assets.Scripts.AI.Behavior_Logger;
-using Assets.Scripts.AI.Tree;
+﻿using Assets.Scripts.AI.Tree;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UniRx;
-using UniRx.Diagnostics;
 using UnityEngine;
 
 namespace Assets.Scripts.AI
@@ -102,6 +100,7 @@ namespace Assets.Scripts.AI
         #region IDisposable Support
 
         // CompositeDisposable is similar with List<IDisposable>, manage multiple IDisposable
+        [NonSerialized]
         protected CompositeDisposable Disposables = new CompositeDisposable(); // field
         private bool disposedValue = false; // To detect redundant calls
 
