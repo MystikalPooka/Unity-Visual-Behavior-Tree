@@ -3,7 +3,6 @@ using System.Collections;
 using System.ComponentModel;
 using System.Linq;
 using UniRx;
-using UniRx.Diagnostics;
 using UnityEngine;
 
 namespace Assets.Scripts.AI.Components
@@ -12,7 +11,6 @@ namespace Assets.Scripts.AI.Components
     [Description("Runs all children at same time. Fails if NumFailures are >0 and children failed reach that number. Succeeds otherwise.")]
     public class ParallelRunner : BehaviorComponent
     {
-       
         /// <summary>
         /// Number of times the children return fail before the parallel runner returns in a fail state.
         /// 0 means ignore number of failures.
@@ -53,8 +51,6 @@ namespace Assets.Scripts.AI.Components
                     .ToObservable()
                     .Do(_ =>
                     {
-                        //BehaviorLogger.Log(Name + ": Num Succeed: " + NumberOfSuccesses.Value);
-                        //BehaviorLogger.Log(Name + ": Num Fail: " + NumberOfFailures.Value);
                         if (NumberOfFailures.Value >= NumberOfFailuresBeforeFail && NumberOfFailuresBeforeFail > 0)
                         {
                             CurrentState = BehaviorState.Fail;
@@ -74,29 +70,31 @@ namespace Assets.Scripts.AI.Components
 
         public override void Initialize()
         {
-            ObservableLogger.Listener.LogToUnityDebug();
-
             var allChildrenToRun = from x in Children
                                    select x as BehaviorTreeElement;
 
             foreach (var ch in allChildrenToRun)
             {
                 //TODO: will be changed to an actual debugger instead of just unity logs. Issue #3
-                ch.ObserveEveryValueChanged(x => x.CurrentState).Subscribe(x =>
-                {
-                    //BehaviorLogger.Warning(ElementType + " state changed: " + x);
-                    if (x == BehaviorState.Fail)
+                ch.ObserveEveryValueChanged(x => x.CurrentState)
+                    .Do(x =>
                     {
-                        NumberOfFailures.SetValueAndForceNotify(NumberOfFailures.Value + 1);
-                    }
-                    else if (x == BehaviorState.Success)
-                    {
-                        NumberOfSuccesses.SetValueAndForceNotify(NumberOfSuccesses.Value + 1);
-                    }
-                }).AddTo(Disposables);
+                        //BehaviorLogger.Warning(ElementType + " state changed: " + x);
+                        if (x == BehaviorState.Fail)
+                        {
+                            NumberOfFailures.SetValueAndForceNotify(NumberOfFailures.Value + 1);
+                        }
+                        else if (x == BehaviorState.Success)
+                        {
+                            NumberOfSuccesses.SetValueAndForceNotify(NumberOfSuccesses.Value + 1);
+                        }
+                    })
+                    .Subscribe()
+                    .AddTo(Disposables);
             }
-
             Initialized = true;
         }
+
+
     }
 }

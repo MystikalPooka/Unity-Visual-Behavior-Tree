@@ -21,14 +21,16 @@ namespace Assets.Scripts.AI.Nodes
         /// This can be very inefficient and typically is not needed. Default is 10.
         /// </summary>
         [SerializeField]
-        [Description("Frames between updating player list in the scene. At 0 this ticks every frame which is typically not needed and is very inefficient.")]
+        [Description("Frames between updating player list in the scene. " +
+            "At 0 this ticks every frame which is typically not needed and is very inefficient.")]
         public int UpdatePlayersTickInterval = 20;
 
         /// <summary>
         /// Number of ticks between updating current position. Default is 5.
         /// </summary>
         [SerializeField]
-        [Description("Frames between updating current position in the scene. At 0 this ticks every frame which is typically not needed and can be inefficient.")]
+        [Description("Frames between updating current position in the scene. " +
+            "At 0 this ticks every frame which is typically not needed and can be inefficient.")]
         public int UpdateSelfPositionTickInterval = 5;
 
         public MoveEnemyIfCloseToPlayer(string name, int depth, int id) : base(name, depth, id)
@@ -36,6 +38,8 @@ namespace Assets.Scripts.AI.Nodes
 
         public override IEnumerator Tick(WaitForSeconds delayStart = null)
         {
+            base.Tick();
+
             ++numTicks;
             if(UpdatePlayersTickInterval % numTicks == 0 || numTicks == 0)
             {
@@ -49,25 +53,7 @@ namespace Assets.Scripts.AI.Nodes
             if (players != null && players.Length > 0)
             {
                 var closestPlayer = GetClosestEnemy(players);
-
-                var targetPosition = closestPlayer.position;
-                var currentPosition = myPos.position;
-
-                if (Vector3.Distance(currentPosition, targetPosition) > myPos.GetComponentInParent<BoxCollider>().size.magnitude*2)
-                {
-                    var directionOfTravel = targetPosition - currentPosition;
-                    CurrentState = (BehaviorState.Running);
-                    float step = (MoveSpeed / directionOfTravel.magnitude) * Time.fixedDeltaTime;
-                    float t = 0;
-                    while (t <= 1.0f)
-                    {
-                        t += step; // Goes from 0 to 1, incrementing by step each time
-                        myPos.position = Vector3.Lerp(currentPosition, targetPosition, t); // Move objectToMove closer to b
-                        yield return new WaitForFixedUpdate();         // Leave the routine and return here in the next frame
-                    }
-                }
-                CurrentState = (BehaviorState.Success);
-                yield return null;
+                yield return MoveTowardsPosition(closestPlayer.position);
             }
 
             CurrentState = BehaviorState.Fail;
@@ -93,20 +79,25 @@ namespace Assets.Scripts.AI.Nodes
             return bestTarget;
         }
 
-        private IEnumerator MoveTowardsPosition(Transform pos)
+        private IEnumerator MoveTowardsPosition(Vector3 targetPosition)
         {
-            var targetPosition = pos.position;
             var currentPosition = myPos.position;
-            var directionOfTravel = targetPosition - currentPosition;
 
-            float step = (MoveSpeed / directionOfTravel.magnitude) * Time.fixedDeltaTime;
-            float t = 0;
-            while (t <= 1.0f)
+            if (Vector3.Distance(currentPosition, targetPosition) > myPos.GetComponentInParent<BoxCollider>().size.magnitude * 2)
             {
-                t += step; // Goes from 0 to 1, incrementing by step each time
-                myPos.position = Vector3.Lerp(currentPosition, targetPosition, t); // Move objectToMove closer to b
-                yield return new WaitForFixedUpdate();         // Leave the routine and return here in the next frame
+                var directionOfTravel = targetPosition - currentPosition;
+                CurrentState = BehaviorState.Running;
+                float step = (MoveSpeed / directionOfTravel.magnitude) * Time.fixedDeltaTime;
+                float t = 0;
+                while (t <= 1.0f)
+                {
+                    t += step; // Goes from 0 to 1, incrementing by step each time
+                    myPos.position = Vector3.Lerp(currentPosition, targetPosition, t); // Move objectToMove closer to b
+                    yield return new WaitForFixedUpdate();         // Leave the routine and return here in the next frame
+                }
             }
+            CurrentState = BehaviorState.Success;
+            yield return null;
         }
     }
 }

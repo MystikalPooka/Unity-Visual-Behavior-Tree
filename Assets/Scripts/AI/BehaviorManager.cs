@@ -5,13 +5,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using Newtonsoft.Json;
 using System.ComponentModel;
-using UniRx.Triggers;
 using UniRx;
+using Assets.Scripts.AI.Tree;
+using System.Linq;
+using Assets.Scripts.AI.Behavior_Logger;
 
 namespace Assets.Scripts.AI
 {
-    public class BehaviorManager : MonoBehaviour
+    public class BehaviorManager : MonoBehaviour, IDisposable
     {
+        public BehaviorLogger BehaviorLogger { get; private set;}
+
         /// <summary>
         /// The file to actually save/load to/from.
         /// </summary>
@@ -46,6 +50,7 @@ namespace Assets.Scripts.AI
 
         void OnEnable()
         {
+            
             InitIfNeeded();
         }
 
@@ -57,13 +62,40 @@ namespace Assets.Scripts.AI
             }
         }
 
+
+        public IObservable<BehaviorTreeElement> TreeStream { get; private set; }
         public void Reinitialize()
         {
             //TODO: Change to runner extension (?)
             Runner = BehaviorTreeFile.LoadFromJSON(this);
 
-            
             if(spliceNewIntoTree) SpliceIntoRunner();
+
+            List<BehaviorTreeElement> treeList = new List<BehaviorTreeElement>();
+
+            TreeElementUtility.TreeToList(Runner, treeList);
+
+            var treeQuery = from el in treeList
+                            select el;
+
+
+            BehaviorLogger = new BehaviorLogger(gameObject.name + " Logger");
+            TreeStream =
+                treeQuery
+                .ToObservable()
+                .Do(xr =>
+                {
+                    xr.ObserveEveryValueChanged(x => x.NumberOfTicksReceived)
+                    .Do(_ =>
+                    {
+                        BehaviorLogger.Debug(xr + " Ticked " + xr.NumberOfTicksReceived.Value + " times");
+                    })
+                    .Subscribe()
+                    .AddTo(this);
+                });
+
+            TreeStream.Subscribe().AddTo(this);
+
             initialized = true;
         }
 
@@ -79,6 +111,7 @@ namespace Assets.Scripts.AI
                                    .ToObservable(true)
                                    .Subscribe(_ => { }, e => Debug.LogError("Error: " + e))
                                    .AddTo(this);
+                TreeStream.Subscribe().AddTo(this);
                 yield return new WaitForSeconds(SecondsBetweenTicks);
                 if (TimesToTick > 1) --TimesToTick;
             }
@@ -88,6 +121,8 @@ namespace Assets.Scripts.AI
         /// Splice all trees in the "splice" area of the editor and return "true" if new trees were spliced.
         /// </summary>
         /// <returns></returns>
+        /// 
+        //TODO: Swap this to a better and/or reactive approach.
         public bool SpliceIntoRunner()
         {
             if (SpliceList != null)
@@ -108,10 +143,14 @@ namespace Assets.Scripts.AI
                         Runner.AddChild(newBehavior);
                     }
                 }
-
                 return true;
             }
             else return false;
+        }
+
+        public void Dispose()
+        {
+            Runner.Dispose();
         }
     }
 }

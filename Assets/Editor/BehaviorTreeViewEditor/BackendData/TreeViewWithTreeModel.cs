@@ -42,7 +42,7 @@ namespace Assets.Editor.BehaviorTreeViewEditor.BackendData
 		void Init (TreeModel<T> model)
 		{
 			_TreeModel = model;
-			_TreeModel.modelChanged += ModelChanged;
+			_TreeModel.ModelChanged += ModelChanged;
             
 		}
 
@@ -58,17 +58,17 @@ namespace Assets.Editor.BehaviorTreeViewEditor.BackendData
 		{
 			int depthForHiddenRoot = -1;
 
-            if(null == _TreeModel.root)
+            if(null == _TreeModel.Root)
             {
                 Debug.LogError("Tree Model root is null!!");
             }
 
-            return new TreeViewItem<T>(_TreeModel.root.ID, depthForHiddenRoot, _TreeModel.root.Name, _TreeModel.root);
+            return new TreeViewItem<T>(_TreeModel.Root.ID, depthForHiddenRoot, _TreeModel.Root.Name, _TreeModel.Root);
 		}
 
 		protected override IList<TreeViewItem> BuildRows (TreeViewItem root)
 		{
-			if (_TreeModel.root == null)
+			if (_TreeModel.Root == null)
 			{
 				Debug.LogError ("tree model root is null. did you call SetData()?");
 			}
@@ -76,12 +76,12 @@ namespace Assets.Editor.BehaviorTreeViewEditor.BackendData
 			_Rows.Clear ();
 			if (!string.IsNullOrEmpty(searchString))
 			{
-				Search (_TreeModel.root, searchString, _Rows);
+				Search (_TreeModel.Root, searchString, _Rows);
 			}
 			else
 			{
-				if (_TreeModel.root.HasChildren)
-					AddChildrenRecursive(_TreeModel.root, 0, _Rows);
+				if (_TreeModel.Root.HasChildren)
+					AddChildrenRecursive(_TreeModel.Root, 0, _Rows);
 			}
 
 			// We still need to setup the child parent information for the rows since this 
@@ -206,7 +206,7 @@ namespace Assets.Editor.BehaviorTreeViewEditor.BackendData
 				case DragAndDropPosition.OutsideItems:
 					{
 						if (args.performDrop)
-							OnDropDraggedElementsAtIndex(draggedRows, _TreeModel.root, _TreeModel.root.Children.Count);
+							OnDropDraggedElementsAtIndex(draggedRows, _TreeModel.Root, _TreeModel.Root.Children.Count);
 
 						return DragAndDropVisualMode.Move;
 					}

@@ -14,11 +14,12 @@ namespace Assets.Scripts.AI.Nodes
 
         public override IEnumerator Tick(WaitForSeconds delayStart = null)
         {
+            base.Tick();
+
             CurrentState = BehaviorState.Running; //Forces an update on the state between succeeds.
-            yield return delayStart;
             Debug.Log("Debug Out Node " + Name + " Doing stuff");
             CurrentState = BehaviorState.Success;
-            yield return null;
+            yield break;
         }
     }
 }
