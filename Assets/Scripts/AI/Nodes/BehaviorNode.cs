@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UniRx;
 using UnityEngine;
 
 namespace Assets.Scripts.AI.Nodes
@@ -11,7 +12,8 @@ namespace Assets.Scripts.AI.Nodes
 
         public override IEnumerator Tick(WaitForSeconds delayStart = null)
         {
-            yield return base.Tick(delayStart);
+            base.Tick();
+            yield return null;
         }
     }
 }

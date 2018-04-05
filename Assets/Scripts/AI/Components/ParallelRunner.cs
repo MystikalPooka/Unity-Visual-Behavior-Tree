@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Scripts.AI.Behavior_Logger;
+using System;
 using System.Collections;
 using System.ComponentModel;
 using System.Linq;
@@ -52,8 +53,6 @@ namespace Assets.Scripts.AI.Components
                     .ToObservable()
                     .Do(_ =>
                     {
-                        //BehaviorLogger.Log(Name + ": Num Succeed: " + NumberOfSuccesses.Value);
-                        //BehaviorLogger.Log(Name + ": Num Fail: " + NumberOfFailures.Value);
                         if (NumberOfFailures.Value >= NumberOfFailuresBeforeFail && NumberOfFailuresBeforeFail > 0)
                         {
                             CurrentState = BehaviorState.Fail;
@@ -73,29 +72,31 @@ namespace Assets.Scripts.AI.Components
 
         public override void Initialize()
         {
-            ObservableLogger.Listener.LogToUnityDebug();
-
             var allChildrenToRun = from x in Children
                                    select x as BehaviorTreeElement;
 
             foreach (var ch in allChildrenToRun)
             {
                 //TODO: will be changed to an actual debugger instead of just unity logs. Issue #3
-                ch.ObserveEveryValueChanged(x => x.CurrentState).Subscribe(x =>
-                {
-                    //BehaviorLogger.Warning(ElementType + " state changed: " + x);
-                    if (x == BehaviorState.Fail)
+                ch.ObserveEveryValueChanged(x => x.CurrentState)
+                    .Do(x =>
                     {
-                        NumberOfFailures.SetValueAndForceNotify(NumberOfFailures.Value + 1);
-                    }
-                    else if (x == BehaviorState.Success)
-                    {
-                        NumberOfSuccesses.SetValueAndForceNotify(NumberOfSuccesses.Value + 1);
-                    }
-                }).AddTo(Disposables);
+                        //BehaviorLogger.Warning(ElementType + " state changed: " + x);
+                        if (x == BehaviorState.Fail)
+                        {
+                            NumberOfFailures.SetValueAndForceNotify(NumberOfFailures.Value + 1);
+                        }
+                        else if (x == BehaviorState.Success)
+                        {
+                            NumberOfSuccesses.SetValueAndForceNotify(NumberOfSuccesses.Value + 1);
+                        }
+                    })
+                    .Subscribe()
+                    .AddTo(Disposables);
             }
-
             Initialized = true;
         }
+
+
     }
 }

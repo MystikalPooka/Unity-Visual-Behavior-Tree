@@ -19,9 +19,7 @@ namespace Assets.Scripts.AI.Components
 
         public override IEnumerator Tick(WaitForSeconds delayStart = null)
         {
-            base.Tick().ToObservable()
-                //.Do(_ => BehaviorLogger.Log("Subscribed to Sequencer at start (base.tick()"))
-                .Subscribe();
+            base.Tick().ToObservable().Subscribe();
 
             yield return delayStart;
             CurrentState = BehaviorState.Running;

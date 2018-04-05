@@ -7,11 +7,16 @@ using Newtonsoft.Json;
 using System.ComponentModel;
 using UniRx.Triggers;
 using UniRx;
+using Assets.Scripts.AI.Tree;
+using System.Linq;
+using Assets.Scripts.AI.Behavior_Logger;
 
 namespace Assets.Scripts.AI
 {
     public class BehaviorManager : MonoBehaviour
     {
+        public BehaviorLogger Logger { get; private set;}
+
         /// <summary>
         /// The file to actually save/load to/from.
         /// </summary>
@@ -46,6 +51,7 @@ namespace Assets.Scripts.AI
 
         void OnEnable()
         {
+            
             InitIfNeeded();
         }
 
@@ -57,11 +63,40 @@ namespace Assets.Scripts.AI
             }
         }
 
+
+        public IObservable<BehaviorTreeElement> treeStream { get; private set; }
         public void Reinitialize()
         {
             //TODO: Change to runner extension (?)
             Runner = BehaviorTreeFile.LoadFromJSON(this);
+
             if(spliceNewIntoTree) SpliceIntoRunner();
+
+            List<BehaviorTreeElement> treeList = new List<BehaviorTreeElement>();
+
+            TreeElementUtility.TreeToList(Runner, treeList);
+
+            var treeQuery = from el in treeList
+                            select el;
+
+
+            Logger = new BehaviorLogger(gameObject.name + " Logger");
+            treeStream =
+                treeQuery
+                .ToObservable()
+                .Do(xr =>
+                {
+                    xr.ObserveEveryValueChanged(x => x.NumberOfTicksReceived)
+                    .Do(_ =>
+                    {
+                        Logger.Debug(xr + " Ticked " + xr.NumberOfTicksReceived.Value + " times");
+                    })
+                    .Subscribe()
+                    .AddTo(this);
+                });
+
+            treeStream.Subscribe().AddTo(this);
+
             initialized = true;
         }
 
@@ -77,6 +112,7 @@ namespace Assets.Scripts.AI
                                    .ToObservable(true)
                                    .Subscribe(_ => { }, e => Debug.LogError("Error: " + e))
                                    .AddTo(this);
+                treeStream.Subscribe().AddTo(this);
                 yield return new WaitForSeconds(SecondsBetweenTicks);
                 if (TimesToTick > 1) --TimesToTick;
             }
