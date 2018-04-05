@@ -43,7 +43,6 @@ namespace Assets.Scripts.AI
             Children = new List<TreeElement>();
         }
 
-
         [Newtonsoft.Json.JsonIgnore]
         public BehaviorState CurrentState;
 

@@ -17,7 +17,7 @@ namespace Assets.Editor.BehaviorTreeViewEditor.BackendData
         const float kTypeButtonWidth = 70f;
         public ShowParameters ShowParams;
 
-        private Color GetBehaviorStateColor(int state)
+        private static Color GetBehaviorStateColor(int state)
         {
             switch (state)
             {
@@ -101,7 +101,6 @@ namespace Assets.Editor.BehaviorTreeViewEditor.BackendData
             Assert.AreEqual(m_SortOptions.Length, Enum.GetValues(typeof(BTreeColumns)).Length, "Ensure number of sort options are in sync with number of MyColumns enum values");
 
             // Custom setup
-            //rowHeight = kRowHeights;
             columnIndexForTreeFoldouts = 1;
             
             showAlternatingRowBackgrounds = true;
@@ -196,12 +195,12 @@ namespace Assets.Editor.BehaviorTreeViewEditor.BackendData
                 var menuStrings = elType.ToString().Split('.');
                 menu.AddItem(new GUIContent(menuStrings[menuStrings.Length - 2] + "/" + menuStrings.Last()), 
                     item.ElementType == elType.ToString(), 
-                    OnTypeSelected, obj);
+                    OnMenuTypeSelected, obj);
             }
             menu.ShowAsContext();
         }
 
-        public void OnTypeSelected(object itemTypeSelected)
+        public void OnMenuTypeSelected(object itemTypeSelected)
         {
             object[] obj = itemTypeSelected as object[];
             BehaviorTreeElement element = obj[0] as BehaviorTreeElement;

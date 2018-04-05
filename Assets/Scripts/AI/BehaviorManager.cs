@@ -15,7 +15,7 @@ namespace Assets.Scripts.AI
 {
     public class BehaviorManager : MonoBehaviour
     {
-        public BehaviorLogger Logger { get; private set;}
+        public BehaviorLogger BehaviorLogger { get; private set;}
 
         /// <summary>
         /// The file to actually save/load to/from.
@@ -80,7 +80,7 @@ namespace Assets.Scripts.AI
                             select el;
 
 
-            Logger = new BehaviorLogger(gameObject.name + " Logger");
+            BehaviorLogger = new BehaviorLogger(gameObject.name + " Logger");
             treeStream =
                 treeQuery
                 .ToObservable()
@@ -89,7 +89,7 @@ namespace Assets.Scripts.AI
                     xr.ObserveEveryValueChanged(x => x.NumberOfTicksReceived)
                     .Do(_ =>
                     {
-                        Logger.Debug(xr + " Ticked " + xr.NumberOfTicksReceived.Value + " times");
+                        BehaviorLogger.Debug(xr + " Ticked " + xr.NumberOfTicksReceived.Value + " times");
                     })
                     .Subscribe()
                     .AddTo(this);
@@ -122,6 +122,8 @@ namespace Assets.Scripts.AI
         /// Splice all trees in the "splice" area of the editor and return "true" if new trees were spliced.
         /// </summary>
         /// <returns></returns>
+        /// 
+        //TODO: Swap this to a better and/or reactive approach.
         public bool SpliceIntoRunner()
         {
             if (SpliceList != null)
