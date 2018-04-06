@@ -1,4 +1,5 @@
 ﻿using System;
+using Assets.Editor.BehaviorTreeViewEditor;
 using Assets.Scripts.AI;
 using Assets.Scripts.AI.Behavior_Logger;
 using UniRx;
@@ -28,6 +29,12 @@ namespace Assets.Editor
 
         public string DebugMessages = "debug?";
 
+
+        Rect TopToolbarRect
+        {
+            get { return new Rect(20f, 30f, position.width - 40f, 30f); }
+        }
+
         public static TreeDebuggerWindow ShowWindow()
         {
             var window = GetWindow<TreeDebuggerWindow>();
@@ -46,16 +53,36 @@ namespace Assets.Editor
             //.Select(x => x.NewState)
             .Subscribe(x =>
             {
-                DebugMessages += x.NewState + "\n";
-                //Debug.Log("Update " + x.NewState);
             });
 
+            TopToolbar(TopToolbarRect);
             EditorGUILayout.TextArea(DebugMessages);
+        }
+
+        GenericMenu ManagerSelectMenu;
+        private void TopToolbar(Rect rect)
+        {
+            GUILayout.BeginArea(rect);
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                if (EditorGUILayout.DropdownButton(new GUIContent("Manager To Debug"), FocusType.Passive))
+                {
+                    ManagerSelectMenu.CreateManagerMenu(OnManagerSelected);
+                    ManagerSelectMenu.ShowAsContext();
+                }
+            }
+            GUILayout.EndArea();
+        }
+
+        private void OnManagerSelected()
+        {
+
         }
 
         private bool Initialized = false;
         private void Initialize()
         {
+            ManagerSelectMenu = new GenericMenu();
              Initialized = true;
         }
 

@@ -172,14 +172,7 @@ namespace Assets.Editor.BehaviorTreeViewEditor.BackendData
         {
             var item = treeModel.Find(id);
             GenericMenu menu = new GenericMenu();
-            foreach (var elType in BehaviorExtensions.GetListOfTypes<BehaviorTreeElement>())
-            {
-                object[] obj = new object[2] { item, elType };
-                var menuStrings = elType.ToString().Split('.');
-                menu.AddItem(new GUIContent(menuStrings[menuStrings.Length - 2] + "/" + menuStrings.Last()), 
-                    item.ElementType == elType.ToString(), 
-                    OnMenuTypeSelected, obj);
-            }
+            menu.CreateTypeMenu<BehaviorTreeElement>(OnMenuTypeSelected);
             menu.ShowAsContext();
         }
 

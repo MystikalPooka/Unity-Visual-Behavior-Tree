@@ -180,12 +180,7 @@ namespace Assets.Editor.BehaviorTreeViewEditor.BackendData
                 GenericMenu menu = new GenericMenu();
                 if (EditorGUILayout.DropdownButton(new GUIContent("Add Behavior"),FocusType.Passive))
                 {
-                    foreach (var elType in BehaviorExtensions.GetListOfTypes<BehaviorTreeElement>())
-                    {
-                        var menuStrings = elType.ToString().Split('.');
-                        menu.AddItem(new GUIContent(menuStrings[menuStrings.Length-2] + 
-                                              "/" + menuStrings.Last()), false, OnTypeSelected, elType.ToString());
-                    }
+                    menu.CreateTypeMenu<BehaviorTreeElement>(OnTypeSelected);
                     menu.ShowAsContext();
                 }
 
