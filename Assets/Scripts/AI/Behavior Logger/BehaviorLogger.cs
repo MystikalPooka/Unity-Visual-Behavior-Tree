@@ -18,7 +18,7 @@ namespace Assets.Scripts.AI.Behavior_Logger
         }
 
         /// <summary>Output LogType.Log but only enabled if isDebugBuild</summary>
-        public virtual void Debug(object message, BehaviorTreeElement context = null)
+        public virtual void Debug(object message, UnityEngine.Object context = null)
         {
             if (!isInitialized)
             {
@@ -57,7 +57,7 @@ namespace Assets.Scripts.AI.Behavior_Logger
             }
         }
 
-        public virtual void Log(object message, BehaviorTreeElement context = null)
+        public virtual void Log(object message, UnityEngine.Object context = null)
         {
             logPublisher(new BehaviorLogEntry(
                 message: (message != null) ? message.ToString() : "",
@@ -77,7 +77,7 @@ namespace Assets.Scripts.AI.Behavior_Logger
                 context: null));
         }
 
-        public virtual void Warning(object message, BehaviorTreeElement context = null)
+        public virtual void Warning(object message, UnityEngine.Object context = null)
         {
             logPublisher(new BehaviorLogEntry(
                 message: (message != null) ? message.ToString() : "",
@@ -97,7 +97,7 @@ namespace Assets.Scripts.AI.Behavior_Logger
                 context: null));
         }
 
-        public virtual void Error(object message, BehaviorTreeElement context = null)
+        public virtual void Error(object message, UnityEngine.Object context = null)
         {
             logPublisher(new BehaviorLogEntry(
                 message: (message != null) ? message.ToString() : "",
@@ -117,7 +117,7 @@ namespace Assets.Scripts.AI.Behavior_Logger
                 context: null));
         }
 
-        public virtual void Exception(Exception exception, BehaviorTreeElement context = null)
+        public virtual void Exception(Exception exception, UnityEngine.Object context = null)
         {
             logPublisher(new BehaviorLogEntry(
                 message: (exception != null) ? exception.ToString() : "",

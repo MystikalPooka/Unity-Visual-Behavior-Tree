@@ -14,20 +14,26 @@ MonoBehaviour:
   TimesToTick: 135
   SecondsBetweenTicks: 0.5
   RunnerElementsJSON: "[\r\n  {\r\n    \"NumberOfFailuresBeforeFail\": 0,\r\n    \"NumberOfSuccessBeforeSucceed\":
-    0,\r\n    \"Initialized\": false,\r\n    \"ElementType\": \"Assets.Scripts.AI.Components.ParallelRunner\",\r\n
+    0,\r\n    \"Initialized\": false,\r\n    \"NumberOfTicksReceived\": {\r\n      \"Value\":
+    0,\r\n      \"HasValue\": true\r\n    },\r\n    \"ElementType\": \"Assets.Scripts.AI.Components.ParallelRunner\",\r\n
     \   \"Depth\": -1,\r\n    \"HasChildren\": true,\r\n    \"Name\": \"New Root\",\r\n
-    \   \"ID\": -1\r\n  },\r\n  {\r\n    \"Initialized\": false,\r\n    \"ElementType\":
+    \   \"ID\": -1\r\n  },\r\n  {\r\n    \"Initialized\": false,\r\n    \"NumberOfTicksReceived\":
+    {\r\n      \"Value\": 0,\r\n      \"HasValue\": true\r\n    },\r\n    \"ElementType\":
     \"Assets.Scripts.AI.Nodes.DebugOutNode\",\r\n    \"Depth\": 0,\r\n    \"HasChildren\":
     false,\r\n    \"Name\": \"DebugOutNode 9\",\r\n    \"ID\": 9\r\n  },\r\n  {\r\n
-    \   \"Initialized\": false,\r\n    \"ElementType\": \"Assets.Scripts.AI.Decorators.Inverter\",\r\n
+    \   \"Initialized\": false,\r\n    \"NumberOfTicksReceived\": {\r\n      \"Value\":
+    0,\r\n      \"HasValue\": true\r\n    },\r\n    \"ElementType\": \"Assets.Scripts.AI.Decorators.Inverter\",\r\n
     \   \"Depth\": 0,\r\n    \"HasChildren\": true,\r\n    \"Name\": \"Inverter 4\",\r\n
-    \   \"ID\": 4\r\n  },\r\n  {\r\n    \"Initialized\": false,\r\n    \"ElementType\":
+    \   \"ID\": 4\r\n  },\r\n  {\r\n    \"Initialized\": false,\r\n    \"NumberOfTicksReceived\":
+    {\r\n      \"Value\": 0,\r\n      \"HasValue\": true\r\n    },\r\n    \"ElementType\":
     \"Assets.Scripts.AI.Nodes.DebugOutNode\",\r\n    \"Depth\": 1,\r\n    \"HasChildren\":
     false,\r\n    \"Name\": \"DebugOutNode 2\",\r\n    \"ID\": 2\r\n  },\r\n  {\r\n
-    \   \"Initialized\": false,\r\n    \"ElementType\": \"Assets.Scripts.AI.Components.Selector\",\r\n
+    \   \"Initialized\": false,\r\n    \"NumberOfTicksReceived\": {\r\n      \"Value\":
+    0,\r\n      \"HasValue\": true\r\n    },\r\n    \"ElementType\": \"Assets.Scripts.AI.Components.Selector\",\r\n
     \   \"Depth\": 0,\r\n    \"HasChildren\": true,\r\n    \"Name\": \"Selector 0\",\r\n
-    \   \"ID\": 0\r\n  },\r\n  {\r\n    \"MoveSpeed\": 6.0,\r\n    \"UpdatePlayersTickInterval\":
+    \   \"ID\": 0\r\n  },\r\n  {\r\n    \"MoveSpeed\": 1.0,\r\n    \"UpdatePlayersTickInterval\":
     6,\r\n    \"UpdateSelfPositionTickInterval\": 3,\r\n    \"Initialized\": false,\r\n
-    \   \"ElementType\": \"Assets.Scripts.AI.Nodes.MoveEnemyIfCloseToPlayer\",\r\n
+    \   \"NumberOfTicksReceived\": {\r\n      \"Value\": 0,\r\n      \"HasValue\":
+    true\r\n    },\r\n    \"ElementType\": \"Assets.Scripts.AI.Nodes.MoveEnemyIfCloseToPlayer\",\r\n
     \   \"Depth\": 1,\r\n    \"HasChildren\": false,\r\n    \"Name\": \"MoveEnemyIfCloseToPlayer
     3\",\r\n    \"ID\": 3\r\n  }\r\n]"

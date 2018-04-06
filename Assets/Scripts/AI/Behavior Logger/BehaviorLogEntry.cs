@@ -15,12 +15,12 @@ namespace Assets.Scripts.AI.Behavior_Logger
         /// <summary>
         /// [Optional] Used to keep track of frames for debugging.
         /// </summary>
-        public int TickNumber { get; private set; }
+        public long TickNumber { get; private set; }
 
         public BehaviorState NewState { get; private set; }
 
         /// <summary>[Optional]</summary>
-        public BehaviorTreeElement Context { get; private set; }
+        public UnityEngine.Object Context { get; private set; }
         /// <summary>[Optional]</summary>
         public Exception Exception { get; private set; }
         /// <summary>[Optional]</summary>
@@ -28,8 +28,10 @@ namespace Assets.Scripts.AI.Behavior_Logger
         /// <summary>[Optional]</summary>
         public object State { get; private set; }
 
-        public BehaviorLogEntry(string loggerName, LogType logType, DateTime timestamp, string message, BehaviorState newState = BehaviorState.Null, int ticknum = -1,
-            BehaviorTreeElement context = null, Exception exception = null, string stackTrace = null, object state = null)
+        public BehaviorLogEntry(string loggerName, LogType logType, DateTime timestamp, string message, 
+            BehaviorState newState = BehaviorState.Null, long ticknum = -1,
+            UnityEngine.Object context = null, Exception exception = null, 
+            string stackTrace = null, object state = null)
             : this()
         {
             this.LoggerName = loggerName;
@@ -47,8 +49,10 @@ namespace Assets.Scripts.AI.Behavior_Logger
         public override string ToString()
         {
             var plusEx = (Exception != null) ? (Environment.NewLine + Exception.ToString()) : "";
-            return "[" + Timestamp.ToString() + "]"
-                + "[" + LoggerName + "]"
+            return
+                  "[" + LoggerName + "]"
+                + "[" + Timestamp.ToString() + "]"
+                + "[" + TickNumber + "]"
                 + "[" + LogType.ToString() + "]"
                 + Message
                 + plusEx;

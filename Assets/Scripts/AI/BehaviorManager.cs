@@ -88,7 +88,17 @@ namespace Assets.Scripts.AI
                     xr.ObserveEveryValueChanged(x => x.NumberOfTicksReceived)
                     .Do(_ =>
                     {
-                        BehaviorLogger.Debug(xr + " Ticked " + xr.NumberOfTicksReceived.Value + " times");
+                        var logEntry = new BehaviorLogEntry(
+                                loggerName: "",
+                                logType: LogType.Log,
+                                timestamp: DateTime.Now,
+                                message: "Ticked!",
+                                newState: xr.CurrentState,
+                                ticknum: xr.NumberOfTicksReceived.Value,
+                                context: this,
+                                state: xr);
+                        BehaviorLogger.Raw(logEntry);
+                        
                     })
                     .Subscribe()
                     .AddTo(this);
