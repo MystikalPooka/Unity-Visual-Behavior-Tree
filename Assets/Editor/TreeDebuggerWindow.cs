@@ -1,27 +1,77 @@
-﻿using Assets.Scripts.AI;
+﻿using System;
+using Assets.Scripts.AI;
 using Assets.Scripts.AI.Behavior_Logger;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using UniRx;
 using UnityEditor;
+using UnityEngine;
 
 namespace Assets.Editor
 {
-    public class TreeDebuggerWindow : EditorWindow
+    public class TreeDebuggerWindow : EditorWindow, System.IObserver<BehaviorLogEntry>
     {
-        private BehaviorDebuggerWindowSink DebugSink = new BehaviorDebuggerWindowSink();
-        public static void ShowWindow()
+        private static Color GetBehaviorStateColor(int state)
         {
-            var window = GetWindow<TreeDebuggerWindow>();
-            window.DebugSink = new BehaviorDebuggerWindowSink();
+            switch (state)
+            {
+                case (int)BehaviorState.Fail:
+                    return Color.red;
+                case (int)BehaviorState.Running:
+                    return Color.blue;
+                case (int)BehaviorState.Success:
+                    return new Color(0.1f, 0.9f, 0.2f);
+                case (int)BehaviorState.Null:
+                    return Color.grey;
+                default:
+                    return Color.black;
+            }
         }
 
+        public string DebugMessages = "debug?";
+
+        public static TreeDebuggerWindow ShowWindow()
+        {
+            var window = GetWindow<TreeDebuggerWindow>();
+            window.Focus();
+            window.Repaint();
+            return window;
+        }
 
         private void OnGUI()
         {
-            ObservableBehaviorLogger.Listener.Subscribe(DebugSink);
+            if (!Initialized) Initialize();
+
+
+            ObservableBehaviorLogger.Listener
+            .Where(x => x.LoggerName != "breakfast")
+            //.Select(x => x.NewState)
+            .Subscribe(x =>
+            {
+                DebugMessages += x.NewState + "\n";
+                //Debug.Log("Update " + x.NewState);
+            });
+
+            EditorGUILayout.TextArea(DebugMessages);
+        }
+
+        private bool Initialized = false;
+        private void Initialize()
+        {
+             Initialized = true;
+        }
+
+        public void OnCompleted()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OnError(Exception error)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void OnNext(BehaviorLogEntry value)
+        {
+            throw new NotImplementedException();
         }
     }
 }

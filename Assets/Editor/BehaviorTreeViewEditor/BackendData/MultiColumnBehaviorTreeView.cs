@@ -17,23 +17,6 @@ namespace Assets.Editor.BehaviorTreeViewEditor.BackendData
         const float kTypeButtonWidth = 70f;
         public ShowParameters ShowParams;
 
-        private static Color GetBehaviorStateColor(int state)
-        {
-            switch (state)
-            {
-                case (int)BehaviorState.Fail:
-                    return Color.red;
-                case (int)BehaviorState.Running:
-                    return Color.blue;
-                case (int)BehaviorState.Success:
-                    return new Color(0.1f, 0.9f, 0.2f);
-                case (int)BehaviorState.Null:
-                    return Color.grey;
-                default:
-                    return Color.black;
-            }
-        }
-
         // All columns
         enum BTreeColumns
         {
@@ -228,7 +211,7 @@ namespace Assets.Editor.BehaviorTreeViewEditor.BackendData
             {
                 case BTreeColumns.State:
                     CenterRectUsingSingleLineHeight(ref cellRect);
-                    EditorGUI.DrawRect(cellRect, GetBehaviorStateColor((int)item.data.CurrentState));
+                    //EditorGUI.DrawRect(cellRect, GetBehaviorStateColor((int)item.data.CurrentState));
                     break;
                 case BTreeColumns.Name:
                     // Do toggle

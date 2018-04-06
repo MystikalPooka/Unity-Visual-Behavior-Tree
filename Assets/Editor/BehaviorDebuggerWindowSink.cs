@@ -7,11 +7,12 @@ using System.Threading.Tasks;
 
 namespace Assets.Editor
 {
-    public class BehaviorDebuggerWindowSink : IObserver<BehaviorLogEntry>
+    public class TreeDebuggerSink : IObserver<BehaviorLogEntry>
     {
-        public BehaviorDebuggerWindowSink()
+        private TreeDebuggerWindow Window;
+        public TreeDebuggerSink(TreeDebuggerWindow window)
         {
-
+            Window = window;
         }
 
         public void OnCompleted()
@@ -26,7 +27,7 @@ namespace Assets.Editor
 
         public void OnNext(BehaviorLogEntry value)
         {
-            UnityEngine.Debug.Log("Tree Debugger onNext. New state: "+value.NewState);
+            Window.DebugMessages += "New state: " + value.NewState + "\n";
         }
     }
 }
