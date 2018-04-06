@@ -304,7 +304,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BehaviorTreeFile: {fileID: 11400000, guid: f4cb4c96e175fa243baf0700d4057360, type: 2}
-  SecondsBetweenTicks: 0.25
+  SecondsBetweenTicks: 0.5
   TimesToTick: -1
   spliceNewIntoTree: 0
   SpliceList: []
