@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System.Collections.Generic;
 
 
 namespace Assets.Scripts.AI.Components
@@ -17,8 +15,6 @@ namespace Assets.Scripts.AI.Components
         public virtual void AddChild(BehaviorTreeElement element)
         {
             element.Parent = this;
-
-            element.BehaviorTreeManager = BehaviorTreeManager;
             Children.Add(element);
         }
     }

@@ -48,6 +48,11 @@ namespace Assets.Editor
             {
                 BTreeManager.Reinitialize();
             }
+
+            if(GUILayout.Button("Debug"))
+            {
+                TreeDebuggerWindow.ShowWindow();
+            }
         }
     }
 }

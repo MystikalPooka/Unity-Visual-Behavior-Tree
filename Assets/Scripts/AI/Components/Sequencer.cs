@@ -1,4 +1,6 @@
 ﻿using System.Collections;
+using System.ComponentModel;
+using UniRx;
 using UnityEngine;
 
 namespace Assets.Scripts.AI.Components
@@ -7,6 +9,7 @@ namespace Assets.Scripts.AI.Components
     /// Runs until a child returns in a fail state
     /// </summary>
     [System.Serializable]
+    [Description("Continually runs children in sequence until a child fails. Succeeds if no children fail. Fails if any child fails.")]
     public class Sequencer : BehaviorComponent
     {
         public Sequencer(string name, int depth, int id) 
@@ -16,25 +19,27 @@ namespace Assets.Scripts.AI.Components
 
         public override IEnumerator Tick(WaitForSeconds delayStart = null)
         {
+            base.Tick().ToObservable().Subscribe();
+
             yield return delayStart;
             CurrentState = BehaviorState.Running;
             foreach (BehaviorTreeElement behavior in Children)
             {
-                yield return BehaviorTreeManager.StartCoroutine(behavior.Tick());
-
-                if (behavior.CurrentState != BehaviorState.Success)
-                {
-                    this.CurrentState = behavior.CurrentState;
-
-                    if (this.CurrentState == BehaviorState.Fail)
+                if (CurrentState != BehaviorState.Running) yield break;
+                yield return behavior.Tick().ToObservable()
+                    .Do(_ =>
                     {
-                        //This selector has completed, break out of the operation
-                        yield break;
-                    }
-                }
+                        if (behavior.CurrentState == BehaviorState.Fail)
+                        {
+                            CurrentState = BehaviorState.Fail;
+                            return;
+                        }
+                    })
+                    .Subscribe()
+                    .AddTo(Disposables);
             }
-            //if it gets here, it went through all subbehaviors and had no fails
-            CurrentState = BehaviorState.Success;
+            //if it gets here, it went through all subbehaviors and had no failures
+            if (CurrentState == BehaviorState.Running) CurrentState = BehaviorState.Success;
             yield break;
         }
     }

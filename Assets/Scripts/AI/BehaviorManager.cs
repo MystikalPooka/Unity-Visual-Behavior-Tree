@@ -5,13 +5,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using Newtonsoft.Json;
 using System.ComponentModel;
-using UniRx.Triggers;
 using UniRx;
+using Assets.Scripts.AI.Tree;
+using System.Linq;
+using Assets.Scripts.AI.Behavior_Logger;
 
 namespace Assets.Scripts.AI
 {
-    public class BehaviorManager : MonoBehaviour
+    public class BehaviorManager : MonoBehaviour, IDisposable
     {
+        public BehaviorLogger BehaviorLogger { get; private set;}
+
         /// <summary>
         /// The file to actually save/load to/from.
         /// </summary>
@@ -28,7 +32,7 @@ namespace Assets.Scripts.AI
         public float SecondsBetweenTicks = 0.1f;
 
         /// <summary>
-        /// Number of times to tick the full trees. Set to a negative number to make an infinitely running behavior tree.
+        /// Number of times to tick the full tree. Set to a negative number to make an infinitely running behavior tree.
         /// </summary>
         [SerializeField]
         [Description("Times to tick this tree before stopping. Negative values indicate infinitely running behavior.")]
@@ -37,7 +41,7 @@ namespace Assets.Scripts.AI
         [Description("Open a list to splice other trees into this tree.")]
         public bool spliceNewIntoTree = false;
         /// <summary>
-        /// A list of trees to splice into the current tree. These trees are not directly editable.
+        /// A list of trees to splice into the current tree. These trees are not directly editable from here.
         /// </summary>
         [JsonIgnore]
         public List<BehaviorTreeManagerAsset> SpliceList;
@@ -46,6 +50,7 @@ namespace Assets.Scripts.AI
 
         void OnEnable()
         {
+            
             InitIfNeeded();
         }
 
@@ -57,19 +62,52 @@ namespace Assets.Scripts.AI
             }
         }
 
+
+        public IObservable<BehaviorTreeElement> TreeStream { get; private set; }
         public void Reinitialize()
         {
             //TODO: Change to runner extension (?)
             Runner = BehaviorTreeFile.LoadFromJSON(this);
 
-            
             if(spliceNewIntoTree) SpliceIntoRunner();
+
+            List<BehaviorTreeElement> treeList = new List<BehaviorTreeElement>();
+
+            TreeElementUtility.TreeToList(Runner, treeList);
+
+            var treeQuery = from el in treeList
+                            select el;
+
+
+            BehaviorLogger = new BehaviorLogger(gameObject.name + " Logger");
+            TreeStream =
+                treeQuery
+                .ToObservable()
+                .Do(xr =>
+                {
+                    xr.ObserveEveryValueChanged(x => x.NumberOfTicksReceived)
+                    .Do(_ =>
+                    {
+                        var logEntry = new BehaviorLogEntry(
+                                loggerName: "",
+                                logType: LogType.Log,
+                                timestamp: DateTime.Now,
+                                message: "Ticked!",
+                                newState: xr.CurrentState,
+                                ticknum: xr.NumberOfTicksReceived.Value,
+                                context: this,
+                                state: xr);
+                        BehaviorLogger.Raw(logEntry);
+                        
+                    })
+                    .Subscribe()
+                    .AddTo(this);
+                });
+
+            TreeStream.Subscribe().AddTo(this);
+
             initialized = true;
         }
-
-        //TODO: Add ILogger *(perhaps Observer pattern?)*
-        //Dispatch messages to observed classes and receive that information here...
-        //How to store? List? Dictionary? My face? Cat Pictures?
 
         /// <summary>
         /// Ticks on the aggregate ParallelRunner then continues ticking for as long as the runner is in running state
@@ -81,7 +119,9 @@ namespace Assets.Scripts.AI
             {
                 yield return Runner.Tick()
                                    .ToObservable(true)
-                                   .Subscribe(xr => Debug.Log("Starting Tick on Runner"), e => Debug.LogError("Error: " + e)).AddTo(this);
+                                   .Subscribe(_ => { }, e => Debug.LogError("Error: " + e))
+                                   .AddTo(this);
+                TreeStream.Subscribe().AddTo(this);
                 yield return new WaitForSeconds(SecondsBetweenTicks);
                 if (TimesToTick > 1) --TimesToTick;
             }
@@ -91,6 +131,8 @@ namespace Assets.Scripts.AI
         /// Splice all trees in the "splice" area of the editor and return "true" if new trees were spliced.
         /// </summary>
         /// <returns></returns>
+        /// 
+        //TODO: Swap this to a better and/or reactive approach.
         public bool SpliceIntoRunner()
         {
             if (SpliceList != null)
@@ -111,10 +153,14 @@ namespace Assets.Scripts.AI
                         Runner.AddChild(newBehavior);
                     }
                 }
-
                 return true;
             }
             else return false;
+        }
+
+        public void Dispose()
+        {
+            Runner.Dispose();
         }
     }
 }

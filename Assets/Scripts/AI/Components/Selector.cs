@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.ComponentModel;
-using System.Linq;
 using UniRx;
 using UnityEngine;
 
@@ -12,7 +11,7 @@ namespace Assets.Scripts.AI.Components
     /// Returns and is in success state if a child was successful, otherwise returns in fail state
     /// </summary>
     [Serializable]
-    [Description("Runs children in order. Succeeds on first child that succeeds.")]
+    [Description("Runs children in order. Succeeds on first child that succeeds. Fails if no children succeed.")]
     public class Selector : BehaviorComponent
     {
         public Selector(string name, int depth, int id) 
@@ -21,31 +20,28 @@ namespace Assets.Scripts.AI.Components
 
         public override IEnumerator Tick(WaitForSeconds delayStart = null)
         {
-            base.Tick().ToObservable().Subscribe(xb => Debug.Log("Subscribed to Selector at start (base.tick()"));
+            base.Tick().ToObservable().Subscribe();
             
             CurrentState = (BehaviorState.Running);
             foreach (BehaviorTreeElement behavior in Children)
             {
-                yield return behavior.Tick().ToObservable().Subscribe(_ =>
-                {
+                if (CurrentState != BehaviorState.Running) yield break;
 
-                });
-
-                if (behavior.CurrentState != BehaviorState.Fail)
-                {
-                    this.CurrentState = behavior.CurrentState;
-
-                    if (this.CurrentState == BehaviorState.Success)
+                yield return 
+                    behavior.Tick().ToObservable()
+                    .Do(_ =>
                     {
-                        UnityEngine.Debug.LogError("Selector is success");
-                        //This selector has completed, break out of the operation
-                        yield break;
-                    }
-                }
-                Debug.LogError("Selector is fail");
+                        if (behavior.CurrentState == BehaviorState.Success)
+                        {
+                            CurrentState = BehaviorState.Success;
+                            return;
+                        }
+                    })
+                    .Subscribe()
+                    .AddTo(Disposables);
             }
             //if it gets here, it went through all subbehaviors and had no successes
-            CurrentState = BehaviorState.Fail;
+            if (CurrentState == BehaviorState.Running) CurrentState = BehaviorState.Fail;
             yield break;
         }
     } 

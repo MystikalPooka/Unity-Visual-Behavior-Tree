@@ -9,21 +9,11 @@ using UnityEngine;
 namespace Assets.Scripts.AI
 {
     [Serializable]
-    public class BehaviorTreeElement : TreeElement
+    public class BehaviorTreeElement : TreeElement, IDisposable
     {
-        private string _ElementType;
-        public string ElementType
-        {
-            get
-            {
-                return _ElementType;
-            }
+        public LongReactiveProperty NumberOfTicksReceived { get; private set; }
 
-            set
-            {
-                _ElementType = value;
-            }
-        }
+        public string ElementType { get; set; }
 
         [Newtonsoft.Json.JsonIgnore]
         [SerializeField]
@@ -45,11 +35,11 @@ namespace Assets.Scripts.AI
         public BehaviorTreeElement(string name, int depth, int id) 
             : base(name, depth, id)
         {
+            NumberOfTicksReceived = new LongReactiveProperty(0);
             ElementType = this.GetType().ToString();
             CurrentState = (BehaviorState.Null);
             Children = new List<TreeElement>();
         }
-
 
         [Newtonsoft.Json.JsonIgnore]
         public BehaviorState CurrentState;
@@ -62,6 +52,7 @@ namespace Assets.Scripts.AI
             {
                 yield return delayStart;
             }
+            NumberOfTicksReceived.SetValueAndForceNotify(NumberOfTicksReceived.Value + 1);
         }
 
         public virtual void Initialize()
@@ -72,7 +63,10 @@ namespace Assets.Scripts.AI
             foreach(var ch in allChildrenToRun)
             {
                 //TODO: will be changed to an actual debugger instead of just unity logs. Issue #3
-                ch.ObserveEveryValueChanged(x => x.CurrentState).Subscribe(x => Debug.Log(ElementType + " state changed: " + x));
+                //Subscribes to updates to state changes from all children
+                ch.ObserveEveryValueChanged(x => x.CurrentState)
+                    .Subscribe()
+                    .AddTo(Disposables);
             }
 
             Initialized = true;
@@ -99,9 +93,41 @@ namespace Assets.Scripts.AI
                     retString += child.ToString();
                 }
             }
-
             return retString;
 
         }
+
+        #region IDisposable Support
+
+        // CompositeDisposable is similar with List<IDisposable>, manage multiple IDisposable
+        [NonSerialized]
+        protected CompositeDisposable Disposables = new CompositeDisposable(); // field
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    Disposables.Clear();
+                }
+
+                // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
+                // TODO: set large fields to null.
+                Children.Clear();
+                Children = null;
+
+                disposedValue = true;
+            }
+        }
+
+        // This code added to correctly implement the disposable pattern.
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(true);
+        }
+        #endregion
     }
 }

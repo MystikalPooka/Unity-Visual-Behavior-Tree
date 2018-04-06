@@ -1,5 +1,5 @@
 <!--- This Readme was made using Dillinger online markdown editor https://dillinger.io/--->
-
+[![Build Status](https://travis-ci.org/MystikalPooka/Unity-Visual-Behavior-Tree.svg?branch=master)](https://travis-ci.org/MystikalPooka/Unity-Visual-Behavior-Tree)
 # Unity-Visual-Behavior-Tree
 Visual Scripting Behavior Tree Tool for Unity 2017.3.x
 

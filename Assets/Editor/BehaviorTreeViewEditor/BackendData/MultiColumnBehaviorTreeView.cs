@@ -17,23 +17,6 @@ namespace Assets.Editor.BehaviorTreeViewEditor.BackendData
         const float kTypeButtonWidth = 70f;
         public ShowParameters ShowParams;
 
-        private Color GetBehaviorStateColor(int state)
-        {
-            switch (state)
-            {
-                case (int)BehaviorState.Fail:
-                    return Color.red;
-                case (int)BehaviorState.Running:
-                    return Color.blue;
-                case (int)BehaviorState.Success:
-                    return new Color(0.1f, 0.9f, 0.2f);
-                case (int)BehaviorState.Null:
-                    return Color.grey;
-                default:
-                    return Color.black;
-            }
-        }
-
         // All columns
         enum BTreeColumns
         {
@@ -101,7 +84,6 @@ namespace Assets.Editor.BehaviorTreeViewEditor.BackendData
             Assert.AreEqual(m_SortOptions.Length, Enum.GetValues(typeof(BTreeColumns)).Length, "Ensure number of sort options are in sync with number of MyColumns enum values");
 
             // Custom setup
-            //rowHeight = kRowHeights;
             columnIndexForTreeFoldouts = 1;
             
             showAlternatingRowBackgrounds = true;
@@ -196,12 +178,12 @@ namespace Assets.Editor.BehaviorTreeViewEditor.BackendData
                 var menuStrings = elType.ToString().Split('.');
                 menu.AddItem(new GUIContent(menuStrings[menuStrings.Length - 2] + "/" + menuStrings.Last()), 
                     item.ElementType == elType.ToString(), 
-                    OnTypeSelected, obj);
+                    OnMenuTypeSelected, obj);
             }
             menu.ShowAsContext();
         }
 
-        public void OnTypeSelected(object itemTypeSelected)
+        public void OnMenuTypeSelected(object itemTypeSelected)
         {
             object[] obj = itemTypeSelected as object[];
             BehaviorTreeElement element = obj[0] as BehaviorTreeElement;
@@ -229,7 +211,7 @@ namespace Assets.Editor.BehaviorTreeViewEditor.BackendData
             {
                 case BTreeColumns.State:
                     CenterRectUsingSingleLineHeight(ref cellRect);
-                    EditorGUI.DrawRect(cellRect, GetBehaviorStateColor((int)item.data.CurrentState));
+                    //EditorGUI.DrawRect(cellRect, GetBehaviorStateColor((int)item.data.CurrentState));
                     break;
                 case BTreeColumns.Name:
                     // Do toggle

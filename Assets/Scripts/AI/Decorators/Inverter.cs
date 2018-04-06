@@ -13,7 +13,9 @@ namespace Assets.Scripts.AI.Decorators
 
         public override IEnumerator Tick(WaitForSeconds delayStart = null)
         {
-            base.Tick(delayStart).ToObservable().Subscribe(xb => Debug.Log("Subscribed to ParallelRunner at start (base.tick()"));
+            base.Tick(delayStart).ToObservable()
+                //.Do(_ => Debug.Log("OnNext Inverter at start (base.tick()"))
+                .Subscribe();
 
             CurrentState = BehaviorState.Null;
             if (Children == null) yield return null;
@@ -22,23 +24,22 @@ namespace Assets.Scripts.AI.Decorators
 
             yield return behavior.Tick().ToObservable().Subscribe(_ =>
             {
-                Debug.LogError("Inverting " + behavior);
                 switch (behavior.CurrentState)
                 {
                     case BehaviorState.Fail:
-                        this.CurrentState = BehaviorState.Success;
+                        CurrentState = BehaviorState.Success;
                         break;
                     case BehaviorState.Success:
                         CurrentState = BehaviorState.Fail;
                         break;
                     case BehaviorState.Running:
-                        this.CurrentState = BehaviorState.Running;
+                        CurrentState = BehaviorState.Running;
                         break;
                     default:
                         Debug.LogError("Something went wrong in an inverter.");
                         break;
                 }
-            });
+            }).AddTo(Disposables);
         }
     }
 }
