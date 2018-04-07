@@ -14,7 +14,23 @@ namespace Assets.Scripts.AI
 {
     public class BehaviorManager : MonoBehaviour, IDisposable
     {
-        public BehaviorLogger BehaviorLogger { get; private set;}
+        private BehaviorLogger behaviorLogger;
+        public BehaviorLogger BehaviorLogger
+        {
+            get
+            {
+                if(behaviorLogger == null)
+                {
+                    behaviorLogger = new BehaviorLogger(gameObject.name + ": " + BehaviorTreeFile.name + " Tree");
+                }
+                return behaviorLogger;
+            }
+
+            private set
+            {
+                behaviorLogger = value;
+            }
+        }
 
         /// <summary>
         /// The file to actually save/load to/from.
@@ -62,7 +78,6 @@ namespace Assets.Scripts.AI
             }
         }
 
-
         public IObservable<BehaviorTreeElement> TreeStream { get; private set; }
         public void Reinitialize()
         {
@@ -78,8 +93,6 @@ namespace Assets.Scripts.AI
             var treeQuery = from el in treeList
                             select el;
 
-
-            BehaviorLogger = new BehaviorLogger(gameObject.name + " Logger");
             TreeStream =
                 treeQuery
                 .ToObservable()
@@ -89,7 +102,7 @@ namespace Assets.Scripts.AI
                     .Do(_ =>
                     {
                         var logEntry = new BehaviorLogEntry(
-                                loggerName: "",
+                                loggerName: BehaviorLogger.Name,
                                 logType: LogType.Log,
                                 timestamp: DateTime.Now,
                                 message: "Ticked!",
@@ -98,7 +111,6 @@ namespace Assets.Scripts.AI
                                 context: this,
                                 state: xr);
                         BehaviorLogger.Raw(logEntry);
-                        
                     })
                     .Subscribe()
                     .AddTo(this);
@@ -123,7 +135,7 @@ namespace Assets.Scripts.AI
                                    .AddTo(this);
                 TreeStream.Subscribe().AddTo(this);
                 yield return new WaitForSeconds(SecondsBetweenTicks);
-                if (TimesToTick > 1) --TimesToTick;
+                if (TimesToTick >= 1) --TimesToTick;
             }
         }
 

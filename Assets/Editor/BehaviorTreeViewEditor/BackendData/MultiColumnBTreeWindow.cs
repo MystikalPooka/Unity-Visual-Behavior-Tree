@@ -223,7 +223,7 @@ namespace Assets.Editor.BehaviorTreeViewEditor.BackendData
         {
             GUILayout.BeginArea(rect);
 
-            using (new EditorGUILayout.HorizontalScope())
+            using(new EditorGUILayout.HorizontalScope())
             {
                 var style = "miniButton";
                 if (GUILayout.Button("Expand All", style))
@@ -241,7 +241,6 @@ namespace Assets.Editor.BehaviorTreeViewEditor.BackendData
                 _TreeView.ShowParams = (MultiColumnBehaviorTreeView.ShowParameters) 
                     EditorGUILayout.EnumPopup("Show Parameter Lists", _TreeView.ShowParams, "miniButton");
             }
-
             GUILayout.EndArea();
         }
     }

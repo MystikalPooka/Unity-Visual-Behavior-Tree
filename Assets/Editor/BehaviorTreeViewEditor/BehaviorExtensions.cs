@@ -49,13 +49,13 @@ namespace Assets.Editor.BehaviorTreeViewEditor
             }
         }
 
-        public static void CreateManagerMenu(this GenericMenu menu, GenericMenu.MenuFunction func)
+        public static void CreateManagerMenu(this GenericMenu menu, GenericMenu.MenuFunction2 func)
         {
-            var managers = UnityEngine.Object.FindObjectsOfType(typeof(BehaviorManager));
+            var managers = UnityEngine.Object.FindObjectsOfType<BehaviorManager>();
             foreach (BehaviorManager manager in managers)
             {
-                string menuName = manager.transform.parent.name + ": " + manager.BehaviorTreeFile.name;
-                menu.AddItem(new GUIContent(menuName), false, func);
+                string menuName = manager.BehaviorLogger.Name;
+                menu.AddItem(new GUIContent(menuName), false, func, menuName);
             }
         }
 

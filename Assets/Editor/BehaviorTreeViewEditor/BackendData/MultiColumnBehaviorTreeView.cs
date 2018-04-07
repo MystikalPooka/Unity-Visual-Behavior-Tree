@@ -198,8 +198,6 @@ namespace Assets.Editor.BehaviorTreeViewEditor.BackendData
         void CellGUI(Rect cellRect, TreeViewItem<BehaviorTreeElement> item, BTreeColumns column, ref RowGUIArgs args)
         {
             // Center cell rect vertically (makes it easier to place controls, icons etc in the cells)
-            
-
             switch (column)
             {
                 case BTreeColumns.State:
