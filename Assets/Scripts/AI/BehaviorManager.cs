@@ -14,7 +14,23 @@ namespace Assets.Scripts.AI
 {
     public class BehaviorManager : MonoBehaviour, IDisposable
     {
-        public BehaviorLogger BehaviorLogger { get; private set;}
+        private BehaviorLogger behaviorLogger;
+        public BehaviorLogger BehaviorLogger
+        {
+            get
+            {
+                if(behaviorLogger == null)
+                {
+                    behaviorLogger = new BehaviorLogger(gameObject.name + ": " + BehaviorTreeFile.name + " Tree");
+                }
+                return behaviorLogger;
+            }
+
+            private set
+            {
+                behaviorLogger = value;
+            }
+        }
 
         /// <summary>
         /// The file to actually save/load to/from.
@@ -22,6 +38,8 @@ namespace Assets.Scripts.AI
         [JsonIgnore]
         [Description("The currently loaded tree asset that will be run.")]
         public BehaviorTreeManagerAsset BehaviorTreeFile;
+
+
         public ParallelRunner Runner { get; set; } = new ParallelRunner("Main Root", -1, -1);
 
         /// <summary>
@@ -50,7 +68,6 @@ namespace Assets.Scripts.AI
 
         void OnEnable()
         {
-            
             InitIfNeeded();
         }
 
@@ -62,11 +79,10 @@ namespace Assets.Scripts.AI
             }
         }
 
-
         public IObservable<BehaviorTreeElement> TreeStream { get; private set; }
         public void Reinitialize()
         {
-            //TODO: Change to runner extension (?)
+            //TODO: Change to runner extension
             Runner = BehaviorTreeFile.LoadFromJSON(this);
 
             if(spliceNewIntoTree) SpliceIntoRunner();
@@ -78,8 +94,6 @@ namespace Assets.Scripts.AI
             var treeQuery = from el in treeList
                             select el;
 
-
-            BehaviorLogger = new BehaviorLogger(gameObject.name + " Logger");
             TreeStream =
                 treeQuery
                 .ToObservable()
@@ -89,7 +103,7 @@ namespace Assets.Scripts.AI
                     .Do(_ =>
                     {
                         var logEntry = new BehaviorLogEntry(
-                                loggerName: "",
+                                loggerName: BehaviorLogger.Name,
                                 logType: LogType.Log,
                                 timestamp: DateTime.Now,
                                 message: "Ticked!",
@@ -98,7 +112,6 @@ namespace Assets.Scripts.AI
                                 context: this,
                                 state: xr);
                         BehaviorLogger.Raw(logEntry);
-                        
                     })
                     .Subscribe()
                     .AddTo(this);
@@ -123,7 +136,7 @@ namespace Assets.Scripts.AI
                                    .AddTo(this);
                 TreeStream.Subscribe().AddTo(this);
                 yield return new WaitForSeconds(SecondsBetweenTicks);
-                if (TimesToTick > 1) --TimesToTick;
+                if (TimesToTick >= 1) --TimesToTick;
             }
         }
 
@@ -132,7 +145,7 @@ namespace Assets.Scripts.AI
         /// </summary>
         /// <returns></returns>
         /// 
-        //TODO: Swap this to a better and/or reactive approach.
+        //TODO: Swap this to a reactive approach.
         public bool SpliceIntoRunner()
         {
             if (SpliceList != null)

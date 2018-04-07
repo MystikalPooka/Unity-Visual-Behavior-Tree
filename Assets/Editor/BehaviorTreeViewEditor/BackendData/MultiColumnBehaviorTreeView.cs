@@ -172,14 +172,7 @@ namespace Assets.Editor.BehaviorTreeViewEditor.BackendData
         {
             var item = treeModel.Find(id);
             GenericMenu menu = new GenericMenu();
-            foreach (var elType in BehaviorExtensions.GetListOfTypes<BehaviorTreeElement>())
-            {
-                object[] obj = new object[2] { item, elType };
-                var menuStrings = elType.ToString().Split('.');
-                menu.AddItem(new GUIContent(menuStrings[menuStrings.Length - 2] + "/" + menuStrings.Last()), 
-                    item.ElementType == elType.ToString(), 
-                    OnMenuTypeSelected, obj);
-            }
+            menu.CreateTypeMenu<BehaviorTreeElement>(OnMenuTypeSelected);
             menu.ShowAsContext();
         }
 
@@ -205,8 +198,6 @@ namespace Assets.Editor.BehaviorTreeViewEditor.BackendData
         void CellGUI(Rect cellRect, TreeViewItem<BehaviorTreeElement> item, BTreeColumns column, ref RowGUIArgs args)
         {
             // Center cell rect vertically (makes it easier to place controls, icons etc in the cells)
-            
-
             switch (column)
             {
                 case BTreeColumns.State:

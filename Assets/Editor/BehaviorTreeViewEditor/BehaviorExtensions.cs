@@ -37,16 +37,26 @@ namespace Assets.Editor.BehaviorTreeViewEditor
             }
         }
 
-        public static IEnumerable<string> GetListOfTypes<T>() where T : class
+        public static void CreateTypeMenu<T>(this GenericMenu menu, GenericMenu.MenuFunction2 func) where T : class
         {
-            List<string> objects = new List<string>();
             foreach (Type type in
                 Assembly.GetAssembly(typeof(T)).GetTypes()
                 .Where(myType => myType.IsClass && !myType.IsAbstract && myType.IsSubclassOf(typeof(T))))
             {
-                objects.Add(type.FullName);
+                var menuStrings = type.ToString().Split('.');
+                menu.AddItem(new GUIContent(menuStrings[menuStrings.Length - 2] +
+                      "/" + menuStrings.Last()), false, func, type.ToString());
             }
-            return objects;
+        }
+
+        public static void CreateManagerMenu(this GenericMenu menu, GenericMenu.MenuFunction2 func)
+        {
+            var managers = UnityEngine.Object.FindObjectsOfType<BehaviorManager>();
+            foreach (BehaviorManager manager in managers)
+            {
+                string menuName = manager.BehaviorLogger.Name;
+                menu.AddItem(new GUIContent(menuName), false, func, menuName);
+            }
         }
 
         /// <summary>
