@@ -77,12 +77,12 @@ namespace Assets.Editor
         private void Initialize()
         {
             ObservableBehaviorLogger.Listener                
-                    .Where(x => x.LoggerName == ManagerName)
+                    .Where(x => x.LoggerName.Contains(ManagerName))
                     .Do(x =>
                     {
                         
                     })
-
+                    
                     .Subscribe();
 
             Initialized = true;
