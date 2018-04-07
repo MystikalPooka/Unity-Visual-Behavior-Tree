@@ -3,7 +3,7 @@
 # Unity-Visual-Behavior-Tree
 Visual Scripting Behavior Tree Tool for Unity 2017.3.x
 
-### Requires [!uniRX] (https://github.com/neuecc/UniRx)] - reactive extensions for Unity by nuecc
+### Requires [uniRX](https://github.com/neuecc/UniRx) - reactive extensions for Unity by nuecc
 
 # **How To Behavior Tree**
 
