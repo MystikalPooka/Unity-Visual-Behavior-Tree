@@ -305,8 +305,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dcef1dc4d892b9143a923f1bbba6a98c, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   Player: {fileID: 761835721}
 --- !u!1 &374731282
 GameObject:
@@ -402,8 +402,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 73bc91841bad4424992751c051af5030, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   BehaviorTreeFile: {fileID: 11400000, guid: f4cb4c96e175fa243baf0700d4057360, type: 2}
   SecondsBetweenTicks: 0.5
   TimesToTick: -1
@@ -509,41 +509,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 080fb1a4bc18a714f8ee98d9af1eb3d6, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   inputs: {fileID: 1302823951}
   walkSpeed: 15
---- !u!1 &924481926
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 924481930}
-  - component: {fileID: 924481929}
-  - component: {fileID: 924481928}
-  - component: {fileID: 924481927}
-  m_Layer: 0
-  m_Name: Cube
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 4294967295
-  m_IsActive: 1
---- !u!23 &924481927
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 924481926}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 080fb1a4bc18a714f8ee98d9af1eb3d6, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
-  inputs: {fileID: 1302823951}
-  walkSpeed: 7
 --- !u!1 &1302823949
 GameObject:
   m_ObjectHideFlags: 0
@@ -582,8 +551,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ca46602e37930f5419d8abefe76fd924, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1669096001
 GameObject:
   m_ObjectHideFlags: 0

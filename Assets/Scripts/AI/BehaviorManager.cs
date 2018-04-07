@@ -107,6 +107,7 @@ namespace Assets.Scripts.AI
                                 logType: LogType.Log,
                                 timestamp: DateTime.Now,
                                 message: "Ticked!",
+                                behaviorID: xr.ID,
                                 newState: xr.CurrentState,
                                 ticknum: xr.NumberOfTicksReceived.Value,
                                 context: this,
