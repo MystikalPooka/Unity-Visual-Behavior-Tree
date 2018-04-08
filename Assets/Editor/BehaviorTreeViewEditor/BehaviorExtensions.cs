@@ -59,6 +59,24 @@ namespace Assets.Editor.BehaviorTreeViewEditor
             }
         }
 
+        public static Color GetBehaviorStateColor(this BehaviorState state)
+        {
+            switch (state)
+            {
+                case BehaviorState.Fail:
+                    return Color.red;
+                case BehaviorState.Running:
+                    return Color.blue;
+                case BehaviorState.Success:
+                    return new Color(0.1f, 0.9f, 0.2f);
+                case BehaviorState.Null:
+                    return Color.grey;
+                default:
+                    return Color.black;
+            }
+        }
+
+
         /// <summary>
         /// Saves a scriptable object behavior tree and sets the active asset back to the behavior manager
         /// </summary>

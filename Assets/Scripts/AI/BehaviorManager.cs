@@ -39,7 +39,6 @@ namespace Assets.Scripts.AI
         [Description("The currently loaded tree asset that will be run.")]
         public BehaviorTreeManagerAsset BehaviorTreeFile;
 
-
         public ParallelRunner Runner { get; set; } = new ParallelRunner("Main Root", -1, -1);
 
         /// <summary>

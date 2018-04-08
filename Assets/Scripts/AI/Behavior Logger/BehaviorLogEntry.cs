@@ -11,7 +11,6 @@ namespace Assets.Scripts.AI.Behavior_Logger
         public string Message { get; private set; }
         public DateTime Timestamp { get; private set; }
 
-
         // options
         /// <summary>
         /// [Optional] Used to keep track of frames for debugging.

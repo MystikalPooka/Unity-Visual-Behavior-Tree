@@ -8,27 +8,16 @@ using UnityEngine;
 
 namespace Assets.Editor
 {
-    public class TreeDebuggerWindow : EditorWindow, System.IObserver<BehaviorLogEntry>
+    public class TreeDebuggerWindow : EditorWindow
     {
-        private static Color GetBehaviorStateColor(int state)
-        {
-            switch (state)
-            {
-                case (int)BehaviorState.Fail:
-                    return Color.red;
-                case (int)BehaviorState.Running:
-                    return Color.blue;
-                case (int)BehaviorState.Success:
-                    return new Color(0.1f, 0.9f, 0.2f);
-                case (int)BehaviorState.Null:
-                    return Color.grey;
-                default:
-                    return Color.black;
-            }
-        }
-
         public string DebugMessages = "debug?";
         public string ManagerName = "";
+
+        /// <summary>
+        /// key: Behavior ID to track current behaviors being watched.
+        /// value: rect to draw this log "inspector"
+        /// </summary>
+        public ReactiveDictionary<int, Rect> LogInspectorDict = new ReactiveDictionary<int, Rect>();
 
         Rect TopToolbarRect
         {
@@ -48,7 +37,27 @@ namespace Assets.Editor
         {
             if (!Initialized) Initialize();
             TopToolbar(TopToolbarRect);
-            EditorGUILayout.TextArea(DebugMessages);
+            
+            TreeLogArea(new Rect());
+        }
+
+        private bool Initialized = false;
+        private void Initialize()
+        {
+
+
+            ObservableBehaviorLogger.Listener
+                    .Where(x => x.LoggerName.Contains(ManagerName))
+                    .Do(x =>
+                    {
+                        if (!LogInspectorDict.ContainsKey(x.BehaviorID))
+                        {
+                            LogInspectorDict.Add(x.BehaviorID, new Rect());
+                        }
+                    })
+                    .Subscribe();
+
+            Initialized = true;
         }
 
         GenericMenu ManagerSelectMenu = new GenericMenu();
@@ -73,34 +82,12 @@ namespace Assets.Editor
             ManagerName = (string)name;
         }
 
-        private bool Initialized = false;
-        private void Initialize()
+        private void TreeLogArea(Rect rect)
         {
-            ObservableBehaviorLogger.Listener                
-                    .Where(x => x.LoggerName.Contains(ManagerName))
-                    .Do(x =>
-                    {
-                        
-                    })
-                    
-                    .Subscribe();
-
-            Initialized = true;
-        }
-
-        public void OnCompleted()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void OnError(Exception error)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void OnNext(BehaviorLogEntry value)
-        {
-            throw new NotImplementedException();
+            var style = EditorStyles.objectField;
+            style.stretchWidth = false;
+            style.fixedWidth = EditorGUIUtility.fieldWidth + EditorGUIUtility.labelWidth + 4;
+            var boxes = EditorGUIUtility.GetFlowLayoutedRects(rect, style, 4, 4, items);
         }
     }
 }
