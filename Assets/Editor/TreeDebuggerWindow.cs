@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Assets.Editor.BehaviorTreeViewEditor;
 using Assets.Scripts.AI;
 using Assets.Scripts.AI.Behavior_Logger;
@@ -17,7 +18,7 @@ namespace Assets.Editor
         /// key: Behavior ID to track current behaviors being watched.
         /// value: rect to draw this log "inspector"
         /// </summary>
-        public ReactiveDictionary<int, Rect> LogInspectorDict = new ReactiveDictionary<int, Rect>();
+        public Dictionary<int, Rect> LogInspectorDict = new Dictionary<int, Rect>();
 
         Rect TopToolbarRect
         {
@@ -44,8 +45,6 @@ namespace Assets.Editor
         private bool Initialized = false;
         private void Initialize()
         {
-
-
             ObservableBehaviorLogger.Listener
                     .Where(x => x.LoggerName.Contains(ManagerName))
                     .Do(x =>
@@ -87,7 +86,12 @@ namespace Assets.Editor
             var style = EditorStyles.objectField;
             style.stretchWidth = false;
             style.fixedWidth = EditorGUIUtility.fieldWidth + EditorGUIUtility.labelWidth + 4;
-            var boxes = EditorGUIUtility.GetFlowLayoutedRects(rect, style, 4, 4, items);
+
+        }
+
+        private void DrawBehaviorLog(BehaviorLogEntry log)
+        {
+
         }
     }
 }
