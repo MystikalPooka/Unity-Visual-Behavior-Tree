@@ -40,6 +40,7 @@ namespace Assets.Scripts.AI.Behavior_Logger
             this.LogType = logType;
             this.Timestamp = timestamp;
             this.Message = message;
+            this.BehaviorID = behaviorID;
             this.NewState = newState;
             this.TickNumber = ticknum;
             this.Context = context;
@@ -53,6 +54,7 @@ namespace Assets.Scripts.AI.Behavior_Logger
             var plusEx = (Exception != null) ? (Environment.NewLine + Exception.ToString()) : "";
             return
                   "[" + LoggerName + "]"
+                + "[ID:" + BehaviorID + "]"
                 + "[" + Timestamp.ToString() + "]"
                 + "[" + TickNumber + "]"
                 + "[" + LogType.ToString() + "]"

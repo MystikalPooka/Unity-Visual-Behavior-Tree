@@ -99,7 +99,7 @@ namespace Assets.Scripts.AI
                 .Do(xr =>
                 {
                     xr.ObserveEveryValueChanged(x => x.NumberOfTicksReceived)
-                    .Do(_ =>
+                    .Do(x =>
                     {
                         var logEntry = new BehaviorLogEntry(
                                 loggerName: BehaviorLogger.Name,
@@ -113,6 +113,7 @@ namespace Assets.Scripts.AI
                                 state: xr);
                         BehaviorLogger.Raw(logEntry);
                     })
+                    
                     .Subscribe()
                     .AddTo(this);
                 });

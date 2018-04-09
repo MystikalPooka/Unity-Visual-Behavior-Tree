@@ -170,7 +170,7 @@ namespace Assets.Editor.BehaviorTreeViewEditor.BackendData
 
         protected override void ContextClickedItem(int id)
         {
-            var item = treeModel.Find(id);
+            //var item = treeModel.Find(id);
             GenericMenu menu = new GenericMenu();
             menu.CreateTypeMenu<BehaviorTreeElement>(OnMenuTypeSelected);
             menu.ShowAsContext();
