@@ -11,17 +11,16 @@ namespace Assets.Editor
 {
     public class TreeDebuggerWindow : EditorWindow
     {
-        private static Vector2 BehaviorLogRectSize = new Vector2(25, 25);
+        private static Vector2 BehaviorLogRectSize = new Vector2(100, 100);
 
         private CompositeDisposable Disposables = new CompositeDisposable();
 
         public StringReactiveProperty ManagerName = new StringReactiveProperty();
 
         /// <summary>
-        /// key: Behavior ID to track current behaviors being watched.
-        /// value: rect to draw this log "inspector"
+        /// Behavior IDs to track current behaviors being watched.
         /// </summary>
-        public Dictionary<int, Vector2> LogInspectorDict = new Dictionary<int, Vector2>();
+        public Dictionary<int, BehaviorLogDrawer> LogDrawers = new Dictionary<int, BehaviorLogDrawer>();
 
         Rect TopToolbarRect
         {
@@ -47,8 +46,8 @@ namespace Assets.Editor
         {
             if (!Initialized) Initialize();
             TopToolbar(TopToolbarRect);
-            
-            TreeLogArea(new Rect());
+
+            TreeLogArea(new Rect(5,20,100,100));
         }
 
         private bool Initialized = false;
@@ -59,12 +58,17 @@ namespace Assets.Editor
                 .Do(x =>
                 {
                     Debug.Log("name changed! disposing..." + x);
-                    LogInspectorDict.Clear();
+                    LogDrawers.Clear();
                 })
-                .Subscribe(_ => { }, () => { Debug.Log("ManagerName complete"); })
-                .AddTo(Disposables);
+                .Subscribe(_ => { }, () => { Debug.Log("ManagerName complete"); });
+
 
             Initialized = true;
+        }
+
+        private void ReloadManagerTree()
+        {
+            //needs to set up the tree structure for all children
         }
 
         GenericMenu ManagerSelectMenu = new GenericMenu();
@@ -87,42 +91,47 @@ namespace Assets.Editor
         private void OnManagerSelected(object name)
         {
             ManagerName.SetValueAndForceNotify((string)name);
+            LogDrawers.Clear();
         }
 
+        private Dictionary<int, int> rowTotalDrawn = new Dictionary<int, int>();
         private void TreeLogArea(Rect rect)
         {
-            GUILayout.BeginArea(rect);
             ObservableBehaviorLogger.Listener
-                .Where(x => x.LoggerName.Contains(ManagerName.Value))
+                .Where(x => x.LoggerName == ManagerName.Value)
                 .Do(x =>
                 {
-                    //NEEDS TO ROUTE TO CORRECT BOX ON UPDATE
-                    //Keep the rects the same as when they were first created
-                    if (!LogInspectorDict.ContainsKey(x.BehaviorID))
+                    var depth = x.State.Depth;
+                    if(!rowTotalDrawn.ContainsKey(depth))
                     {
+                        rowTotalDrawn.Add(depth,1);
+                    }
+                    //Keep the rects the same as when they were first created
+                    if (!LogDrawers.ContainsKey(x.BehaviorID))
+                    {
+
+                        float rectX = BehaviorLogRectSize.x * rowTotalDrawn[depth] + 15;
+                        float rectY = BehaviorLogRectSize.y * (depth < 0 ? 0 : depth) + 15;
+                        var position = new Vector2(rectX, rectY);
+                        var drawRect = new Rect(position, BehaviorLogRectSize);
                         Debug.Log("new key " + x.BehaviorID);
-                        LogInspectorDict.Add(x.BehaviorID, new Vector2(5,5));
+
+                        LogDrawers.Add(x.BehaviorID, new BehaviorLogDrawer(x.LoggerName, x.BehaviorID, drawRect));
                     }
                     // TODO: Needs to draw itself AND children.
-                    //DrawBehaviorLog(log);
-                    
+
                 })
-                .Subscribe().AddTo(Disposables);
+                .Subscribe();
 
-            GUILayout.EndArea();
-        }
-
-        private void DrawBehaviorLog(BehaviorLogEntry log)
-        {
-            var logRect = new Rect(LogInspectorDict[log.BehaviorID], BehaviorLogRectSize);
-            Debug.Log("Attempting to draw rect... ");
-            EditorGUI.DrawRect(logRect, log.NewState.GetBehaviorStateColor());
+            foreach(var log in LogDrawers)
+            {
+                log.Value.DrawBehaviorLogEntry();
+            }
         }
 
         private void OnDestroy()
         {
             Disposables.Clear();
-            Disposables.Dispose();
         }
     }
 }

@@ -3,7 +3,8 @@ using UnityEngine;
 
 namespace Assets.Scripts.AI.Behavior_Logger
 {
-    public struct BehaviorLogEntry
+    [Serializable]
+    public class BehaviorLogEntry
     {
         // requires
         public string LoggerName { get; private set; }
@@ -28,13 +29,12 @@ namespace Assets.Scripts.AI.Behavior_Logger
         /// <summary>[Optional]</summary>
         public string StackTrace { get; private set; }
         /// <summary>[Optional]</summary>
-        public object State { get; private set; }
+        public BehaviorTreeElement State { get; private set; }
 
         public BehaviorLogEntry(string loggerName, LogType logType, DateTime timestamp, string message, int behaviorID = -2,
             BehaviorState newState = BehaviorState.Null, long ticknum = -1,
             UnityEngine.Object context = null, Exception exception = null, 
-            string stackTrace = null, object state = null)
-            : this()
+            string stackTrace = null, BehaviorTreeElement state = null)
         {
             this.LoggerName = loggerName;
             this.LogType = logType;
@@ -53,13 +53,14 @@ namespace Assets.Scripts.AI.Behavior_Logger
         {
             var plusEx = (Exception != null) ? (Environment.NewLine + Exception.ToString()) : "";
             return
-                  "[" + LoggerName + "]"
-                + "[ID:" + BehaviorID + "]"
-                + "[" + Timestamp.ToString() + "]"
-                + "[" + TickNumber + "]"
-                + "[" + LogType.ToString() + "]"
+                  "[" + LoggerName + "]" + Environment.NewLine
+                + "[ID:" + BehaviorID + "]" + Environment.NewLine
+                + "[" + Timestamp.ToString() + "]" + Environment.NewLine
+                + "[" + TickNumber + "]" + Environment.NewLine
+                //+ "[" + LogType.ToString() + "]"
+                + "[" + NewState + "]" + Environment.NewLine
                 + Message
-                + plusEx;
+                + plusEx + Environment.NewLine;
         }
     }
 }

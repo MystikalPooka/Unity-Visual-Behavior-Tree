@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
-
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace Assets.Scripts.AI.Components
 {
@@ -17,5 +18,11 @@ namespace Assets.Scripts.AI.Components
             element.Parent = this;
             Children.Add(element);
         }
+
+        public override IEnumerator Tick(WaitForSeconds delayStart = null)
+        {
+            return base.Tick(delayStart);
+        }
+        
     }
 }
