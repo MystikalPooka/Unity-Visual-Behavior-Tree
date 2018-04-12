@@ -11,7 +11,7 @@ namespace Assets.Editor
 {
     public class TreeDebuggerWindow : EditorWindow
     {
-        private static Vector2 BehaviorLogRectSize = new Vector2(100, 100);
+        private static Vector2 BehaviorLogRectSize = new Vector2(120, 120);
 
         private CompositeDisposable Disposables = new CompositeDisposable();
 
@@ -47,22 +47,12 @@ namespace Assets.Editor
             if (!Initialized) Initialize();
             TopToolbar(TopToolbarRect);
 
-            TreeLogArea(new Rect(5,20,100,100));
+            TreeLogArea(EditorGUILayout.GetControlRect());
         }
 
         private bool Initialized = false;
         private void Initialize()
         {
-            ManagerName
-                .ObserveEveryValueChanged(x => x.Value)
-                .Do(x =>
-                {
-                    Debug.Log("name changed! disposing..." + x);
-                    LogDrawers.Clear();
-                })
-                .Subscribe(_ => { }, () => { Debug.Log("ManagerName complete"); });
-
-
             Initialized = true;
         }
 
@@ -92,6 +82,7 @@ namespace Assets.Editor
         {
             ManagerName.SetValueAndForceNotify((string)name);
             LogDrawers.Clear();
+            LogDrawers = new Dictionary<int, BehaviorLogDrawer>();
         }
 
         private Dictionary<int, int> rowTotalDrawn = new Dictionary<int, int>();
@@ -104,22 +95,22 @@ namespace Assets.Editor
                     var depth = x.State.Depth;
                     if(!rowTotalDrawn.ContainsKey(depth))
                     {
-                        rowTotalDrawn.Add(depth,1);
+                        rowTotalDrawn.Add(depth,0);
+                    }
+                    else
+                    {
+                        ++rowTotalDrawn[depth];
                     }
                     //Keep the rects the same as when they were first created
                     if (!LogDrawers.ContainsKey(x.BehaviorID))
                     {
-
-                        float rectX = BehaviorLogRectSize.x * rowTotalDrawn[depth] + 15;
-                        float rectY = BehaviorLogRectSize.y * (depth < 0 ? 0 : depth) + 15;
+                        float rectX = ((BehaviorLogRectSize.x/2) * rowTotalDrawn[depth]);
+                        float rectY = BehaviorLogRectSize.y * (depth < 0 ? 0 : depth*1.1f);
                         var position = new Vector2(rectX, rectY);
                         var drawRect = new Rect(position, BehaviorLogRectSize);
-                        Debug.Log("new key " + x.BehaviorID);
 
                         LogDrawers.Add(x.BehaviorID, new BehaviorLogDrawer(x.LoggerName, x.BehaviorID, drawRect));
                     }
-                    // TODO: Needs to draw itself AND children.
-
                 })
                 .Subscribe();
 

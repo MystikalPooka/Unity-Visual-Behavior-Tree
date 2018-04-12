@@ -47,8 +47,8 @@ namespace Assets.Editor
             {
                 EditorGUI.DrawRect(DrawHere, entry.NewState.GetBehaviorStateColor());
                 GUILayout.BeginArea(DrawHere);
-                EditorGUILayout.LabelField(new GUIContent(entry.ToString()));
-                //EditorGUILayout.LabelField(new GUIContent(entry.TickNumber.ToString()));
+                EditorGUILayout.TextArea(entry.State.Parent == null ? "" : entry.State.Parent.Name + "\r\n" + entry.State.Name);
+                EditorGUILayout.LabelField(new GUIContent(entry.State.Depth.ToString()));
                 GUILayout.EndArea();
             }
 
