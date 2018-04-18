@@ -6,12 +6,21 @@ using Assets.Scripts.AI.Behavior_Logger;
 using UniRx;
 using UnityEditor;
 using UnityEngine;
+using System.Linq;
 
 namespace Assets.Editor
 {
     public class TreeDebuggerWindow : EditorWindow
     {
         private static Vector2 BehaviorLogRectSize = new Vector2(120, 120);
+        private RectOffset MinimumMargins;
+
+        private GUIStyle TreeStyle = new GUIStyle();
+
+        private void OnEnable()
+        {
+            Initialize();
+        }
 
         private CompositeDisposable Disposables = new CompositeDisposable();
 
@@ -28,9 +37,8 @@ namespace Assets.Editor
         }
 
         Rect TreeDrawArea
-
         {
-            get { return new Rect(10f, 40f, position.width - 40f, position.height - 40f); }
+            get { return new Rect(6f, 20f, position.width - 30f, position.height - 40f); }
         }
 
         [MenuItem("Behavior Tree/Debugger")]
@@ -56,7 +64,15 @@ namespace Assets.Editor
         private bool Initialized = false;
         private void Initialize()
         {
+            BehaviorLogRectSize = new Vector2(120, 120);
+            MinimumMargins = new RectOffset(10, 10, 10, 10);
+            LogDrawers = new Dictionary<int, BehaviorLogDrawer>();
+            rowTotalDrawn = new Dictionary<int, int>();
+            parents = new HashSet<BehaviorTreeElement>();
             this.autoRepaintOnSceneChange = true;
+
+            TreeStyle.margin = MinimumMargins;
+            //this.Style.margin = MinimumMargins;
             Initialized = true;
         }
 
@@ -68,13 +84,13 @@ namespace Assets.Editor
         GenericMenu ManagerSelectMenu = new GenericMenu();
         private void TopToolbar(Rect rect)
         {
-            using (new EditorGUILayout.HorizontalScope())
+            using(new EditorGUILayout.HorizontalScope())
             {
                 GUILayout.Space(5);
                 string dropDownName = "Manager To Debug";
                 if (ManagerName.Value != "") dropDownName = ManagerName.Value;
 
-                if (EditorGUILayout.DropdownButton(new GUIContent(dropDownName, "Change visible debugger"), FocusType.Passive, GUILayout.Height(30)))
+                if(EditorGUILayout.DropdownButton(new GUIContent(dropDownName, "Change visible debugger"), FocusType.Passive, GUILayout.Height(30)))
                 {
                     ManagerSelectMenu.CreateManagerMenu(OnManagerSelected);
                     ManagerSelectMenu.ShowAsContext();
@@ -85,20 +101,20 @@ namespace Assets.Editor
         private void OnManagerSelected(object name)
         {
             ManagerName.SetValueAndForceNotify((string)name);
-            LogDrawers.Clear();
-            rowTotalDrawn.Clear();
-            LogDrawers = new Dictionary<int, BehaviorLogDrawer>();
+            Initialize();
         }
 
         private Dictionary<int, int> rowTotalDrawn = new Dictionary<int, int>();
+        private HashSet<BehaviorTreeElement> parents = new HashSet<BehaviorTreeElement>();
+        bool parentPaddingSet = false;
+
         private void TreeLogArea(Rect rect)
         {
             ObservableBehaviorLogger.Listener
                 .Where(x => x.LoggerName == ManagerName.Value)
                 .Do(x =>
                 {
-
-                    //Keep the rects the same as when they were first created
+                    //keep a single drawer per ID value
                     if (!LogDrawers.ContainsKey(x.BehaviorID))
                     {
                         var depth = x.State.Depth;
@@ -112,25 +128,78 @@ namespace Assets.Editor
                             rowTotalDrawn[depth] = rowTotalDrawn[depth] + 1;
                         }
 
-                        Debug.Log("rowTotal[" + depth + "] = " + rowTotalDrawn[depth]);
-                        Debug.Log("Depth: " + depth);
+                        if (x.State.HasChildren)
+                        {
+                            parents.Add(x.State);
+                        }
 
-                        float rectX = ((BehaviorLogRectSize.x) * rowTotalDrawn[depth]) + 10;
-                        float rectY = BehaviorLogRectSize.y * (depth < 0 ? 0 : depth+1)+20;
+                        float rectX = ((BehaviorLogRectSize.x +MinimumMargins.left) * (rowTotalDrawn[depth]));
+                        float rectY = (BehaviorLogRectSize.y + MinimumMargins.top) * (depth < 0 ? 0 : depth+1);
                         var pos = new Vector2(rectX, rectY);
                         Debug.LogWarning("position: " + pos);
                         var drawRect = new Rect(pos, BehaviorLogRectSize);
-
-                        LogDrawers.Add(x.BehaviorID, new BehaviorLogDrawer(x.LoggerName, x.BehaviorID, drawRect));
+                        var logDrawer = new BehaviorLogDrawer(x.LoggerName, x.BehaviorID, drawRect)
+                        {
+                            TotalOffset = MinimumMargins
+                        };
+                        LogDrawers.Add(x.BehaviorID, logDrawer);
                     }
                 })
                 .Subscribe();
+            GUI.BeginGroup(rect,TreeStyle);
+            DrawAllLogDrawers();
+            GUI.EndGroup();
+        }
 
-            foreach(var log in LogDrawers)
+        private void DrawAllLogDrawers()
+        {
+            if (parents.Count > 0)
+                SetAllParentsMarginsDepthFirst();
+            foreach (var logDrawer in LogDrawers.Values)
             {
-                log.Value.DrawBehaviorLogEntry();
+                logDrawer.DrawBehaviorLogEntry();
             }
+        }
 
+        private void SetAllParentsMarginsDepthFirst()
+        {
+            var allParents = from parent in parents
+                               select parent;
+
+            if (allParents.Count() == 0)
+            {
+                Debug.LogWarning("no parents found!");
+                return;
+            }
+            for (int depth = rowTotalDrawn.Keys.Max(); depth >= -1; --depth)
+            {
+                var currentDepthParents = from parent in allParents
+                                          where parent.Depth == depth
+                                          select parent;
+
+                Debug.Log("Depth: " + depth);
+                foreach (var parent in currentDepthParents)
+                {
+                    int paddingLeft = 0;
+                    int paddingRight = 0;
+                    int childNum = 0;
+                    foreach (var child in parent.Children)
+                    {
+                        if(childNum > 0)
+                        {
+                            paddingLeft += (int)BehaviorLogRectSize.x / 2;
+                            paddingRight += (int)BehaviorLogRectSize.x / 2;
+                            paddingLeft += LogDrawers[child.ID].TotalOffset.left;
+                            paddingRight += LogDrawers[child.ID].TotalOffset.right;
+                        }
+                        ++childNum;
+                    }
+                    //paddingLeft -= (int)BehaviorLogRectSize.x/2;
+                    LogDrawers[parent.ID].TotalOffset = new RectOffset(paddingLeft+MinimumMargins.left/parent.Children.Count, paddingRight, MinimumMargins.top, MinimumMargins.bottom);
+                    //LogDrawers[parent.ID].Initialize();
+                }
+            }
+            parentPaddingSet = true;
         }
 
         private void OnDestroy()
