@@ -65,7 +65,7 @@ namespace Assets.Editor
         private void Initialize()
         {
             BehaviorLogRectSize = new Vector2(120, 120);
-            MinimumMargins = new RectOffset(10, 10, 10, 10);
+            MinimumMargins = new RectOffset(15, 15, 30, 30);
             LogDrawers = new Dictionary<int, BehaviorLogDrawer>();
             rowTotalDrawn = new Dictionary<int, int>();
             parents = new HashSet<BehaviorTreeElement>();
@@ -74,11 +74,6 @@ namespace Assets.Editor
             TreeStyle.margin = MinimumMargins;
             //this.Style.margin = MinimumMargins;
             Initialized = true;
-        }
-
-        private void ReloadManagerTree()
-        {
-            //needs to set up the tree structure for all children
         }
 
         GenericMenu ManagerSelectMenu = new GenericMenu();
@@ -195,7 +190,8 @@ namespace Assets.Editor
                         ++childNum;
                     }
                     //paddingLeft -= (int)BehaviorLogRectSize.x/2;
-                    LogDrawers[parent.ID].TotalOffset = new RectOffset(paddingLeft+MinimumMargins.left/parent.Children.Count, paddingRight, MinimumMargins.top, MinimumMargins.bottom);
+                    LogDrawers[parent.ID].TotalOffset = new RectOffset(paddingLeft+MinimumMargins.left/parent.Children.Count, 
+                                                                       paddingRight, MinimumMargins.top, MinimumMargins.bottom);
                     //LogDrawers[parent.ID].Initialize();
                 }
             }
