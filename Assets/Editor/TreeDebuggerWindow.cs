@@ -106,37 +106,17 @@ namespace Assets.Editor
         private void TreeLogArea(Rect rect)
         {
             ObservableBehaviorLogger.Listener
-                .Where(x => x.LoggerName == ManagerName.Value)
+                .Where(x => x.LoggerName == ManagerName.Value &&
+                       x.State.HasChildren
+                        )
                 .Do(x =>
                 {
                     //keep a single drawer per ID value
                     if (!LogDrawers.ContainsKey(x.BehaviorID))
                     {
-                        var depth = x.State.Depth;
-
-                        if (!rowTotalDrawn.ContainsKey(depth))
-                        {
-                            rowTotalDrawn.Add(depth, 0);
-                        }
-                        else
-                        {
-                            rowTotalDrawn[depth] = rowTotalDrawn[depth] + 1;
-                        }
-
-                        if (x.State.HasChildren)
-                        {
-                            parents.Add(x.State);
-                        }
-
-                        float rectX = ((BehaviorLogRectSize.x +MinimumMargins.left) * (rowTotalDrawn[depth]));
-                        float rectY = (BehaviorLogRectSize.y + MinimumMargins.top) * (depth < 0 ? 0 : depth+1);
-                        var pos = new Vector2(rectX, rectY);
-                        var drawRect = new Rect(pos, BehaviorLogRectSize);
-                        var logDrawer = new BehaviorLogDrawer(x.LoggerName, x.BehaviorID, drawRect)
-                        {
-                            TotalOffset = MinimumMargins
-                        };
-                        LogDrawers.Add(x.BehaviorID, logDrawer);
+                        //keep only the parents. Parents are responsible for drawing their children.
+                        LogDrawers.Add(x.BehaviorID, 
+                            new BehaviorLogDrawer(x.LoggerName, x.BehaviorID, new Rect(10,10,10,10)));
                     }
                 })
                 .Subscribe();
@@ -147,11 +127,14 @@ namespace Assets.Editor
 
         private void DrawAllLogDrawers()
         {
-            if (parents.Count > 0)
-                SetAllParentsMarginsDepthFirst();
-            foreach (var logDrawer in LogDrawers.Values)
+
+            var parentsDepthSorted = LogDrawers.Values.OrderByDescending(x => x.Entry.State.Depth);
+            
+            foreach(var parentDrawer in parentsDepthSorted)
             {
-                logDrawer.DrawBehaviorLogEntry();
+                //Should be called in sorted order, from bottom to top.
+                //this allows lower depth parents to know the correct spacing of their children
+                parentDrawer.DrawBehaviorWithAllChildren();
             }
         }
 
