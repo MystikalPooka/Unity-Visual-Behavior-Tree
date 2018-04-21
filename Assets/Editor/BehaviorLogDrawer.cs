@@ -13,6 +13,8 @@ namespace Assets.Editor
         private string ManagerName = "Wolf Pancakes Taste Like Fur";
         public Rect DrawHere;
 
+        public 
+
         /// <summary>
         /// Custom Styling options for this behavior log drawer
         /// </summary>
@@ -50,6 +52,17 @@ namespace Assets.Editor
         }
 
         private bool enabled = true;
+
+        public void DrawBehaviorWithAllChildren()
+        {
+
+        }
+
+        public void DrawChildren()
+        {
+
+        }
+
         public void DrawBehaviorLogEntry()
         {
             if (!Initialized)
@@ -57,8 +70,6 @@ namespace Assets.Editor
                 Initialize();
                 Initialized = true;
             }
-
-
 
             LogStream.Subscribe();
             

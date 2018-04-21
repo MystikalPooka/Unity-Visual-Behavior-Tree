@@ -131,7 +131,6 @@ namespace Assets.Editor
                         float rectX = ((BehaviorLogRectSize.x +MinimumMargins.left) * (rowTotalDrawn[depth]));
                         float rectY = (BehaviorLogRectSize.y + MinimumMargins.top) * (depth < 0 ? 0 : depth+1);
                         var pos = new Vector2(rectX, rectY);
-                        Debug.LogWarning("position: " + pos);
                         var drawRect = new Rect(pos, BehaviorLogRectSize);
                         var logDrawer = new BehaviorLogDrawer(x.LoggerName, x.BehaviorID, drawRect)
                         {
