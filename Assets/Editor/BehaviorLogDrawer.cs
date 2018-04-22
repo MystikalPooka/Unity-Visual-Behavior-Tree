@@ -14,20 +14,14 @@ namespace Assets.Editor
         private string ManagerName = "Wolf Pancakes Taste Like Fur";
         public Rect DrawHere;
 
-        public Dictionary<int, BehaviorLogDrawer> ChildrenDrawers = new Dictionary<int, BehaviorLogDrawer>();
+        public Rect FullRequiredSpace;
 
-        public 
+        public Dictionary<int, BehaviorLogDrawer> ChildrenDrawers = new Dictionary<int, BehaviorLogDrawer>();
 
         /// <summary>
         /// Custom Styling options for this behavior log drawer
         /// </summary>
         GUIStyle Style = new GUIStyle();
-
-        /// <summary>
-        /// Padding added to the styling options for the entire log drawer
-        /// </summary>
-        public RectOffset TotalOffset = new RectOffset(5, 5, 5, 5);
-        private Vector2 subElementMargins = new Vector2(2, EditorGUIUtility.singleLineHeight+ 2);
 
         public BehaviorLogEntry Entry { get; private set; }
         private IObservable<BehaviorLogEntry> LogStream;
@@ -60,6 +54,9 @@ namespace Assets.Editor
                     ChildrenDrawers.Add(child.ID, new BehaviorLogDrawer(ManagerName, child.ID, new Rect(0, 0, 0, 0)));
                 }
             }
+
+            SetChildrenRects();
+            Initialized = true;
         }
 
         private bool enabled = true;
@@ -69,28 +66,56 @@ namespace Assets.Editor
 
         }
 
-        protected void DrawChildrenAndGetParentRect()
+        protected void DrawChildrenAndBoundingBox()
         {
-            Rect surroundingBox = SetChildrenAndGetSurroundingRect();
+            Rect surroundingBox = GetSurroundingRect();
             CustomGUI.DrawQuad(surroundingBox, new Color(0.4f,0.4f,0.4f,0.4f));
+
             GUI.BeginGroup(surroundingBox);
+            DrawChildren();
+            GUI.EndGroup();
+        }
+
+        protected Rect GetSurroundingRect()
+        {
+            float bbWidth = Style.margin.right;
+            foreach(var child in ChildrenDrawers.Values)
+            {
+                bbWidth += (DrawHere.width + Style.margin.left);
+            }
+            
+                                        
+            float bbPosY = DrawHere.height + Style.margin.top;
+            float bbPosX = DrawHere.x - bbWidth / 2;
+            return new Rect(bbPosX, bbPosY, bbWidth, DrawHere.height + Style.margin.vertical);
+        }
+
+
+
+        protected void DrawChildren()
+        {
+            SetChildrenRects();
             foreach (var child in ChildrenDrawers.Values)
             {
                 child.DrawBehaviorLogEntry();
             }
-            GUI.EndGroup();
         }
 
-        protected Rect SetChildrenAndGetSurroundingRect()
+        protected void SetChildrenRects()
         {
-            int numDrawn = 0;
-            Rect surroundingBox = new Rect(0, 0, 0, 0);
-            foreach(var child in ChildrenDrawers.Values)
+            if (!Initialized)
             {
-
-                ++numDrawn;
+                int numDrawn = 0;
+                foreach (var child in ChildrenDrawers.Values)
+                {
+                    Rect childRect = new Rect(numDrawn * (DrawHere.width + Style.margin.left) + Style.margin.left,
+                                            Style.margin.top,
+                                            DrawHere.width,
+                                            DrawHere.height);
+                    child.DrawHere = childRect;
+                    ++numDrawn;
+                }
             }
-            return surroundingBox;
         }
 
         protected void DrawBehaviorLogEntry()
@@ -105,25 +130,6 @@ namespace Assets.Editor
             
             if(Entry != null)
             {
-                var drawWithOffset = new Rect(TotalOffset.left,
-                                              TotalOffset.top,
-                                              DrawHere.width - 2, DrawHere.height - 2);
-                Debug.Log(Entry.State.Name + ": " + TotalOffset);
-                var DrawHereWithOffset = new Rect(DrawHere.x+ TotalOffset.left, DrawHere.y + TotalOffset.top,
-                                                  DrawHere.width, DrawHere.height);
-
-                GUI.BeginGroup(DrawHereWithOffset);
-                    CustomGUI.DrawQuad(new Rect(0,0,120,120), Entry.State.CurrentState.GetBehaviorStateColor());
-                    if(Entry.State.Parent != null)
-                    {
-                        GUI.Label(new Rect(subElementMargins.x, 1,
-                                           drawWithOffset.width, drawWithOffset.height),
-                                           new GUIContent(Entry.State.Parent.Name.ToString()));
-                    }
-                    GUI.Label(new Rect(subElementMargins.x, subElementMargins.y,
-                       drawWithOffset.width, drawWithOffset.height),
-                       new GUIContent(Entry.State.Name.ToString()));
-                GUI.EndGroup();
             }
         }
     }

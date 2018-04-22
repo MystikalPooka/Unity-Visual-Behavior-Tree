@@ -137,48 +137,6 @@ namespace Assets.Editor
             }
         }
 
-        private void SetAllParentsMarginsDepthFirst()
-        {
-            var allParents = from parent in parents
-                               select parent;
-
-            if (allParents.Count() == 0)
-            {
-                Debug.LogWarning("no parents found!");
-                return;
-            }
-            for (int depth = rowTotalDrawn.Keys.Max(); depth >= -1; --depth)
-            {
-                var currentDepthParents = from parent in allParents
-                                          where parent.Depth == depth
-                                          select parent;
-
-                Debug.Log("Depth: " + depth);
-                foreach (var parent in currentDepthParents)
-                {
-                    int paddingLeft = 0;
-                    int paddingRight = 0;
-                    int childNum = 0;
-                    foreach (var child in parent.Children)
-                    {
-                        if(childNum > 0)
-                        {
-                            paddingLeft += (int)BehaviorLogRectSize.x / 2;
-                            paddingRight += (int)BehaviorLogRectSize.x / 2;
-                            paddingLeft += LogDrawers[child.ID].TotalOffset.left;
-                            paddingRight += LogDrawers[child.ID].TotalOffset.right;
-                        }
-                        ++childNum;
-                    }
-                    //paddingLeft -= (int)BehaviorLogRectSize.x/2;
-                    LogDrawers[parent.ID].TotalOffset = new RectOffset(paddingLeft+MinimumMargins.left/parent.Children.Count, 
-                                                                       paddingRight, MinimumMargins.top, MinimumMargins.bottom);
-                    //LogDrawers[parent.ID].Initialize();
-                }
-            }
-            parentPaddingSet = true;
-        }
-
         private void OnDestroy()
         {
             Disposables.Clear();
