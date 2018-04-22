@@ -4,6 +4,7 @@ using UnityEngine;
 using System;
 using UnityEditor;
 using Assets.Editor.BehaviorTreeViewEditor;
+using System.Collections.Generic;
 
 namespace Assets.Editor
 {
@@ -12,6 +13,8 @@ namespace Assets.Editor
         private int BehaviorID;
         private string ManagerName = "Wolf Pancakes Taste Like Fur";
         public Rect DrawHere;
+
+        public Dictionary<int, BehaviorLogDrawer> ChildrenDrawers = new Dictionary<int, BehaviorLogDrawer>();
 
         public 
 
@@ -49,6 +52,14 @@ namespace Assets.Editor
                 {
                     Entry = x;
                 });
+
+            foreach (var child in Entry.State.Children)
+            {
+                if(!ChildrenDrawers.ContainsKey(child.ID))
+                {
+                    ChildrenDrawers.Add(child.ID, new BehaviorLogDrawer(ManagerName, child.ID, new Rect(0, 0, 0, 0)));
+                }
+            }
         }
 
         private bool enabled = true;
@@ -58,12 +69,31 @@ namespace Assets.Editor
 
         }
 
-        public void DrawChildren()
+        protected void DrawChildrenAndGetParentRect()
         {
-
+            Rect surroundingBox = SetChildrenAndGetSurroundingRect();
+            CustomGUI.DrawQuad(surroundingBox, new Color(0.4f,0.4f,0.4f,0.4f));
+            GUI.BeginGroup(surroundingBox);
+            foreach (var child in ChildrenDrawers.Values)
+            {
+                child.DrawBehaviorLogEntry();
+            }
+            GUI.EndGroup();
         }
 
-        public void DrawBehaviorLogEntry()
+        protected Rect SetChildrenAndGetSurroundingRect()
+        {
+            int numDrawn = 0;
+            Rect surroundingBox = new Rect(0, 0, 0, 0);
+            foreach(var child in ChildrenDrawers.Values)
+            {
+
+                ++numDrawn;
+            }
+            return surroundingBox;
+        }
+
+        protected void DrawBehaviorLogEntry()
         {
             if (!Initialized)
             {
@@ -75,15 +105,12 @@ namespace Assets.Editor
             
             if(Entry != null)
             {
-                // TODO: ADD PADDING ON EACH SIDE OF THE RECT DRAWN.
-                // ALL ELSE SHOULD FALL INTO PLACE
                 var drawWithOffset = new Rect(TotalOffset.left,
                                               TotalOffset.top,
                                               DrawHere.width - 2, DrawHere.height - 2);
                 Debug.Log(Entry.State.Name + ": " + TotalOffset);
                 var DrawHereWithOffset = new Rect(DrawHere.x+ TotalOffset.left, DrawHere.y + TotalOffset.top,
                                                   DrawHere.width, DrawHere.height);
-
 
                 GUI.BeginGroup(DrawHereWithOffset);
                     CustomGUI.DrawQuad(new Rect(0,0,120,120), Entry.State.CurrentState.GetBehaviorStateColor());

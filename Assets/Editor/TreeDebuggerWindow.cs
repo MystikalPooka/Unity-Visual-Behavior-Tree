@@ -127,7 +127,6 @@ namespace Assets.Editor
 
         private void DrawAllLogDrawers()
         {
-
             var parentsDepthSorted = LogDrawers.Values.OrderByDescending(x => x.Entry.State.Depth);
             
             foreach(var parentDrawer in parentsDepthSorted)
