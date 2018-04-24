@@ -14,7 +14,7 @@ namespace Assets.Editor
         private string ManagerName = "Wolf Pancakes Taste Like Fur";
         public Rect DrawHere;
 
-        public Rect FullRequiredSpace;
+        public RectOffset TotalOffset;
 
         public Dictionary<int, BehaviorLogDrawer> ChildrenDrawers = new Dictionary<int, BehaviorLogDrawer>();
 
@@ -69,6 +69,8 @@ namespace Assets.Editor
         protected void DrawChildrenAndBoundingBox()
         {
             Rect surroundingBox = GetSurroundingRect();
+            this.TotalOffset.left = (int)surroundingBox.width / 2;
+            this.TotalOffset.right = (int)surroundingBox.width / 2;
             CustomGUI.DrawQuad(surroundingBox, new Color(0.4f,0.4f,0.4f,0.4f));
 
             GUI.BeginGroup(surroundingBox);
@@ -81,16 +83,14 @@ namespace Assets.Editor
             float bbWidth = Style.margin.right;
             foreach(var child in ChildrenDrawers.Values)
             {
-                bbWidth += (DrawHere.width + Style.margin.left);
+                bbWidth += (DrawHere.width + child.TotalOffset.left);
             }
-            
-                                        
+                                             
             float bbPosY = DrawHere.height + Style.margin.top;
-            float bbPosX = DrawHere.x - bbWidth / 2;
+            float bbPosX = 0f;
+
             return new Rect(bbPosX, bbPosY, bbWidth, DrawHere.height + Style.margin.vertical);
         }
-
-
 
         protected void DrawChildren()
         {
@@ -106,14 +106,19 @@ namespace Assets.Editor
             if (!Initialized)
             {
                 int numDrawn = 0;
+
+                BehaviorLogDrawer prevChild = null;
                 foreach (var child in ChildrenDrawers.Values)
                 {
                     Rect childRect = new Rect(numDrawn * (DrawHere.width + Style.margin.left) + Style.margin.left,
                                             Style.margin.top,
                                             DrawHere.width,
                                             DrawHere.height);
+                    if (prevChild != null)
+                        child.DrawHere.x += prevChild.TotalOffset.right;
                     child.DrawHere = childRect;
                     ++numDrawn;
+                    prevChild = child;
                 }
             }
         }
@@ -130,6 +135,9 @@ namespace Assets.Editor
             
             if(Entry != null)
             {
+                var totalPosition = new Rect(DrawHere.x + TotalOffset.left, DrawHere.y + TotalOffset.top,
+                                             DrawHere.width, DrawHere.height);
+                CustomGUI.DrawQuad(totalPosition, Entry.State.CurrentState.GetBehaviorStateColor());
             }
         }
     }
