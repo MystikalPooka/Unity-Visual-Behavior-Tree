@@ -63,7 +63,8 @@ namespace Assets.Editor
 
         public void DrawBehaviorWithAllChildren()
         {
-
+            DrawChildrenAndBoundingBox();
+            DrawBehaviorLogEntry();
         }
 
         protected void DrawChildrenAndBoundingBox()
