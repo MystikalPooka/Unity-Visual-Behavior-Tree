@@ -72,7 +72,6 @@ namespace Assets.Editor
             this.autoRepaintOnSceneChange = true;
 
             TreeStyle.margin = MinimumMargins;
-            //this.Style.margin = MinimumMargins;
             Initialized = true;
             Repaint();
         }
@@ -114,9 +113,15 @@ namespace Assets.Editor
                     //keep a single drawer per ID value
                     if (!LogDrawers.ContainsKey(x.BehaviorID))
                     {
+                        GUIStyle subStyle = new GUIStyle();
+                        subStyle.margin = MinimumMargins;
                         //keep only the parents. Parents are responsible for drawing their children.
-                        LogDrawers.Add(x.BehaviorID, 
-                            new BehaviorLogDrawer(x.LoggerName, x.BehaviorID, new Rect(10,10,10,10)));
+                        LogDrawers.Add(x.BehaviorID,
+                            new BehaviorLogDrawer(x.LoggerName, x.BehaviorID, BehaviorLogRectSize, subStyle)
+                            {
+                                TotalOffset = MinimumMargins,
+                                Entry = x
+                            });
                     }
                 })
                 .Subscribe();
