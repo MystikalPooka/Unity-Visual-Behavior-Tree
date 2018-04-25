@@ -46,7 +46,7 @@ namespace Assets.Editor
                 {
                     Entry = x;
                 });
-
+            ChildrenDrawers = new Dictionary<int, BehaviorLogDrawer>();
             foreach (var child in Entry.State.Children)
             {
                 if(!ChildrenDrawers.ContainsKey(child.ID))

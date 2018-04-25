@@ -74,6 +74,7 @@ namespace Assets.Editor
             TreeStyle.margin = MinimumMargins;
             //this.Style.margin = MinimumMargins;
             Initialized = true;
+            Repaint();
         }
 
         GenericMenu ManagerSelectMenu = new GenericMenu();
@@ -107,8 +108,7 @@ namespace Assets.Editor
         {
             ObservableBehaviorLogger.Listener
                 .Where(x => x.LoggerName == ManagerName.Value &&
-                       x.State.HasChildren
-                        )
+                       x.State.HasChildren)
                 .Do(x =>
                 {
                     //keep a single drawer per ID value
