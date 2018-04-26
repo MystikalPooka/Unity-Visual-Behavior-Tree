@@ -17,6 +17,8 @@ namespace Assets.Editor
         public Vector2 BoxSize;
         public RectOffset TotalOffset;
 
+        public bool isDrawing = false;
+
         /// <summary>
         /// Depth of this drawer (taken from entry) Default: 0
         /// </summary>
@@ -60,8 +62,7 @@ namespace Assets.Editor
                 .Do(x =>
                 {
                     Entry = x;
-                    DrawDepth = x.State.Depth + 1;
-                    if (DrawDepth < 0) DrawDepth = 0;
+                    DrawDepth = x.State.Depth+1;
                     if (Entry.State.HasChildren)
                     {
                         ChildrenDrawers = new Dictionary<int, BehaviorLogDrawer>();
@@ -71,7 +72,8 @@ namespace Assets.Editor
                             {
                                 ChildrenDrawers.Add(child.ID, new BehaviorLogDrawer(ManagerName, child.ID, BoxSize, Style)
                                 {
-                                    Entry = x
+                                    Entry = x,
+                                    DrawDepth = x.State.Depth + 2
                                 });
                             }
                         }
@@ -92,7 +94,7 @@ namespace Assets.Editor
                 BehaviorLogDrawer prevChild = null;
                 foreach (var child in ChildrenDrawers.Values)
                 {
-                    var totalDepthY = DrawDepth * (BoxSize.y + Style.margin.top);
+                    var totalDepthY = child.DrawDepth * (BoxSize.y + Style.margin.top);
                     Rect childRect = new Rect(numDrawn * (BoxSize.x + Style.margin.left) + Style.margin.left,
                                             totalDepthY,
                                             DrawHere.width,
@@ -150,7 +152,8 @@ namespace Assets.Editor
             SetChildrenRects();
             foreach (var child in ChildrenDrawers.Values)
             {
-                child.DrawBehaviorLogEntry();
+                if(!child.isDrawing)
+                    child.DrawBehaviorLogEntry();
             }
         }
 
@@ -168,7 +171,20 @@ namespace Assets.Editor
             {
                 var totalPosition = new Rect(DrawHere.x + TotalOffset.left, DrawHere.y + TotalOffset.top,
                                              DrawHere.width, DrawHere.height);
+
                 CustomGUI.DrawQuad(totalPosition, Entry.State.CurrentState.GetBehaviorStateColor());
+                GUI.BeginGroup(totalPosition);
+
+                if (Entry.State.Parent != null) GUI.Label(new Rect(0,0,120,30), new GUIContent(Entry.State.Parent.Name));
+                GUI.Label(new Rect(0,35,120,30), new GUIContent(Entry.State.Name));
+                GUI.EndGroup();
+
+                isDrawing = true;
+
+            }
+            else
+            {
+                isDrawing = false;
             }
         }
     }
