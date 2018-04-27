@@ -128,11 +128,12 @@ namespace Assets.Editor
             GUI.BeginGroup(rect,TreeStyle);
             DrawAllLogDrawers();
             GUI.EndGroup();
+            //Repaint();
         }
 
         private void DrawAllLogDrawers()
         {
-            var parentsDepthSorted = LogDrawers.Values.OrderByDescending(x => x.Entry.State.Depth);
+            var parentsDepthSorted = LogDrawers.Values.Where(x => x.Entry.State.Depth == -1);
             
             foreach(var parentDrawer in parentsDepthSorted)
             {
