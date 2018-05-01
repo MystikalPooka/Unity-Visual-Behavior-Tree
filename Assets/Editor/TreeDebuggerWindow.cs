@@ -65,7 +65,7 @@ namespace Assets.Editor
         private void Initialize()
         {
             BehaviorLogRectSize = new Vector2(120, 120);
-            MinimumMargins = new RectOffset(15, 15, 30, 30);
+            MinimumMargins = new RectOffset(5, 5, 25, 25);
             LogDrawers = new Dictionary<int, BehaviorLogDrawer>();
             rowTotalDrawn = new Dictionary<int, int>();
             parents = new HashSet<BehaviorTreeElement>();
@@ -125,10 +125,9 @@ namespace Assets.Editor
                     }
                 })
                 .Subscribe();
-            GUI.BeginGroup(rect,TreeStyle);
+            GUI.BeginGroup(rect);
             DrawAllLogDrawers();
             GUI.EndGroup();
-            //Repaint();
         }
 
         private void DrawAllLogDrawers()

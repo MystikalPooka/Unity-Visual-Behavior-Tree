@@ -31,7 +31,21 @@ MonoBehaviour:
     \   \"Initialized\": false,\r\n    \"NumberOfTicksReceived\": {\r\n      \"Value\":
     0,\r\n      \"HasValue\": true\r\n    },\r\n    \"ElementType\": \"Assets.Scripts.AI.Components.Selector\",\r\n
     \   \"Depth\": 0,\r\n    \"HasChildren\": true,\r\n    \"Name\": \"Selector 0\",\r\n
-    \   \"ID\": 0\r\n  },\r\n  {\r\n    \"MoveSpeed\": 1.0,\r\n    \"UpdatePlayersTickInterval\":
+    \   \"ID\": 0\r\n  },\r\n  {\r\n    \"Initialized\": false,\r\n    \"NumberOfTicksReceived\":
+    {\r\n      \"Value\": 0,\r\n      \"HasValue\": true\r\n    },\r\n    \"ElementType\":
+    \"Assets.Scripts.AI.Decorators.Inverter\",\r\n    \"Depth\": 1,\r\n    \"HasChildren\":
+    true,\r\n    \"Name\": \"Inverter 10\",\r\n    \"ID\": 10\r\n  },\r\n  {\r\n    \"Initialized\":
+    false,\r\n    \"NumberOfTicksReceived\": {\r\n      \"Value\": 0,\r\n      \"HasValue\":
+    true\r\n    },\r\n    \"ElementType\": \"Assets.Scripts.AI.Components.Selector\",\r\n
+    \   \"Depth\": 2,\r\n    \"HasChildren\": true,\r\n    \"Name\": \"Selector 11\",\r\n
+    \   \"ID\": 11\r\n  },\r\n  {\r\n    \"Initialized\": false,\r\n    \"NumberOfTicksReceived\":
+    {\r\n      \"Value\": 0,\r\n      \"HasValue\": true\r\n    },\r\n    \"ElementType\":
+    \"Assets.Scripts.AI.Nodes.DebugOutNode\",\r\n    \"Depth\": 3,\r\n    \"HasChildren\":
+    false,\r\n    \"Name\": \"DebugOutNode 13\",\r\n    \"ID\": 13\r\n  },\r\n  {\r\n
+    \   \"Initialized\": false,\r\n    \"NumberOfTicksReceived\": {\r\n      \"Value\":
+    0,\r\n      \"HasValue\": true\r\n    },\r\n    \"ElementType\": \"Assets.Scripts.AI.Nodes.DebugOutNode\",\r\n
+    \   \"Depth\": 3,\r\n    \"HasChildren\": false,\r\n    \"Name\": \"DebugOutNode
+    12\",\r\n    \"ID\": 12\r\n  },\r\n  {\r\n    \"MoveSpeed\": 1.0,\r\n    \"UpdatePlayersTickInterval\":
     6,\r\n    \"UpdateSelfPositionTickInterval\": 3,\r\n    \"Initialized\": false,\r\n
     \   \"NumberOfTicksReceived\": {\r\n      \"Value\": 0,\r\n      \"HasValue\":
     true\r\n    },\r\n    \"ElementType\": \"Assets.Scripts.AI.Nodes.MoveEnemyIfCloseToPlayer\",\r\n

@@ -133,8 +133,9 @@ namespace Assets.Editor.BehaviorTreeViewEditor.BackendData
         {
             CustomAssetUtility.CreateAsset<BehaviorTreeManagerAsset>();
             _BehaviorTreeManagerAsset = (BehaviorTreeManagerAsset)Selection.activeObject;
+            var root =new ParallelRunner("root",-1,-1);
             BehaviorExtensions.SaveBehaviorAsset(null, AssetDatabase.GetAssetPath(_BehaviorTreeManagerAsset),
-                                                _BehaviorTreeManagerAsset,(ParallelRunner)_TreeView.treeModel.Root);
+                                                _BehaviorTreeManagerAsset,(ParallelRunner)root);
         }
 
         void OnSelectionChange()

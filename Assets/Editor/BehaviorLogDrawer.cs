@@ -12,19 +12,17 @@ namespace Assets.Editor
     {
         private int BehaviorID;
         private string ManagerName = "Wolf Pancakes Taste Like Fur";
-        private Rect DrawHere;
+        public Rect DrawHere;
 
         public Vector2 BoxSize;
         public RectOffset TotalOffset;
 
-        protected bool isDrawing = false;
+        protected BehaviorLogDrawer Parent = null;
 
         /// <summary>
         /// Depth of this drawer (taken from entry) Default: 0
         /// </summary>
         private int DrawDepth = 0;
-
-        private IntReactiveProperty NumChildren;
 
         private Dictionary<int, BehaviorLogDrawer> ChildrenDrawers = new Dictionary<int, BehaviorLogDrawer>();
 
@@ -48,9 +46,8 @@ namespace Assets.Editor
                 Style = new GUIStyle();
                 Style.margin = new RectOffset(15, 15, 30, 30);
             }
-            DrawHere = new Rect(Style.margin.left, Style.margin.top, BoxSize.x, BoxSize.y);
+            
             TotalOffset = Style.margin;
-
             Initialize();
         }
 
@@ -58,8 +55,7 @@ namespace Assets.Editor
         public void Initialize()
         {
             ChildrenDrawers = new Dictionary<int, BehaviorLogDrawer>();
-            NumChildren = new IntReactiveProperty(0);
-            LogStream =  ObservableBehaviorLogger.Listener
+            LogStream = ObservableBehaviorLogger.Listener
                 .Where(x =>
                         x.BehaviorID == BehaviorID &&
                         x.LoggerName == ManagerName)
@@ -72,127 +68,108 @@ namespace Assets.Editor
                         {
                             if (!ChildrenDrawers.ContainsKey(child.ID))
                             {
+                                float y = (child.Depth+1) * (BoxSize.y + Style.margin.top);
                                 ChildrenDrawers.Add(child.ID, new BehaviorLogDrawer(ManagerName, child.ID, BoxSize, Style)
                                 {
-                                    DrawDepth = child.Depth
+                                    Parent = this,
+                                    DrawHere = new Rect(Style.margin.left, y, BoxSize.x, BoxSize.y)
                                 });
                             }
                         }
-                        NumChildren.SetValueAndForceNotify(Entry.State.Children.Count);
                     }
                 });
-            
-            NumChildren.ObserveEveryValueChanged(x => x.Value)
-                .Do(x =>
-                {
-                    OnNumChildrenChanged();
-                }).Subscribe();
 
             Initialized = true;
         }
 
-        private Rect SurroundingBoxRect;
-        private void OnNumChildrenChanged()
-        {
-            SurroundingBoxRect = GetSurroundingRect();
-        }
-
-        protected void SetChildrenRects()
-        {
-            if(ChildrenDrawers.Values.Count != 0)
-            {
-                int numDrawn = 0;
-
-                BehaviorLogDrawer prevChild = null;
-                foreach (var child in ChildrenDrawers.Values)
-                {
-                    var totalX = numDrawn * (BoxSize.x);
-                    Rect childRect = new Rect(totalX,
-                                            Style.margin.top,
-                                            BoxSize.x,
-                                            BoxSize.y);
-
-                    child.DrawHere.Set(childRect.x,childRect.y,
-                                       childRect.width,childRect.height);
-                    if (prevChild != null)
-                        child.DrawHere.x += prevChild.TotalOffset.right;
-                    ++numDrawn;
-                    prevChild = child;
-                }
-            }
-        }
-
         public void DrawBehaviorWithAllChildren()
-        {
-            LogStream.Subscribe();
-            if (Entry == null)
-            {
-                return;
-            }
-            else if (Entry.State.HasChildren)
-            {
-                SetChildrenRects();
-                DrawChildrenAndBoundingBox();   
-            }
-
-            DrawBehaviorLogEntry();
-
-        }
-
-        private void DrawChildrenAndBoundingBox()
-        {
-            this.TotalOffset.left = (int)(SurroundingBoxRect.width / 2);
-            this.TotalOffset.right = (int)(SurroundingBoxRect.width / 2);
-            CustomGUI.DrawQuad(SurroundingBoxRect, new Color(0.3f, 0.3f, 0.3f, 0.2f));
-
-            DrawChildren();
-        }
-
-        private Rect GetSurroundingRect()
-        {
-            float bbWidth = Style.margin.right;
-            foreach(var child in ChildrenDrawers.Values)
-            {
-                bbWidth += (BoxSize.x + child.TotalOffset.left);
-            }
-                                             
-            float bbPosY = (DrawDepth+1) * (BoxSize.x + Style.margin.bottom) + Style.margin.top;
-
-            return new Rect(0f, bbPosY, bbWidth, BoxSize.y + Style.margin.vertical);
-        }
-
-        private void DrawChildren()
-        {
-            foreach (var child in ChildrenDrawers.Values)
-            {
-                child.DrawBehaviorWithAllChildren();
-                      
-            }
-        }
-
-        protected void DrawBehaviorLogEntry()
         {
             if (!Initialized)
             {
                 Initialize();
             }
+            //Draw Breadth First, Offset parent second
+            LogStream.Subscribe();
 
+            int offset = Style.margin.left;
+
+            if(Entry == null)
+            {
+                return;
+            }
+            else if(Entry.State.HasChildren)
+            {
+               offset = DrawChildrenAndGetOffset() / 2;
+            }
+            var parent = Entry.State.Parent;
+            if (parent != null)
+            {
+                if (parent.HasChildren)
+                {
+                    if (parent.Children.Count == 1)
+                    {
+                        offset = (int)BoxSize.x / 2;
+                    }
+                }
+            }
+            this.TotalOffset.left = offset;
+            this.TotalOffset.right = offset;
+            DrawBehaviorLogEntry();  
+        }
+
+        private int DrawChildrenAndGetOffset()
+        {
+            var newOffset = 0;
+            BehaviorLogDrawer prevChildDrawer = null;
+            foreach (var child in ChildrenDrawers.Values)
+            {
+                if (prevChildDrawer == null)
+                {
+                    child.DrawHere.x = this.DrawHere.x;
+                }
+                else
+                {
+                    child.DrawHere.x = prevChildDrawer.DrawHere.x +
+                                       BoxSize.x +
+                                       prevChildDrawer.TotalOffset.right;
+                    
+                    newOffset += prevChildDrawer.TotalOffset.right;
+                }
+                
+                newOffset += (int)BoxSize.x;
+                prevChildDrawer = child;
+                child.DrawBehaviorWithAllChildren();
+            }
+            return newOffset;
+        }
+
+        protected void DrawBehaviorLogEntry()
+        {
             if(Entry != null)
             {
-                var totalDepthY = DrawDepth * (BoxSize.y + Style.margin.top);
                 var totalX = DrawHere.x + TotalOffset.left;
-                var totalPosition = new Rect(totalX, totalDepthY,
+                var totalPosition = new Rect(totalX, DrawHere.y,
                                              BoxSize.x, BoxSize.y);
 
-                Debug.Log(Entry.State.Name + " totalPosition = " + totalPosition);
-                Debug.LogWarning(Entry.State.Name + " DrawDepth: " + DrawDepth);
+                if(Parent != null)
+                {
+                    var startVector = new Vector3(totalX + BoxSize.x / 2, DrawHere.y);
+                    var endVector = new Vector3(Parent.DrawHere.x + BoxSize.x / 2 + Parent.TotalOffset.left,
+                                                Parent.DrawHere.y + BoxSize.y);
+                    using (new Handles.DrawingScope(Color.black))
+                    {
+                        Handles.DrawLine(startVector, endVector);
+                    }    
+                }
+
                 CustomGUI.DrawQuad(totalPosition, Entry.State.CurrentState.GetBehaviorStateColor());
 
                 GUI.BeginGroup(totalPosition);
 
-                GUI.Label(new Rect(0, 0, 120, 20), new GUIContent("Depth: " + Entry.State.Depth));
-                GUI.Label(new Rect(0, 10, 120, 20), new GUIContent("Draw Depth: " + DrawDepth));
-                if (Entry.State.Parent != null) GUI.Label(new Rect(0,20,120,30), new GUIContent(Entry.State.Parent.Name));
+                if (Entry.State.Parent != null)
+                {
+                    GUI.Label(new Rect(0, 20, 120, 30), new GUIContent(Entry.State.Parent.Name));
+                }
                 GUI.Label(new Rect(0,35,120,30), new GUIContent(Entry.State.Name));
                 GUI.EndGroup();
             }
