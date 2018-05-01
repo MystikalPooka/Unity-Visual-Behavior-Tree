@@ -143,7 +143,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73bc91841bad4424992751c051af5030, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BehaviorTreeFile: {fileID: 11400000, guid: 3934b8e6d8cd3004b96d487831f16894, type: 2}
+  BehaviorTreeFile: {fileID: 11400000, guid: f4cb4c96e175fa243baf0700d4057360, type: 2}
   SecondsBetweenTicks: 0.5
   TimesToTick: -1
   spliceNewIntoTree: 0
