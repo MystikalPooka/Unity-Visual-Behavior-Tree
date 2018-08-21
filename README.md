@@ -1,9 +1,9 @@
-<!--- This Readme was made using Dillinger online markdown editor https://dillinger.io/--->
+<!--- This Readme was made with the help of Dillinger online markdown editor https://dillinger.io/--->
 [![Build Status](https://travis-ci.org/MystikalPooka/Unity-Visual-Behavior-Tree.svg?branch=master)](https://travis-ci.org/MystikalPooka/Unity-Visual-Behavior-Tree)
 # Unity-Visual-Behavior-Tree
 Visual Scripting Behavior Tree Tool for Unity 2017.3.x
 
-
+### Requires [uniRX](https://github.com/neuecc/UniRx) - reactive extensions for Unity by nuecc
 
 # **How To Behavior Tree**
 
