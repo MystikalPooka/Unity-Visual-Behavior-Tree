@@ -16,6 +16,7 @@ namespace UniRx.Diagnostics
                 .Dematerialize()
                 .DoOnCancel(() => UnityEngine.Debug.Log(l + "OnCancel"))
                 .DoOnSubscribe(() => UnityEngine.Debug.Log(l + "OnSubscribe"));
+
 #else
             return source;
 #endif
@@ -32,6 +33,7 @@ namespace UniRx.Diagnostics
                 .Dematerialize()
                 .DoOnCancel(() => logger.Debug("OnCancel"))
                 .DoOnSubscribe(() => logger.Debug("OnSubscribe"));
+
 #else
             return source;
 #endif

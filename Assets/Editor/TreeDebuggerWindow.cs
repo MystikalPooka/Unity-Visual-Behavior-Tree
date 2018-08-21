@@ -136,8 +136,6 @@ namespace Assets.Editor
             
             foreach(var parentDrawer in parentsDepthSorted)
             {
-                //Should be called in sorted order, from bottom to top.
-                //this allows lower depth parents to know the correct spacing of their children
                 parentDrawer.DrawBehaviorWithAllChildren();
             }
         }
