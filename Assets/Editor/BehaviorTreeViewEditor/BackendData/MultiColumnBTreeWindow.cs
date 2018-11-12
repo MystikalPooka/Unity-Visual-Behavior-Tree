@@ -133,8 +133,9 @@ namespace Assets.Editor.BehaviorTreeViewEditor.BackendData
         {
             CustomAssetUtility.CreateAsset<BehaviorTreeManagerAsset>();
             _BehaviorTreeManagerAsset = (BehaviorTreeManagerAsset)Selection.activeObject;
+            var root =new ParallelRunner("root",-1,-1);
             BehaviorExtensions.SaveBehaviorAsset(null, AssetDatabase.GetAssetPath(_BehaviorTreeManagerAsset),
-                                                _BehaviorTreeManagerAsset,(ParallelRunner)_TreeView.treeModel.Root);
+                                                _BehaviorTreeManagerAsset,(ParallelRunner)root);
         }
 
         void OnSelectionChange()
@@ -180,12 +181,7 @@ namespace Assets.Editor.BehaviorTreeViewEditor.BackendData
                 GenericMenu menu = new GenericMenu();
                 if (EditorGUILayout.DropdownButton(new GUIContent("Add Behavior"),FocusType.Passive))
                 {
-                    foreach (var elType in BehaviorExtensions.GetListOfTypes<BehaviorTreeElement>())
-                    {
-                        var menuStrings = elType.ToString().Split('.');
-                        menu.AddItem(new GUIContent(menuStrings[menuStrings.Length-2] + 
-                                              "/" + menuStrings.Last()), false, OnTypeSelected, elType.ToString());
-                    }
+                    menu.CreateTypeMenu<BehaviorTreeElement>(OnTypeSelected);
                     menu.ShowAsContext();
                 }
 
@@ -228,7 +224,7 @@ namespace Assets.Editor.BehaviorTreeViewEditor.BackendData
         {
             GUILayout.BeginArea(rect);
 
-            using (new EditorGUILayout.HorizontalScope())
+            using(new EditorGUILayout.HorizontalScope())
             {
                 var style = "miniButton";
                 if (GUILayout.Button("Expand All", style))
@@ -246,7 +242,6 @@ namespace Assets.Editor.BehaviorTreeViewEditor.BackendData
                 _TreeView.ShowParams = (MultiColumnBehaviorTreeView.ShowParameters) 
                     EditorGUILayout.EnumPopup("Show Parameter Lists", _TreeView.ShowParams, "miniButton");
             }
-
             GUILayout.EndArea();
         }
     }

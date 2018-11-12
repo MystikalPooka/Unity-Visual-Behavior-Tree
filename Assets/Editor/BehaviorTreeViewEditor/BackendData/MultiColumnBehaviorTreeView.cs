@@ -17,23 +17,6 @@ namespace Assets.Editor.BehaviorTreeViewEditor.BackendData
         const float kTypeButtonWidth = 70f;
         public ShowParameters ShowParams;
 
-        private static Color GetBehaviorStateColor(int state)
-        {
-            switch (state)
-            {
-                case (int)BehaviorState.Fail:
-                    return Color.red;
-                case (int)BehaviorState.Running:
-                    return Color.blue;
-                case (int)BehaviorState.Success:
-                    return new Color(0.1f, 0.9f, 0.2f);
-                case (int)BehaviorState.Null:
-                    return Color.grey;
-                default:
-                    return Color.black;
-            }
-        }
-
         // All columns
         enum BTreeColumns
         {
@@ -187,16 +170,9 @@ namespace Assets.Editor.BehaviorTreeViewEditor.BackendData
 
         protected override void ContextClickedItem(int id)
         {
-            var item = treeModel.Find(id);
+            //var item = treeModel.Find(id);
             GenericMenu menu = new GenericMenu();
-            foreach (var elType in BehaviorExtensions.GetListOfTypes<BehaviorTreeElement>())
-            {
-                object[] obj = new object[2] { item, elType };
-                var menuStrings = elType.ToString().Split('.');
-                menu.AddItem(new GUIContent(menuStrings[menuStrings.Length - 2] + "/" + menuStrings.Last()), 
-                    item.ElementType == elType.ToString(), 
-                    OnMenuTypeSelected, obj);
-            }
+            menu.CreateTypeMenu<BehaviorTreeElement>(OnMenuTypeSelected);
             menu.ShowAsContext();
         }
 
@@ -222,13 +198,11 @@ namespace Assets.Editor.BehaviorTreeViewEditor.BackendData
         void CellGUI(Rect cellRect, TreeViewItem<BehaviorTreeElement> item, BTreeColumns column, ref RowGUIArgs args)
         {
             // Center cell rect vertically (makes it easier to place controls, icons etc in the cells)
-            
-
             switch (column)
             {
                 case BTreeColumns.State:
                     CenterRectUsingSingleLineHeight(ref cellRect);
-                    EditorGUI.DrawRect(cellRect, GetBehaviorStateColor((int)item.data.CurrentState));
+                    //EditorGUI.DrawRect(cellRect, GetBehaviorStateColor((int)item.data.CurrentState));
                     break;
                 case BTreeColumns.Name:
                     // Do toggle

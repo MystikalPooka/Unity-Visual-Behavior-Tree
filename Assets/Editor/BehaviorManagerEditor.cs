@@ -20,33 +20,15 @@ namespace Assets.Editor
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
-            if(name == "")
-            {
-                if(GUILayout.Button("Create New Tree"))
-                {
-                    CustomAssetUtility.CreateAsset<BehaviorTreeManagerAsset>();
-                    _BTreeAsset = (BehaviorTreeManagerAsset)Selection.activeObject;
-                }
-            }
-
-            if (GUILayout.Button("Save"))
-            {
-                string name = serializedObject.FindProperty("FileName").stringValue;
-                if (name == "")
-                {
-                    Debug.LogError("Name Field is required to save a behavior tree manager asset");
-                }
-                else
-                {
-                    BTreeManager.SaveBehaviorAsset("Assets/Behaviors/" + name + ".asset", _BTreeAsset);
-                }
-                Debug.Log("Attempted save.");
-            }
-
 
             if (GUILayout.Button("Reload"))
             {
                 BTreeManager.Reinitialize();
+            }
+
+            if(GUILayout.Button("Debug"))
+            {
+                TreeDebuggerWindow.ShowWindow();
             }
         }
     }
