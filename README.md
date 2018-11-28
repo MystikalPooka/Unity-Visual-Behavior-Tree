@@ -18,7 +18,7 @@ Visual Scripting Behavior Tree Tool for Unity 2018.2.x
   ##### This newly-created class will show up in the tree view window editor when opening a Behavior Tree Manager Asset either by double clicking it in unity or in the behavior manager.
   
   ###### The treeview editor window is where these classes can be created, dragged and dropped, and rearranged visually. The Behavior Manager (explained below) will be responsible for isntantiating instances of these behavior trees.
-  
+![Imgur](https://i.imgur.com/o9bywOx.jpg)
 - ### **Step 4:**
   ##### Any monobehavior that you wish to have a behavior from these trees must have the Behavior Tree Manager component added to it.
   The Behavior Tree Manager component has the behavior tree asset field which is the tree that will be run when the game is started.
