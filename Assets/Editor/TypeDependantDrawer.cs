@@ -108,9 +108,9 @@ namespace Assets.Editor
                     }
                     else
                     {
-                        Debug.LogError(
-                            "DrawFields does not support fields of type " +
-                            fields[i].FieldType);
+                        //Debug.LogError(
+                        //    "DrawFields does not support fields of type " +
+                        //    fields[i].FieldType);
                     }
                 }
             }

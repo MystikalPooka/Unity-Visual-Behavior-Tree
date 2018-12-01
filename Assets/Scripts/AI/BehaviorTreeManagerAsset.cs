@@ -21,7 +21,6 @@ namespace Assets.Scripts.AI
     {
         public static ParallelRunner LoadFromJSON(this BehaviorTreeManagerAsset asset, BehaviorManager manager = null)
         {
-            //TODO: Reload button
             //TODO: Confirm reload from json
             if (asset == null)
             {
@@ -51,7 +50,6 @@ namespace Assets.Scripts.AI
                 }
 
                 var tree = TreeElementUtility.ListToTree(newElements);
-
                 return (ParallelRunner)tree;
             }
         }

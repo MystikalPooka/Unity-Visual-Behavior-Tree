@@ -114,7 +114,7 @@ namespace Assets.Editor
             }
             this.TotalOffset.left = offset;
             this.TotalOffset.right = offset;
-            DrawBehaviorLogEntry();  
+            DrawBehaviorLogEntry();
         }
 
         private int DrawChildrenAndGetOffset()
@@ -142,8 +142,9 @@ namespace Assets.Editor
             }
             return newOffset;
         }
+        //FIXED
 
-        protected void DrawBehaviorLogEntry()
+        public void DrawBehaviorLogEntry()
         {
             if(Entry != null)
             {

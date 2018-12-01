@@ -30,6 +30,8 @@ namespace Assets.Editor
         /// Behavior IDs to track current behaviors being watched.
         /// </summary>
         public Dictionary<int, BehaviorLogDrawer> LogDrawers = new Dictionary<int, BehaviorLogDrawer>();
+        public Dictionary<int, List<BehaviorLogDrawer>> LogDrawersByDepth = new Dictionary<int, List<BehaviorLogDrawer>>();
+
 
         Rect TopToolbarRect
         {
@@ -122,6 +124,8 @@ namespace Assets.Editor
                                 TotalOffset = MinimumMargins,
                                 Entry = x
                             });
+
+
                     }
                 })
                 .Subscribe();
@@ -133,9 +137,11 @@ namespace Assets.Editor
         private void DrawAllLogDrawers()
         {
             var parentsDepthSorted = LogDrawers.Values.Where(x => x.Entry.State.Depth == -1);
-            
-            foreach(var parentDrawer in parentsDepthSorted)
+
+            foreach (var parentDrawer in parentsDepthSorted)
             {
+                //Should be called in sorted order, from bottom to top.
+                //this allows lower depth parents to know the correct spacing of their children
                 parentDrawer.DrawBehaviorWithAllChildren();
             }
         }
