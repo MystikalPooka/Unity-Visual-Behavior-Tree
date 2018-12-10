@@ -6,7 +6,8 @@ Visual Scripting Behavior Tree Tool for Unity 2017.2.x+
 ### Requires [uniRX](https://github.com/neuecc/UniRx) - reactive extensions for Unity by nuecc
 
 # **How To Behavior Tree**
-GREAT Introduction to RX [here](http://introtorx.com/)!
+[GREAT Introduction to RX here](http://introtorx.com/)! (introtorx)
+[Another one (with shiny marble diagrams!)](http://reactivex.io/)! (ReactiveX.io)
 - ### **Step 1:** 
    ##### Inherit from your choice of abstract behavior. Behavior type descriptions are below.
   
