@@ -9,7 +9,8 @@ Visual Scripting Behavior Tree Tool for Unity 2017.2.x+
  ### **Introduction to Reactive eXtensions:**
  - [GREAT Introduction to RX here](http://introtorx.com/)! (introtorx)
  - [Another one (with shiny marble diagrams!)](http://reactivex.io/documentation/operators.html)! (ReactiveX.io)
- - [Great List of Tutorials](http://reactivex.io/tutorials.html)(ReactiveX.io)
+ - [Great List of Tutorials](http://reactivex.io/tutorials.html) (ReactiveX.io)
+ - [Interactive marble diagrams](http://rxmarbles.com/)! (rxmarbles.com)
 - ### **Step 1:** 
    ##### Inherit from your choice of abstract behavior. Behavior type descriptions are below.
   
