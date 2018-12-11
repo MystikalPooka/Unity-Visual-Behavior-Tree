@@ -103,7 +103,7 @@ namespace Assets.Editor.BehaviorTreeViewEditor
             if(behaviorManager != null)
             {
                 behaviorManager.Reinitialize();
-                asset.SecondsBetweenTicks = behaviorManager.SecondsBetweenTicks;
+                asset.MilliSecondsBetweenTicks =behaviorManager.MilliSecondsBetweenTicks;
                 asset.TimesToTick = behaviorManager.TimesToTick;
 
                 TreeElementUtility.TreeToList(behaviorManager.Runner, runnerElementList);  

@@ -17,43 +17,6 @@ namespace Assets.Editor
             DrawFieldsFlowLayout(new GUIContent(""), element, rect);
         }
 
-        private static void DrawFields(GUIContent label, dynamic target, Rect rect)
-        {
-            Type type = Assembly.GetAssembly(typeof(BehaviorTreeElement)).GetType(target.ElementType);
-            FieldInfo[] fields = type.GetFields();
-
-            GUILayout.BeginArea(rect);
-            foreach (FieldInfo field in fields)
-            {
-                if (field.IsPublic)
-                {
-                    if (field.FieldType == typeof(int))
-                    {
-                        field.SetValue(target, EditorGUILayout.IntField(
-                            MakeLabel(field), (int)field.GetValue(target), GUILayout.ExpandWidth(false)));
-                    }
-                    else if (field.FieldType == typeof(float))
-                    {
-                        field.SetValue(target, EditorGUILayout.FloatField(
-                            MakeLabel(field), (float)field.GetValue(target), GUILayout.ExpandWidth(false)));
-                    }
-                    else if (field.FieldType == typeof(string))
-                    {
-                        field.SetValue(target, EditorGUILayout.TextField(
-                            MakeLabel(field), (string)field.GetValue(target), GUILayout.ExpandWidth(false)));
-                    }
-                    else
-                    {
-                        Debug.LogError(
-                            "DrawFields does not support fields of type " +
-                            field.FieldType);
-                    }
-                }
-                
-            }
-            GUILayout.EndArea();
-        }
-
         private static GUIContent MakeLabel(FieldInfo field)
         {
             GUIContent guiContent = new GUIContent();
@@ -90,7 +53,6 @@ namespace Assets.Editor
             {
                 using (new GUILayout.AreaScope(boxes[i],"", EditorStyles.boldLabel))
                 {
-                    //EditorGUILayout.LabelField(items[i]);
                     if (fields[i].FieldType == typeof(int))
                     {
                         fields[i].SetValue(target, EditorGUILayout.IntField(
@@ -105,12 +67,6 @@ namespace Assets.Editor
                     {
                         fields[i].SetValue(target, EditorGUILayout.TextField(
                             MakeLabel(fields[i]), (string)fields[i].GetValue(target)));
-                    }
-                    else
-                    {
-                        //Debug.LogError(
-                        //    "DrawFields does not support fields of type " +
-                        //    fields[i].FieldType);
                     }
                 }
             }

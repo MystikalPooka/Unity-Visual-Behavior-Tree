@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Name: test2
   m_EditorClassIdentifier: 
   TimesToTick: 135
-  SecondsBetweenTicks: 0.5
+  MilliSecondsBetweenTicks: 1000
   RunnerElementsJSON: "[\r\n  {\r\n    \"NumberOfFailuresBeforeFail\": 0,\r\n    \"NumberOfSuccessBeforeSucceed\":
     0,\r\n    \"Initialized\": false,\r\n    \"NumberOfTicksReceived\": {\r\n      \"Value\":
     0,\r\n      \"HasValue\": true\r\n    },\r\n    \"ElementType\": \"Assets.Scripts.AI.Components.ParallelRunner\",\r\n

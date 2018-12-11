@@ -9,28 +9,13 @@ using UnityEngine;
 namespace Assets.Scripts.AI
 {
     [Serializable]
-    public class BehaviorTreeElement : TreeElement, IDisposable
+    public abstract class BehaviorTreeElement : TreeElement, IDisposable
     {
+        //is this needed?
         public LongReactiveProperty NumberOfTicksReceived { get; private set; }
 
+        //used for reflection upon JSON loading
         public string ElementType { get; set; }
-
-        [Newtonsoft.Json.JsonIgnore]
-        [SerializeField]
-        private BehaviorManager _BehaviorTreeManager;
-        [Newtonsoft.Json.JsonIgnore]
-        public BehaviorManager BehaviorTreeManager
-        {
-            get
-            {
-                return _BehaviorTreeManager;
-            }
-
-            set
-            {
-                _BehaviorTreeManager = value;
-            }
-        }
 
         public BehaviorTreeElement(string name, int depth, int id) 
             : base(name, depth, id)
@@ -45,25 +30,21 @@ namespace Assets.Scripts.AI
         public BehaviorState CurrentState;
 
         public bool Initialized = false;
-        public virtual IEnumerator Tick(WaitForSeconds delayStart = null)
-        {
-            if (!Initialized) Initialize();
-            if (delayStart != null)
-            {
-                yield return delayStart;
-            }
-            NumberOfTicksReceived.SetValueAndForceNotify(NumberOfTicksReceived.Value + 1);
-        }
+
+        /// <summary>
+        /// The primary method of action
+        /// </summary>
+        /// <returns>observable stream of states from this behavior</returns>
+        public abstract IObservable<BehaviorState> Tick();
 
         public virtual void Initialize()
         {
+            if (Initialized) return;
             var allChildrenToRun = from x in Children
                                    select x as BehaviorTreeElement;
 
             foreach(var ch in allChildrenToRun)
             {
-                //TODO: will be changed to an actual debugger instead of just unity logs. Issue #3
-                //Subscribes to updates to state changes from all children
                 ch.ObserveEveryValueChanged(x => x.CurrentState)
                     .Subscribe()
                     .AddTo(Disposables);

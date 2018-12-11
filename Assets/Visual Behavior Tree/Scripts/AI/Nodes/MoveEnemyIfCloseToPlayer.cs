@@ -36,8 +36,9 @@ namespace Assets.Scripts.AI.Nodes
         public MoveEnemyIfCloseToPlayer(string name, int depth, int id) : base(name, depth, id)
         { }
 
-        public override IEnumerator Tick(WaitForSeconds delayStart = null)
+        public override IEnumerator Tick()
         {
+            
             base.Tick();
 
             ++numTicks;

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Assets.Scripts.AI.Decorators
@@ -9,11 +10,6 @@ namespace Assets.Scripts.AI.Decorators
             : base(name, depth, id)
         {
             Children = new List<Tree.TreeElement>();
-        }
-
-        public override IEnumerator Tick(UnityEngine.WaitForSeconds delayStart = null)
-        {
-            return base.Tick(delayStart);
         }
     } 
 }

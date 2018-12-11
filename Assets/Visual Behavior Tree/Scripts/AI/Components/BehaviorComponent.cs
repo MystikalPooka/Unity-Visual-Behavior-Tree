@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UniRx;
 using UnityEngine;
 
 namespace Assets.Scripts.AI.Components
@@ -19,9 +20,9 @@ namespace Assets.Scripts.AI.Components
             Children.Add(element);
         }
 
-        public override IEnumerator Tick(WaitForSeconds delayStart = null)
+        public override System.IObservable<BehaviorState> Tick()
         {
-            return base.Tick(delayStart);
+            return Observable.Empty<BehaviorState>();
         }
         
     }

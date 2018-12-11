@@ -17,7 +17,7 @@ namespace Assets.Scripts.AI.Components
         {
         }
 
-        public override IEnumerator Tick(WaitForSeconds delayStart = null)
+        public override IEnumerator Tick()
         {
             base.Tick().ToObservable().Subscribe();
 

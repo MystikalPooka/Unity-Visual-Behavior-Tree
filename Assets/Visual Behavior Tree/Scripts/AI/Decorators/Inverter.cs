@@ -11,9 +11,9 @@ namespace Assets.Scripts.AI.Decorators
             : base(name, depth, id)
         { }
 
-        public override IEnumerator Tick(WaitForSeconds delayStart = null)
+        public override IEnumerator Tick()
         {
-            base.Tick(delayStart).ToObservable()
+            base.Tick().ToObservable()
                 //.Do(_ => Debug.Log("OnNext Inverter at start (base.tick()"))
                 .Subscribe();
 

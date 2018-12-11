@@ -8,13 +8,13 @@ using UnityEngine;
 namespace Assets.Scripts.AI.Components
 {
     [Serializable]
-    [Description("Runs all children at same time. Fails if NumFailures are >0 and children failed reach that number. Succeeds otherwise.")]
+    [Description("Runs all children at same time. Fails early if NumFailures are >0 and total children failed reach that number. Succeeds otherwise.")]
     public class ParallelRunner : BehaviorComponent
     {
         /// <summary>
         /// Number of times the children return fail before the parallel runner returns in a fail state.
         /// 0 means ignore number of failures.
-        /// 0 for both succeed and fail means loops infinitely
+        /// 0 for both succeed and fail means run this once
         /// </summary>
         [SerializeField] public int NumberOfFailuresBeforeFail = 0;
         protected IntReactiveProperty NumberOfFailures = new IntReactiveProperty(0);
@@ -22,7 +22,7 @@ namespace Assets.Scripts.AI.Components
         /// <summary>
         /// Number of times the children return success before the parallel runner returns in a success state.
         /// 0 means ignore number of sucesses.
-        /// 0 for both succeed and fail means loops infinitely
+        /// 0 for both succeed and fail means this will only run once
         /// </summary>
         [SerializeField] public int NumberOfSuccessBeforeSucceed = 0;
         protected IntReactiveProperty NumberOfSuccesses = new IntReactiveProperty(0);
@@ -30,71 +30,39 @@ namespace Assets.Scripts.AI.Components
         public ParallelRunner(string name, int depth, int id)
             : base(name, depth, id) { }
 
-        public override IEnumerator Tick(WaitForSeconds delayStart = null)
+        public override IObservable<BehaviorState> Tick()
         {
-            //Initialize and start tick
-            base.Tick().ToObservable()
-                //.Do(_ => BehaviorLogger.Log("Subscribed to ParallelRunner at start (base.tick()"))
-                .Subscribe();
-            CurrentState = BehaviorState.Running;
-
             if (Children == null || Children.Count == 0)
             {
                 Debug.LogWarning("Children Null in parallel runner");
-                CurrentState = BehaviorState.Fail;
-                yield break;
+                return Observable.Return(BehaviorState.Fail);
             }
 
-            foreach(var ch in Children)
-            {
-                ((BehaviorTreeElement)ch).Tick()
-                    .ToObservable()
-                    .Do(_ =>
-                    {
-                        if (NumberOfFailures.Value >= NumberOfFailuresBeforeFail && NumberOfFailuresBeforeFail > 0)
-                        {
-                            CurrentState = BehaviorState.Fail;
-                            return;
-                        }
+            var allChildren = Children.ToObservable()
+                                      .SelectMany(child => ((BehaviorTreeElement)child).Tick())
+                                      .Do(state => {
+                                          if (state == BehaviorState.Fail)
+                                              NumberOfFailures.SetValueAndForceNotify(NumberOfFailures.Value + 1);
+                                          if (state == BehaviorState.Success)
+                                              NumberOfSuccesses.SetValueAndForceNotify(NumberOfSuccesses.Value + 1);
+                                      })
+                                      .TakeWhile(_ => NumberOfSuccesses.Value < NumberOfSuccessBeforeSucceed && 
+                                                      NumberOfFailures.Value < NumberOfFailuresBeforeFail)
+                                      .Publish()
+                                      .RefCount();
 
-                        if (NumberOfSuccesses.Value >= NumberOfSuccessBeforeSucceed && NumberOfSuccessBeforeSucceed > 0)
-                        {
-                            CurrentState = BehaviorState.Success;
-                            return;
-                        }
-                    })
-                    .Subscribe().AddTo(Disposables);
-            }
-            if (CurrentState == BehaviorState.Running) CurrentState = BehaviorState.Success;
+            var failedChildren = allChildren.Where(state => state == BehaviorState.Fail)
+                                            .Do(_ => NumberOfFailures.SetValueAndForceNotify(NumberOfFailures.Value + 1))
+                                            .Subscribe();
+
+            var succeedChildren = allChildren.Where(state => state == BehaviorState.Success)
+                                             .Do(_ => NumberOfSuccesses.SetValueAndForceNotify(NumberOfFailures.Value + 1))
+                                             .Subscribe();
+
+
+
+
+
         }
-
-        public override void Initialize()
-        {
-            var allChildrenToRun = from x in Children
-                                   select x as BehaviorTreeElement;
-
-            foreach (var ch in allChildrenToRun)
-            {
-                //TODO: will be changed to an actual debugger instead of just unity logs. Issue #3
-                ch.ObserveEveryValueChanged(x => x.CurrentState)
-                    .Do(x =>
-                    {
-                        //BehaviorLogger.Warning(ElementType + " state changed: " + x);
-                        if (x == BehaviorState.Fail)
-                        {
-                            NumberOfFailures.SetValueAndForceNotify(NumberOfFailures.Value + 1);
-                        }
-                        else if (x == BehaviorState.Success)
-                        {
-                            NumberOfSuccesses.SetValueAndForceNotify(NumberOfSuccesses.Value + 1);
-                        }
-                    })
-                    .Subscribe()
-                    .AddTo(Disposables);
-            }
-            Initialized = true;
-        }
-
-
     }
 }
