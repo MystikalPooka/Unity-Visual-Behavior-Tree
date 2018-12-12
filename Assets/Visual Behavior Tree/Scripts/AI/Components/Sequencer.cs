@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.ComponentModel;
 using UniRx;
 using UnityEngine;
@@ -17,30 +18,25 @@ namespace Assets.Scripts.AI.Components
         {
         }
 
-        public override IEnumerator Tick()
+        public override IObservable<BehaviorState> Tick()
         {
-            base.Tick().ToObservable().Subscribe();
-
-            yield return delayStart;
-            CurrentState = BehaviorState.Running;
-            foreach (BehaviorTreeElement behavior in Children)
+            if (Children == null || Children.Count == 0)
             {
-                if (CurrentState != BehaviorState.Running) yield break;
-                yield return behavior.Tick().ToObservable()
-                    .Do(_ =>
-                    {
-                        if (behavior.CurrentState == BehaviorState.Fail)
-                        {
-                            CurrentState = BehaviorState.Fail;
-                            return;
-                        }
-                    })
-                    .Subscribe()
-                    .AddTo(Disposables);
+                Debug.LogWarning("Children Null in " + this.Name);
+                return Observable.Return(BehaviorState.Fail);
             }
-            //if it gets here, it went through all subbehaviors and had no failures
-            if (CurrentState == BehaviorState.Running) CurrentState = BehaviorState.Success;
-            yield break;
+
+            var source = from child in Children.ToObservable()
+                         select child as BehaviorTreeElement;
+
+            return source.Select(child => child.Tick())
+                        .Concat() //Sequentially subscribe
+                        .TakeWhile(childState => childState != BehaviorState.Fail) //take until "fail". then stop and publish "OnComplete"
+
+                        .Publish()
+                        .RefCount(); //automatically begin generating upon receiving first subscription, 
+                                     //and automatically dispose upon last dispose
         }
     }
+}
 }

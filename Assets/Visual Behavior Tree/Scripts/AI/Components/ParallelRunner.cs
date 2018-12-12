@@ -38,8 +38,9 @@ namespace Assets.Scripts.AI.Components
                 return Observable.Return(BehaviorState.Fail);
             }
 
-            var allChildren = Children.ToObservable()
-                                      .SelectMany(child => ((BehaviorTreeElement)child).Tick())
+            return Children.ToObservable()
+                                      .Select(child => ((BehaviorTreeElement)child).Tick()) //inject all my children streams into a stream of streams
+                                      .Merge() //merge children streams into one stream ("concurrent"ly)
                                       .Do(state => {
                                           if (state == BehaviorState.Fail)
                                               NumberOfFailures.SetValueAndForceNotify(NumberOfFailures.Value + 1);
@@ -50,19 +51,6 @@ namespace Assets.Scripts.AI.Components
                                                       NumberOfFailures.Value < NumberOfFailuresBeforeFail)
                                       .Publish()
                                       .RefCount();
-
-            var failedChildren = allChildren.Where(state => state == BehaviorState.Fail)
-                                            .Do(_ => NumberOfFailures.SetValueAndForceNotify(NumberOfFailures.Value + 1))
-                                            .Subscribe();
-
-            var succeedChildren = allChildren.Where(state => state == BehaviorState.Success)
-                                             .Do(_ => NumberOfSuccesses.SetValueAndForceNotify(NumberOfFailures.Value + 1))
-                                             .Subscribe();
-
-
-
-
-
         }
     }
 }
