@@ -122,7 +122,7 @@ namespace Assets.Scripts.AI
                 {
                     if (TimesToTick > 0) --TimesToTick;
                     Debug.Log(TimesToTick);
-                    Runner.Tick();
+                    Runner.Start();
                     TreeSubject.OnNext(Runner);
                 })
                 .Debug("")

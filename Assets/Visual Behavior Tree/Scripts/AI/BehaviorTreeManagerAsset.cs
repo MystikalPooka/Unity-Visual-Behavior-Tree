@@ -45,7 +45,6 @@ namespace Assets.Scripts.AI
                 var str = "";
                 foreach(var e in newElements)
                 {
-                    e.BehaviorTreeManager = manager;
                     str += e.Name + "\n";
                 }
 

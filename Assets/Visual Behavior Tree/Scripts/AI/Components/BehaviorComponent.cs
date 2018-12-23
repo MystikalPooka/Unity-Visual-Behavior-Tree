@@ -20,7 +20,7 @@ namespace Assets.Scripts.AI.Components
             Children.Add(element);
         }
 
-        public override System.IObservable<BehaviorState> Tick()
+        public override System.IObservable<BehaviorState> Start()
         {
             return Observable.Empty<BehaviorState>();
         }

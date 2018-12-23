@@ -1,4 +1,4 @@
-﻿#if CSHARP_7_OR_LATER
+﻿#if CSHARP_7_OR_LATER || (UNITY_2018_3_OR_NEWER && (NET_STANDARD_2_0 || NET_4_6))
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
 using System.Threading;
@@ -33,18 +33,22 @@ namespace UniRx.Async.Triggers
             called = true;
             promise?.TrySetResult();
             cancellationTokenSource?.Cancel();
+            cancellationTokenSource?.Dispose();
             if (canellationTokenSourceOrQueue != null)
             {
                 if (canellationTokenSourceOrQueue is CancellationTokenSource cts)
                 {
                     cts.Cancel();
+                    cts.Dispose();
                 }
                 else
                 {
                     var q = (MinimumQueue<CancellationTokenSource>)canellationTokenSourceOrQueue;
                     while (q.Count != 0)
                     {
-                        q.Dequeue().Cancel();
+                        var c = q.Dequeue();
+                        c.Cancel();
+                        c.Dispose();
                     }
                 }
                 canellationTokenSourceOrQueue = null;
@@ -61,7 +65,11 @@ namespace UniRx.Async.Triggers
         /// <summary>Add Cancellation Triggers on destroy</summary>
         public void AddCancellationTriggerOnDestory(CancellationTokenSource cts)
         {
-            if (called) cts.Cancel();
+            if (called)
+            {
+                cts.Cancel();
+                cts.Dispose();
+            }
 
             if (canellationTokenSourceOrQueue == null)
             {

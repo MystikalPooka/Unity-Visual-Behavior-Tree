@@ -1,0 +1,14 @@
+﻿{
+  "name": "uVBT",
+  "references": [
+    "UniRx",
+    "UniRx.Async"
+  ],
+  "optionalUnityReferences": [],
+  "precompiledReferences": [
+    "Newtonsoft.Json.dll"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false
+}

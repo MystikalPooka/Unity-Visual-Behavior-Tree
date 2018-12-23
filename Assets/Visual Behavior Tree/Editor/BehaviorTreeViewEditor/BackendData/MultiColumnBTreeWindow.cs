@@ -213,7 +213,7 @@ namespace Assets.Editor.BehaviorTreeViewEditor.BackendData
 
             dynamic element = Activator.CreateInstance(type, type.ToString().Split('.').Last() + " " + id, depth, id);
             element.ElementType = element.GetType().ToString();
-            element.BehaviorTreeManager = parent.BehaviorTreeManager;
+            //element.BehaviorTreeManager = parent.BehaviorTreeManager;
             _TreeView.treeModel.AddElement(element, parent, 0);
 
             _TreeView.SetSelection(new[] { id }, TreeViewSelectionOptions.RevealAndFrame);

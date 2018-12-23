@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Visual_Behavior_Tree.Scripts;
+using System;
 using System.Collections;
 using System.ComponentModel;
 using System.Linq;
@@ -8,8 +9,8 @@ using UnityEngine;
 namespace Assets.Scripts.AI.Components
 {
     /// <summary>
-    /// Ticks all sub behaviors until a behavior returns success.
-    /// Returns and is in success state if a child was successful, otherwise returns in fail state
+    /// runs all sub behaviors until a behavior returns success.
+    /// Returns success if a child was successful, otherwise returns fail
     /// </summary>
     [Serializable]
     [Description("Runs children in order. Succeeds on first child that succeeds. Fails if no children succeed.")]
@@ -19,7 +20,7 @@ namespace Assets.Scripts.AI.Components
             : base(name, depth, id)
         { }
 
-        public override IObservable<BehaviorState> Tick()
+        public override IObservable<BehaviorState> Start()
         {
             if (Children == null || Children.Count == 0)
             {
@@ -27,16 +28,20 @@ namespace Assets.Scripts.AI.Components
                 return Observable.Return(BehaviorState.Fail);
             }
 
-            var source = from child in Children.ToObservable()
-                         select child as BehaviorTreeElement;
+            var sourceConcat = Children.ToObservable()
+                                       .Select(child => 
+                                            ((BehaviorTreeElement)child).Start()
+                                                                        .Where(st => st != BehaviorState.Running))
+                                       .Concat(); //Sequentially run children and select the final value (should be fail/succeed/error)
 
-            return source.Select(child => child.Tick())
-                        .Concat() //Sequentially subscribe
-                        .TakeWhile(childState => childState != BehaviorState.Success) //take until "succeed". then stop and publish "OnComplete"
-                        
-                        .Publish()
-                        .RefCount(); //automatically begin generating upon receiving first subscription, 
-                                        //and automatically dispose upon last dispose
+            //
+            return sourceConcat.Publish(src =>
+                src.Any(e => e == BehaviorState.Success) //true if any succeed, false if none succeed
+                   .Select(e => e ? BehaviorState.Success : BehaviorState.Fail) //Success if any succeed, fail if all fail
+                   .Publish(srcLast =>
+                            src.Where(e => e == BehaviorState.Fail)
+                               .Select(e => BehaviorState.Running)
+                               .TakeUntil(srcLast).Merge(srcLast)));
         }
     } 
 }

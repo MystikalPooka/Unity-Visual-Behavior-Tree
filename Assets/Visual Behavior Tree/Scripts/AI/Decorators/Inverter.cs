@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UniRx;
 using UnityEngine;
 
@@ -11,35 +12,45 @@ namespace Assets.Scripts.AI.Decorators
             : base(name, depth, id)
         { }
 
-        public override IEnumerator Tick()
+        public override IObservable<BehaviorState> Start()
         {
-            base.Tick().ToObservable()
-                //.Do(_ => Debug.Log("OnNext Inverter at start (base.tick()"))
-                .Subscribe();
-
-            CurrentState = BehaviorState.Null;
-            if (Children == null) yield return null;
-            if (Children.Count == 0) yield return null;
-            var behavior = Children[0] as BehaviorTreeElement;
-
-            yield return behavior.Tick().ToObservable().Subscribe(_ =>
+            if (Children == null || Children.Count == 0)
             {
-                switch (behavior.CurrentState)
+                Debug.LogWarning("Children Null in " + this.Name);
+                return Observable.Return(BehaviorState.Fail);
+            }
+
+            var source = from child in Children.ToObservable()
+                         select child as BehaviorTreeElement;
+
+            var sourceConcat = 
+                              source.Select(child => child.Start().Where(state => state != BehaviorState.Running))
+                                    .Concat();
+
+            return Observable.CreateSafe((IObserver<BehaviorState> observer) =>
+            {
+                var childrenDisposable = sourceConcat.Do(st =>
                 {
-                    case BehaviorState.Fail:
-                        CurrentState = BehaviorState.Success;
-                        break;
-                    case BehaviorState.Success:
-                        CurrentState = BehaviorState.Fail;
-                        break;
-                    case BehaviorState.Running:
-                        CurrentState = BehaviorState.Running;
-                        break;
-                    default:
-                        Debug.LogError("Something went wrong in an inverter.");
-                        break;
-                }
-            }).AddTo(Disposables);
+                    if (st == BehaviorState.Fail)
+                    {
+                        observer.OnNext(BehaviorState.Fail);
+                        observer.OnCompleted();
+                    }
+                    else observer.OnNext(BehaviorState.Running);
+                })
+                .Do(st =>
+                {
+                    if (st == BehaviorState.Success)
+                        observer.OnNext(BehaviorState.Success);
+                    else
+                        observer.OnNext(BehaviorState.Fail);
+                })
+                .Publish().RefCount();
+
+                return childrenDisposable.Subscribe();
+            })
+            .Publish()
+            .RefCount();
         }
     }
 }

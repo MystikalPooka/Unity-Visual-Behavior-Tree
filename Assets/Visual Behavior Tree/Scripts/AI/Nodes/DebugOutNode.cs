@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using UniRx;
 using UnityEngine;
 
 namespace Assets.Scripts.AI.Nodes
@@ -12,16 +13,16 @@ namespace Assets.Scripts.AI.Nodes
         { }
 
 
-        public override BehaviorState Tick()
+        public override IObservable<BehaviorState> Start()
         {
             base.Initialize();
 
             CurrentState = BehaviorState.Running; //Forces an update on the state between succeeds.
             //DO STUFF HERE
             Debug.Log("Debug Out Node " + Name + " Doing stuff");
-            //DOM MORE STUFF?!
-            CurrentState = BehaviorState.Success;
-            return CurrentState;
+            //DO MORE STUFF?!
+
+            return Observable.Return(BehaviorState.Success);
         }
     }
 }

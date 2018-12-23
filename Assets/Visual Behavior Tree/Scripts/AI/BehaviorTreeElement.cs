@@ -35,7 +35,7 @@ namespace Assets.Scripts.AI
         /// The primary method of action
         /// </summary>
         /// <returns>observable stream of states from this behavior</returns>
-        public abstract IObservable<BehaviorState> Tick();
+        public abstract IObservable<BehaviorState> Start();
 
         public virtual void Initialize()
         {
