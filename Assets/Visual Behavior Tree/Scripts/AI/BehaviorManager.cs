@@ -40,7 +40,7 @@ namespace Assets.Scripts.AI
         [Description("The currently loaded tree asset that will be run.")]
         public BehaviorTreeManagerAsset BehaviorTreeFile;
 
-        public ParallelRunner Runner { get; set; } = new ParallelRunner("Main Root", -1, -1);
+        public Merge Runner { get; set; } = new Merge("Main Root", -1, -1);
 
         /// <summary>
         /// Seconds between every tick. At "0" this will tick every frame (basically an update loop)

@@ -19,13 +19,13 @@ namespace Assets.Scripts.AI
 
     public static class AssetExtensions
     {
-        public static ParallelRunner LoadFromJSON(this BehaviorTreeManagerAsset asset, BehaviorManager manager = null)
+        public static Merge LoadFromJSON(this BehaviorTreeManagerAsset asset, BehaviorManager manager = null)
         {
             //TODO: Confirm reload from json
             if (asset == null)
             {
                 Debug.Log("Asset is null when loading");
-                return new ParallelRunner("Empty Root", -1, -1);
+                return new Merge("Empty Root", -1, -1);
             }
             else
             {
@@ -49,7 +49,7 @@ namespace Assets.Scripts.AI
                 }
 
                 var tree = TreeElementUtility.ListToTree(newElements);
-                return (ParallelRunner)tree;
+                return (Merge)tree;
             }
         }
     }

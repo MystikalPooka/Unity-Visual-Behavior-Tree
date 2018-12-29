@@ -20,37 +20,11 @@ namespace Assets.Scripts.AI.Decorators
                 return Observable.Return(BehaviorState.Fail);
             }
 
-            var source = from child in Children.ToObservable()
-                         select child as BehaviorTreeElement;
-
             var sourceConcat = 
-                              source.Select(child => child.Start().Where(state => state != BehaviorState.Running))
+                              Children.ToObservable().Select(child => ((BehaviorTreeElement)child).Start().Where(state => state != BehaviorState.Running))
                                     .Concat();
 
-            return Observable.CreateSafe((IObserver<BehaviorState> observer) =>
-            {
-                var childrenDisposable = sourceConcat.Do(st =>
-                {
-                    if (st == BehaviorState.Fail)
-                    {
-                        observer.OnNext(BehaviorState.Fail);
-                        observer.OnCompleted();
-                    }
-                    else observer.OnNext(BehaviorState.Running);
-                })
-                .Do(st =>
-                {
-                    if (st == BehaviorState.Success)
-                        observer.OnNext(BehaviorState.Success);
-                    else
-                        observer.OnNext(BehaviorState.Fail);
-                })
-                .Publish().RefCount();
-
-                return childrenDisposable.Subscribe();
-            })
-            .Publish()
-            .RefCount();
+            return sourceConcat.Select(state => state == BehaviorState.Fail ? BehaviorState.Success : BehaviorState.Fail);
         }
     }
 }
