@@ -12,8 +12,9 @@ namespace Assets.Scripts.AI.Components
     [Description("Runs all children at same time. Fails early if NumFailures are >0 and total children failed reach that number. Succeeds otherwise.")]
     public class Merge : BehaviorComponent
     {
-        [Range(0,100)]
-        [SerializeField] public float SucceedFailPercentForSucceess = 51;
+        [Range(0, 100)]
+        [SerializeField]
+        public float SucceedFailPercentForSucceess = 51;
 
         public Merge(string name, int depth, int id)
             : base(name, depth, id) { }
@@ -31,6 +32,7 @@ namespace Assets.Scripts.AI.Components
                                            ((BehaviorTreeElement)child).Start()
                                                                        .Where(st => st != BehaviorState.Running));
 
+
             //should take all streams and publish running until last stream finishes...
             //once last stream finishes, must emit "success" or "fail" based on set ratio...
             return source.Publish(src =>
@@ -47,5 +49,6 @@ namespace Assets.Scripts.AI.Components
                             src.Select(s => BehaviorState.Running)
                                .TakeUntil(srcLast).Merge(srcLast)));
         }
+    
     }
 }

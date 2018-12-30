@@ -5,10 +5,6 @@ using System;
 using System.Collections.Generic;
 using UniRx;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Diagnostics;
-using System.Threading;
 
 namespace Assets.Visual_Behavior_Tree.Tests
 {
@@ -64,37 +60,6 @@ namespace Assets.Visual_Behavior_Tree.Tests
             runner.Start().Subscribe((x) => actual.Add(x));
 
             Assert.AreEqual(expected, actual);
-        }
-
-        [Test, Description("Merge should run multiple 100ms children in about 100ms (concurrently)(I WANT IT TO WORK! =( )")]
-        public void TestMergeRunsConcurrently()
-        {
-            var runner = new Merge("", 1, 1);
-            runner.SucceedFailPercentForSucceess = 40; //over 50% succeed should succeed
-
-            runner.AddChild(TestingResources.GetWaitSuccess());
-            runner.AddChild(TestingResources.GetWaitSuccess());
-            runner.AddChild(TestingResources.GetWaitSuccess());
-            runner.AddChild(TestingResources.GetWaitSuccess());
-
-            var actual = new List<BehaviorState>();
-
-            var expected = new List<BehaviorState>();
-            expected.Add(BehaviorState.Running);
-            expected.Add(BehaviorState.Running);
-            expected.Add(BehaviorState.Running);
-            expected.Add(BehaviorState.Running);
-            expected.Add(BehaviorState.Success);
-            var sw = Stopwatch.StartNew();
-
-            runner.Start().Subscribe((x) => actual.Add(x));
-            
-            sw.Stop();
-            var msElapsed = sw.ElapsedMilliseconds;
-            UnityEngine.Debug.Log(msElapsed);
-            
-            Assert.AreEqual(expected, actual);
-            //Assert.That(msElapsed <= 108 && sw.ElapsedMilliseconds >= 92);
         }
     }
 }

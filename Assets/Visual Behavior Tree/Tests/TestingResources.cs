@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using UniRx;
+using UniRx.Diagnostics;
 
 namespace Assets.Visual_Behavior_Tree.Tests
 {
@@ -37,18 +38,6 @@ namespace Assets.Visual_Behavior_Tree.Tests
             }
         }
 
-        internal sealed class Wait100msSuccess : BehaviorTreeElement
-        {
-            public Wait100msSuccess(string name, int depth, int id)
-            : base(name, depth, id) { }
-
-            public override IObservable<BehaviorState> Start()
-            {
-                return Observable.Timer(TimeSpan.FromMilliseconds(10)).Select(e => BehaviorState.Success);
-            }
-        }
-        
-
         internal sealed class RunCustom : BehaviorTreeElement
         {
             public RunCustom(string name, int depth, int id)
@@ -70,11 +59,6 @@ namespace Assets.Visual_Behavior_Tree.Tests
         internal static RunRunSuccess GetRunRunSuccess()
         {
             return new RunRunSuccess("", 1, 1);
-        }
-
-        internal static Wait100msSuccess GetWaitSuccess()
-        {
-            return new Wait100msSuccess("", 1, 1);
         }
 
         internal static RunCustom GetRunCustom(IObservable<BehaviorState> customStream)
