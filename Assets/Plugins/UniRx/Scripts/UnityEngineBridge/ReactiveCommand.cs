@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-#if CSHARP_7_OR_LATER
+#if CSHARP_7_OR_LATER || (UNITY_2018_3_OR_NEWER && (NET_STANDARD_2_0 || NET_4_6))
 using UniRx.Async;
+using UniRx.Async.Internal;
 #endif
 
 namespace UniRx
@@ -12,7 +13,7 @@ namespace UniRx
         IReadOnlyReactiveProperty<bool> CanExecute { get; }
         bool Execute(T parameter);
 
-#if (CSHARP_7_OR_LATER)
+#if CSHARP_7_OR_LATER || (UNITY_2018_3_OR_NEWER && (NET_STANDARD_2_0 || NET_4_6))
         UniTask<T> WaitUntilExecuteAsync(CancellationToken cancellationToken);
 #endif
     }
@@ -23,7 +24,7 @@ namespace UniRx
         IDisposable Execute(T parameter);
         IDisposable Subscribe(Func<T, IObservable<Unit>> asyncAction);
 
-#if (CSHARP_7_OR_LATER)
+#if CSHARP_7_OR_LATER || (UNITY_2018_3_OR_NEWER && (NET_STANDARD_2_0 || NET_4_6))
         UniTask<T> WaitUntilExecuteAsync(CancellationToken cancellationToken);
 #endif
     }
@@ -104,14 +105,11 @@ namespace UniRx
             {
                 trigger.OnNext(parameter);
 
-#if (CSHARP_7_OR_LATER)
+#if CSHARP_7_OR_LATER || (UNITY_2018_3_OR_NEWER && (NET_STANDARD_2_0 || NET_4_6))
                 commonPromise?.InvokeContinuation(ref parameter);
                 if (removablePromises != null)
                 {
-                    foreach (var item in removablePromises)
-                    {
-                        item.Value.InvokeContinuation(ref parameter);
-                    }
+                    PromiseHelper.TrySetResultAll(removablePromises.Values, parameter);
                 }
 #endif
 
@@ -148,7 +146,7 @@ namespace UniRx
             trigger.Dispose();
             canExecuteSubscription.Dispose();
 
-#if (CSHARP_7_OR_LATER)
+#if CSHARP_7_OR_LATER || (UNITY_2018_3_OR_NEWER && (NET_STANDARD_2_0 || NET_4_6))
             commonPromise?.SetCanceled();
             commonPromise = null;
             if (removablePromises != null)
@@ -162,7 +160,7 @@ namespace UniRx
 #endif
         }
 
-#if (CSHARP_7_OR_LATER)
+#if CSHARP_7_OR_LATER || (UNITY_2018_3_OR_NEWER && (NET_STANDARD_2_0 || NET_4_6))
 
         static readonly Action<object> Callback = CancelCallback;
         ReactivePropertyReusablePromise<T> commonPromise;
@@ -191,7 +189,7 @@ namespace UniRx
 
             newPromise = new ReactivePropertyReusablePromise<T>(cancellationToken);
             removablePromises.Add(cancellationToken, newPromise);
-            cancellationToken.Register(Callback, Tuple.Create(this, newPromise), false);
+            cancellationToken.RegisterWithoutCaptureExecutionContext(Callback, Tuple.Create(this, newPromise));
 
             return newPromise.Task;
         }
@@ -305,14 +303,11 @@ namespace UniRx
                 {
                     try
                     {
-#if (CSHARP_7_OR_LATER)
+#if CSHARP_7_OR_LATER || (UNITY_2018_3_OR_NEWER && (NET_STANDARD_2_0 || NET_4_6))
                         commonPromise?.InvokeContinuation(ref parameter);
                         if (removablePromises != null)
                         {
-                            foreach (var item in removablePromises)
-                            {
-                                item.Value.InvokeContinuation(ref parameter);
-                            }
+                            PromiseHelper.TrySetResultAll(removablePromises.Values, parameter);
                         }
 #endif
 
@@ -330,14 +325,11 @@ namespace UniRx
                     var xs = new IObservable<Unit>[a.Length];
                     try
                     {
-#if (CSHARP_7_OR_LATER)
+#if CSHARP_7_OR_LATER || (UNITY_2018_3_OR_NEWER && (NET_STANDARD_2_0 || NET_4_6))
                         commonPromise?.InvokeContinuation(ref parameter);
                         if (removablePromises != null)
                         {
-                            foreach (var item in removablePromises)
-                            {
-                                item.Value.InvokeContinuation(ref parameter);
-                            }
+                            PromiseHelper.TrySetResultAll(removablePromises.Values, parameter);
                         }
 #endif
 
@@ -382,7 +374,7 @@ namespace UniRx
             IsDisposed = true;
             asyncActions = UniRx.InternalUtil.ImmutableList<Func<T, IObservable<Unit>>>.Empty;
 
-#if (CSHARP_7_OR_LATER)
+#if CSHARP_7_OR_LATER || (UNITY_2018_3_OR_NEWER && (NET_STANDARD_2_0 || NET_4_6))
             commonPromise?.SetCanceled();
             commonPromise = null;
             if (removablePromises != null)
@@ -396,7 +388,7 @@ namespace UniRx
 #endif
         }
 
-#if (CSHARP_7_OR_LATER)
+#if CSHARP_7_OR_LATER || (UNITY_2018_3_OR_NEWER && (NET_STANDARD_2_0 || NET_4_6))
 
         static readonly Action<object> Callback = CancelCallback;
         ReactivePropertyReusablePromise<T> commonPromise;
@@ -425,7 +417,7 @@ namespace UniRx
 
             newPromise = new ReactivePropertyReusablePromise<T>(cancellationToken);
             removablePromises.Add(cancellationToken, newPromise);
-            cancellationToken.Register(Callback, Tuple.Create(this, newPromise), false);
+            cancellationToken.RegisterWithoutCaptureExecutionContext(Callback, Tuple.Create(this, newPromise));
 
             return newPromise.Task;
         }
@@ -480,7 +472,7 @@ namespace UniRx
             return new ReactiveCommand<T>(canExecuteSource, initialValue);
         }
 
-#if (CSHARP_7_OR_LATER)
+#if CSHARP_7_OR_LATER || (UNITY_2018_3_OR_NEWER && (NET_STANDARD_2_0 || NET_4_6))
 
         public static UniTask<T>.Awaiter GetAwaiter<T>(this IReactiveCommand<T> command)
         {
@@ -541,7 +533,7 @@ namespace UniRx
             return new AsyncReactiveCommand<T>(sharedCanExecuteSource);
         }
 
-#if (CSHARP_7_OR_LATER)
+#if CSHARP_7_OR_LATER || (UNITY_2018_3_OR_NEWER && (NET_STANDARD_2_0 || NET_4_6))
 
         public static UniTask<T>.Awaiter GetAwaiter<T>(this IAsyncReactiveCommand<T> command)
         {

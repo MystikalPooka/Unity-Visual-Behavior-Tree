@@ -1,4 +1,4 @@
-﻿#if CSHARP_7_OR_LATER
+﻿#if CSHARP_7_OR_LATER || (UNITY_2018_3_OR_NEWER && (NET_STANDARD_2_0 || NET_4_6))
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
 using System;
@@ -155,6 +155,13 @@ namespace UniRx.Async.Internal
         // can override for control 'start/reset' timing.
         public virtual bool IsCompleted => status.IsCompleted();
 
+        protected T RawResult => result;
+
+        protected void ForceSetResult(T result)
+        {
+            this.result = result;
+        }
+
         public virtual T GetResult()
         {
             switch (status)
@@ -227,7 +234,7 @@ namespace UniRx.Async.Internal
             return false;
         }
 
-        void TryInvokeContinuation()
+        protected void TryInvokeContinuation()
         {
             if (continuation == null) return;
 

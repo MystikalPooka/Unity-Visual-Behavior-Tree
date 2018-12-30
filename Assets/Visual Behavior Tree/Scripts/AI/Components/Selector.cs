@@ -1,14 +1,16 @@
-﻿using System;
+﻿using Assets.Visual_Behavior_Tree.Scripts;
+using System;
 using System.Collections;
 using System.ComponentModel;
+using System.Linq;
 using UniRx;
 using UnityEngine;
 
 namespace Assets.Scripts.AI.Components
 {
     /// <summary>
-    /// Ticks all sub behaviors until a behavior returns success.
-    /// Returns and is in success state if a child was successful, otherwise returns in fail state
+    /// runs all sub behaviors until a behavior returns success.
+    /// Returns success if a child was successful, otherwise returns fail
     /// </summary>
     [Serializable]
     [Description("Runs children in order. Succeeds on first child that succeeds. Fails if no children succeed.")]
@@ -18,31 +20,28 @@ namespace Assets.Scripts.AI.Components
             : base(name, depth, id)
         { }
 
-        public override IEnumerator Tick(WaitForSeconds delayStart = null)
+        public override IObservable<BehaviorState> Start()
         {
-            base.Tick().ToObservable().Subscribe();
-            
-            CurrentState = (BehaviorState.Running);
-            foreach (BehaviorTreeElement behavior in Children)
+            if (Children == null || Children.Count == 0)
             {
-                if (CurrentState != BehaviorState.Running) yield break;
-
-                yield return 
-                    behavior.Tick().ToObservable()
-                    .Do(_ =>
-                    {
-                        if (behavior.CurrentState == BehaviorState.Success)
-                        {
-                            CurrentState = BehaviorState.Success;
-                            return;
-                        }
-                    })
-                    .Subscribe()
-                    .AddTo(Disposables);
+                Debug.LogWarning("Children Null in " + this.Name);
+                return Observable.Return(BehaviorState.Fail);
             }
-            //if it gets here, it went through all subbehaviors and had no successes
-            if (CurrentState == BehaviorState.Running) CurrentState = BehaviorState.Fail;
-            yield break;
+
+            var sourceConcat = Children.ToObservable()
+                                       .Select(child => 
+                                            ((BehaviorTreeElement)child).Start()
+                                                                        .Where(st => st != BehaviorState.Running))
+                                       .Concat(); //Sequentially run children and select the final value (should be fail/succeed/error)
+
+            //
+            return sourceConcat.Publish(src =>
+                src.Any(e => e == BehaviorState.Success) //true if any succeed, false if none succeed
+                   .Select(e => e ? BehaviorState.Success : BehaviorState.Fail) //Success if any succeed, fail if all fail
+                   .Publish(srcLast =>
+                            src.Where(e => e == BehaviorState.Fail)
+                               .Select(e => BehaviorState.Running)
+                               .TakeUntil(srcLast).Merge(srcLast)));
         }
     } 
 }

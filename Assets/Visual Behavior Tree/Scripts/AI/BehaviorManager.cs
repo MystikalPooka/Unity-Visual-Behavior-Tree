@@ -9,6 +9,7 @@ using UniRx;
 using Assets.Scripts.AI.Tree;
 using System.Linq;
 using Assets.Scripts.AI.Behavior_Logger;
+using UniRx.Diagnostics;
 
 namespace Assets.Scripts.AI
 {
@@ -39,14 +40,15 @@ namespace Assets.Scripts.AI
         [Description("The currently loaded tree asset that will be run.")]
         public BehaviorTreeManagerAsset BehaviorTreeFile;
 
-        public ParallelRunner Runner { get; set; } = new ParallelRunner("Main Root", -1, -1);
+        public Merge Runner { get; set; } = new Merge("Main Root", -1, -1);
 
         /// <summary>
         /// Seconds between every tick. At "0" this will tick every frame (basically an update loop)
         /// </summary>
         [SerializeField]
+        
         [Description("Seconds between every tick. At 0 this will tick every frame")]
-        public float SecondsBetweenTicks = 0.1f;
+        public double MilliSecondsBetweenTicks = 100;
 
         /// <summary>
         /// Number of times to tick the full tree. Set to a negative number to make an infinitely running behavior tree.
@@ -65,11 +67,6 @@ namespace Assets.Scripts.AI
 
         private bool initialized = false;
 
-        void OnEnable()
-        {
-            InitIfNeeded();
-        }
-
         public void InitIfNeeded()
         {
             if (initialized == false)
@@ -78,7 +75,8 @@ namespace Assets.Scripts.AI
             }
         }
 
-        public IObservable<BehaviorTreeElement> TreeStream { get; private set; }
+        public Subject<BehaviorTreeElement> TreeSubject { get; private set; }
+        List<BehaviorTreeElement> treeList = new List<BehaviorTreeElement>();
         public void Reinitialize()
         {
             //TODO: Change to runner extension
@@ -86,39 +84,25 @@ namespace Assets.Scripts.AI
 
             if(spliceNewIntoTree) SpliceIntoRunner();
 
-            List<BehaviorTreeElement> treeList = new List<BehaviorTreeElement>();
-
             TreeElementUtility.TreeToList(Runner, treeList);
 
-            var treeQuery = from el in treeList
-                            select el;
-
-            TreeStream =
-                treeQuery
-                .ToObservable()
-                .Do(xr =>
-                {
-                    xr.ObserveEveryValueChanged(x => x.NumberOfTicksReceived)
-                    .Do(x =>
-                    {
-                        var logEntry = new BehaviorLogEntry(
-                                loggerName: BehaviorLogger.Name,
-                                logType: LogType.Log,
-                                timestamp: DateTime.Now,
-                                message: "Ticked!",
-                                behaviorID: xr.ID,
-                                newState: xr.CurrentState,
-                                ticknum: xr.NumberOfTicksReceived.Value,
-                                context: this,
-                                state: xr);
-                        BehaviorLogger.Raw(logEntry);
-                    })
-                    
-                    .Subscribe()
-                    .AddTo(this);
-                });
-
-            TreeStream.Subscribe().AddTo(this);
+            var treeQuery = treeList.AsEnumerable();
+            TreeSubject = new Subject<BehaviorTreeElement>();
+            TreeSubject.Subscribe(xr =>
+            {
+                var logEntry = new BehaviorLogEntry(
+                loggerName: BehaviorLogger.Name,
+                logType: LogType.Log,
+                timestamp: DateTime.Now,
+                message: "Ticked!",
+                behaviorID: xr.ID,
+                newState: xr.CurrentState,
+                ticknum: xr.NumberOfTicksReceived.Value,
+                context: this,
+                state: xr);
+                BehaviorLogger.Raw(logEntry);
+                Debug.Log("xr debug initialize");
+            }).AddTo(this);
 
             initialized = true;
         }
@@ -128,18 +112,22 @@ namespace Assets.Scripts.AI
         /// </summary>
         /// <returns></returns>
         //TODO: CHANGE TO Zip() instead of loop
-        IEnumerator Start()
+        void Start()
         {
-            while(TimesToTick != 0)
-            {
-                yield return Runner.Tick()
-                                   .ToObservable(true)
-                                   .Subscribe(_ => { }, e => Debug.LogError("Error: " + e))
-                                   .AddTo(this);
-                TreeStream.Subscribe().AddTo(this);
-                yield return new WaitForSeconds(SecondsBetweenTicks);
-                if (TimesToTick >= 1) --TimesToTick;
-            }
+            InitIfNeeded();
+
+            var timeStep = Observable.Interval(TimeSpan.FromMilliseconds(MilliSecondsBetweenTicks))
+                .TakeWhile((_) => TimesToTick != 0)
+                .Do(cx =>
+                {
+                    if (TimesToTick > 0) --TimesToTick;
+                    Debug.Log(TimesToTick);
+                    Runner.Start();
+                    TreeSubject.OnNext(Runner);
+                })
+                .Debug("")
+                .Subscribe()
+                .AddTo(this);
         }
 
         /// <summary>

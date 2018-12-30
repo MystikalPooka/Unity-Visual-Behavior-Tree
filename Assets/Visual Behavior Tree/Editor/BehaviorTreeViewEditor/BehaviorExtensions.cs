@@ -84,7 +84,7 @@ namespace Assets.Editor.BehaviorTreeViewEditor
         /// <param name="filePath"></param>
         /// <param name="asset"></param>
         public static void SaveBehaviorAsset(this BehaviorManager behaviorManager, string filePath, 
-            BehaviorTreeManagerAsset asset, ParallelRunner root = null)
+            BehaviorTreeManagerAsset asset, Merge root = null)
         {
             if (asset == null)
                 asset = ScriptableObject.CreateInstance<BehaviorTreeManagerAsset>();
@@ -103,7 +103,7 @@ namespace Assets.Editor.BehaviorTreeViewEditor
             if(behaviorManager != null)
             {
                 behaviorManager.Reinitialize();
-                asset.SecondsBetweenTicks = behaviorManager.SecondsBetweenTicks;
+                asset.MilliSecondsBetweenTicks =behaviorManager.MilliSecondsBetweenTicks;
                 asset.TimesToTick = behaviorManager.TimesToTick;
 
                 TreeElementUtility.TreeToList(behaviorManager.Runner, runnerElementList);  
@@ -116,7 +116,7 @@ namespace Assets.Editor.BehaviorTreeViewEditor
 
             if(json == "" || runnerElementList.Count == 0)
             {
-                var runner = new ParallelRunner("Extension Root", -1, -1);
+                var runner = new Merge("Extension Root", -1, -1);
                 runnerElementList.Add(runner);
 
                 json = JsonConvert.SerializeObject(runnerElementList, Formatting.Indented);

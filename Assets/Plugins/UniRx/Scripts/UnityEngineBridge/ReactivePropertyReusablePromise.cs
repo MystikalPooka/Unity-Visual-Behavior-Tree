@@ -1,4 +1,4 @@
-﻿#if (CSHARP_7_OR_LATER)
+﻿#if CSHARP_7_OR_LATER || (UNITY_2018_3_OR_NEWER && (NET_STANDARD_2_0 || NET_4_6))
 
 #pragma warning disable CS1591
 
@@ -9,7 +9,7 @@ using UniRx.Async.Internal;
 
 namespace UniRx
 {
-    internal class ReactivePropertyReusablePromise<T> : IAwaiter<T>
+    internal class ReactivePropertyReusablePromise<T> : IAwaiter<T>, IResolvePromise<T>
     {
         T result;
         object continuation; // Action or Queue<Action>
@@ -127,6 +127,12 @@ namespace UniRx
                     waitingContinuationCount++;
                 }
             }
+        }
+
+        bool IResolvePromise<T>.TrySetResult(T value)
+        {
+            InvokeContinuation(ref value);
+            return true;
         }
     }
 }

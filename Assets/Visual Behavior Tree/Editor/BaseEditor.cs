@@ -59,6 +59,11 @@ namespace Assets.Editor
                         var fieldProp = serializedObject.FindProperty(field.Name);
                         EditorList.Show(fieldProp, EditorListOption.Buttons | EditorListOption.ElementLabels);
                     }
+                    else if(field.FieldType == typeof(GameObject[]))
+                    {
+                        var fieldProp = serializedObject.FindProperty(field.Name);
+                        EditorList.Show(fieldProp, EditorListOption.Buttons | EditorListOption.ElementLabels);
+                    }
                     else if(serializedObject != null)
                     {
                         //Debug.Log("Trying to draw: " + field.Name);

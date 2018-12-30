@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using UniRx;
 using UnityEngine;
 
 namespace Assets.Scripts.AI.Nodes
@@ -12,14 +13,16 @@ namespace Assets.Scripts.AI.Nodes
         { }
 
 
-        public override IEnumerator Tick(WaitForSeconds delayStart = null)
+        public override IObservable<BehaviorState> Start()
         {
-            base.Tick();
+            base.Initialize();
 
             CurrentState = BehaviorState.Running; //Forces an update on the state between succeeds.
+            //DO STUFF HERE
             Debug.Log("Debug Out Node " + Name + " Doing stuff");
-            CurrentState = BehaviorState.Success;
-            yield break;
+            //DO MORE STUFF?!
+
+            return Observable.Return(BehaviorState.Success);
         }
     }
 }

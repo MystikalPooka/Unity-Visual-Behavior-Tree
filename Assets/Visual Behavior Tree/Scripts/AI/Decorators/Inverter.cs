@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UniRx;
 using UnityEngine;
 
@@ -11,35 +12,19 @@ namespace Assets.Scripts.AI.Decorators
             : base(name, depth, id)
         { }
 
-        public override IEnumerator Tick(WaitForSeconds delayStart = null)
+        public override IObservable<BehaviorState> Start()
         {
-            base.Tick(delayStart).ToObservable()
-                //.Do(_ => Debug.Log("OnNext Inverter at start (base.tick()"))
-                .Subscribe();
-
-            CurrentState = BehaviorState.Null;
-            if (Children == null) yield return null;
-            if (Children.Count == 0) yield return null;
-            var behavior = Children[0] as BehaviorTreeElement;
-
-            yield return behavior.Tick().ToObservable().Subscribe(_ =>
+            if (Children == null || Children.Count == 0)
             {
-                switch (behavior.CurrentState)
-                {
-                    case BehaviorState.Fail:
-                        CurrentState = BehaviorState.Success;
-                        break;
-                    case BehaviorState.Success:
-                        CurrentState = BehaviorState.Fail;
-                        break;
-                    case BehaviorState.Running:
-                        CurrentState = BehaviorState.Running;
-                        break;
-                    default:
-                        Debug.LogError("Something went wrong in an inverter.");
-                        break;
-                }
-            }).AddTo(Disposables);
+                Debug.LogWarning("Children Null in " + this.Name);
+                return Observable.Return(BehaviorState.Fail);
+            }
+
+            var sourceConcat = 
+                              Children.ToObservable().Select(child => ((BehaviorTreeElement)child).Start().Where(state => state != BehaviorState.Running))
+                                    .Concat();
+
+            return sourceConcat.Select(state => state == BehaviorState.Fail ? BehaviorState.Success : BehaviorState.Fail);
         }
     }
 }

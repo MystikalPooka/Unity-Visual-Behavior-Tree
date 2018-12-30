@@ -120,7 +120,7 @@ namespace Assets.Editor.BehaviorTreeViewEditor.BackendData
             var treeRoot = _BehaviorTreeManagerAsset.LoadFromJSON();
             if(treeRoot == null)
             {
-                treeRoot = new ParallelRunner("New Root",-1, -1);
+                treeRoot = new Merge("New Root",-1, -1);
             }
             var treeList = new List<BehaviorTreeElement>();
 
@@ -133,9 +133,9 @@ namespace Assets.Editor.BehaviorTreeViewEditor.BackendData
         {
             CustomAssetUtility.CreateAsset<BehaviorTreeManagerAsset>();
             _BehaviorTreeManagerAsset = (BehaviorTreeManagerAsset)Selection.activeObject;
-            var root =new ParallelRunner("root",-1,-1);
+            var root =new Merge("root",-1,-1);
             BehaviorExtensions.SaveBehaviorAsset(null, AssetDatabase.GetAssetPath(_BehaviorTreeManagerAsset),
-                                                _BehaviorTreeManagerAsset,(ParallelRunner)root);
+                                                _BehaviorTreeManagerAsset,(Merge)root);
         }
 
         void OnSelectionChange()
@@ -195,7 +195,7 @@ namespace Assets.Editor.BehaviorTreeViewEditor.BackendData
                 if (GUILayout.Button("Save Tree"))
                 {
                     FilePath = EditorUtility.SaveFilePanel("", FileDir, "New Behavior Tree", "asset");
-                    BehaviorExtensions.SaveBehaviorAsset(null, FilePath, _BehaviorTreeManagerAsset, (ParallelRunner)_TreeView.treeModel.Root);
+                    BehaviorExtensions.SaveBehaviorAsset(null, FilePath, _BehaviorTreeManagerAsset, (Merge)_TreeView.treeModel.Root);
                 }
             }
 
@@ -213,7 +213,7 @@ namespace Assets.Editor.BehaviorTreeViewEditor.BackendData
 
             dynamic element = Activator.CreateInstance(type, type.ToString().Split('.').Last() + " " + id, depth, id);
             element.ElementType = element.GetType().ToString();
-            element.BehaviorTreeManager = parent.BehaviorTreeManager;
+            //element.BehaviorTreeManager = parent.BehaviorTreeManager;
             _TreeView.treeModel.AddElement(element, parent, 0);
 
             _TreeView.SetSelection(new[] { id }, TreeViewSelectionOptions.RevealAndFrame);
