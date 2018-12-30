@@ -1,12 +1,16 @@
 <!--- This Readme was made with the help of Dillinger online markdown editor https://dillinger.io/--->
 [![Build Status](https://travis-ci.org/MystikalPooka/Unity-Visual-Behavior-Tree.svg?branch=master)](https://travis-ci.org/MystikalPooka/Unity-Visual-Behavior-Tree) [![Join the chat at https://gitter.im/MystikalPooka/Unity-Visual-Behavior-Tree](https://badges.gitter.im/MystikalPooka/Unity-Visual-Behavior-Tree.svg)](https://gitter.im/MystikalPooka/Unity-Visual-Behavior-Tree?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-# Unity-Visual-Behavior-Tree
-Visual Scripting Behavior Tree Tool for Unity 2018.2.x
+# Unity-Visual-Behavior-Tree (Name pending....)
+Visual Scripting Behavior Tree Tool for Unity 2017.2.x+
 
 ### Requires [uniRX](https://github.com/neuecc/UniRx) - reactive extensions for Unity by nuecc
 
-# **How To Behavior Tree**
-
+# **Creating Behavior Trees**
+ ### **Introduction to Reactive eXtensions:**
+ - [GREAT Introduction to RX here](http://introtorx.com/)! (introtorx)
+ - [Another one (with shiny marble diagrams!)](http://reactivex.io/documentation/operators.html)! (ReactiveX.io)
+ - [Great List of Tutorials](http://reactivex.io/tutorials.html) (ReactiveX.io)
+ - [Interactive marble diagrams](http://rxmarbles.com/)! (rxmarbles.com)
 - ### **Step 1:** 
    ##### Inherit from your choice of abstract behavior. Behavior type descriptions are below.
   
