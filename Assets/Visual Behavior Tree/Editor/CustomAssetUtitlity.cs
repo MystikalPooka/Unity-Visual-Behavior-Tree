@@ -11,7 +11,7 @@ public static class CustomAssetUtility
         string path = AssetDatabase.GetAssetPath(Selection.activeObject);
         if (path == "")
         {
-            path = "Assets/Behaviors";
+            path = "Assets/Visual Behavior Tree/Examples";
         }
         else if (Path.GetExtension(path) != "")
         {
