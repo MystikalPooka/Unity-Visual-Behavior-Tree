@@ -8,6 +8,8 @@ namespace Assets.Scripts.AI.Nodes
     [Serializable]
     public class DebugOutNode : BehaviorNode
     {
+        public string debugOutText;
+
         public DebugOutNode(string name, int depth, int id) 
             : base(name, depth, id)
         { }
@@ -19,7 +21,7 @@ namespace Assets.Scripts.AI.Nodes
 
             CurrentState = BehaviorState.Running; //Forces an update on the state between succeeds.
             //DO STUFF HERE
-            Debug.Log("Debug Out Node " + Name + " Doing stuff");
+            Debug.Log(debugOutText);
             //DO MORE STUFF?!
 
             return Observable.Return(BehaviorState.Success);

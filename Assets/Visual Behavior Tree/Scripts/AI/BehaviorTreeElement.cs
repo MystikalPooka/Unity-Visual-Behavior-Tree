@@ -11,25 +11,24 @@ namespace Assets.Scripts.AI
     [Serializable]
     public abstract class BehaviorTreeElement : TreeElement, IDisposable
     {
-        //is this needed?
-        public LongReactiveProperty NumberOfTicksReceived { get; private set; }
-
         //used for reflection upon JSON loading
         public string ElementType { get; set; }
 
-        public BehaviorTreeElement(string name, int depth, int id) 
+        public BehaviorTreeElement(string name,int depth, int id) 
             : base(name, depth, id)
         {
-            NumberOfTicksReceived = new LongReactiveProperty(0);
             ElementType = this.GetType().ToString();
             CurrentState = (BehaviorState.Null);
             Children = new List<TreeElement>();
         }
 
         [Newtonsoft.Json.JsonIgnore]
-        public BehaviorState CurrentState;
+        private BehaviorState _currentState;
+        [Newtonsoft.Json.JsonIgnore]
+        public BehaviorState CurrentState { get => _currentState; set => _currentState = value; }
 
-        public bool Initialized = false;
+
+        private bool Initialized = false;
 
         /// <summary>
         /// The primary method of action

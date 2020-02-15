@@ -6,19 +6,13 @@ using UnityEngine;
 namespace Assets.Scripts.AI.Tree
 {
     [Serializable]
-	public class TreeElement
+	public class TreeElement : ScriptableObject
     {
 		[SerializeField] int _ID;
 		[SerializeField] string _Name;
-		[SerializeField] int _Depth;
+        [SerializeField] int _Depth;
 		[NonSerialized] TreeElement _Parent;
 		[NonSerialized] List<TreeElement> _Children;
-
-		public int Depth
-		{
-			get { return _Depth; }
-			set { _Depth = value; }
-		}
 
         [JsonIgnore]
 		public TreeElement Parent
@@ -49,7 +43,9 @@ namespace Assets.Scripts.AI.Tree
 			get { return _ID; } set { _ID = value; }
 		}
 
-		public TreeElement ()
+        public int Depth { get => _Depth; set => _Depth = value; }
+
+        public TreeElement ()
 		{
 		}
 
@@ -57,7 +53,7 @@ namespace Assets.Scripts.AI.Tree
 		{
 			_Name = name;
 			_ID = id;
-			_Depth = depth;
+            _Depth = depth;
 		}
     }
 }

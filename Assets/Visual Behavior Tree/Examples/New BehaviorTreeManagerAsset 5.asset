@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ccda9b5dedb28eb4788e2d2d8c20a954, type: 3}
+  m_Name: New BehaviorTreeManagerAsset 5
+  m_EditorClassIdentifier: 
+  TimesToTick: 0
+  MilliSecondsBetweenTicks: 100
+  RunnerElementsJSON: "[\r\n  {\r\n    \"SucceedFailPercentForSucceess\": 51.0,\r\n
+    \   \"Initialized\": false,\r\n    \"NumberOfTicksReceived\": {\r\n      \"Value\":
+    0,\r\n      \"HasValue\": true\r\n    },\r\n    \"ElementType\": \"Assets.Scripts.AI.Components.Merge\",\r\n
+    \   \"Depth\": -1,\r\n    \"HasChildren\": true,\r\n    \"Name\": \"root\",\r\n
+    \   \"ID\": -1\r\n  },\r\n  {\r\n    \"SucceedFailPercentForSucceess\": 51.0,\r\n
+    \   \"Initialized\": false,\r\n    \"NumberOfTicksReceived\": {\r\n      \"Value\":
+    0,\r\n      \"HasValue\": true\r\n    },\r\n    \"ElementType\": \"Assets.Scripts.AI.Components.Merge\",\r\n
+    \   \"Depth\": 0,\r\n    \"HasChildren\": true,\r\n    \"Name\": \"Merge 1\",\r\n
+    \   \"ID\": 1\r\n  },\r\n  {\r\n    \"Initialized\": false,\r\n    \"NumberOfTicksReceived\":
+    {\r\n      \"Value\": 0,\r\n      \"HasValue\": true\r\n    },\r\n    \"ElementType\":
+    \"Assets.Scripts.AI.Decorators.Inverter\",\r\n    \"Depth\": 1,\r\n    \"HasChildren\":
+    false,\r\n    \"Name\": \"Inverter 0\",\r\n    \"ID\": 0\r\n  }\r\n]"

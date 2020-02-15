@@ -14,7 +14,7 @@ namespace Assets.Scripts.AI.Components
     {
         [Range(0, 100)]
         [SerializeField]
-        public float SucceedFailPercentForSucceess = 51;
+        public float SucceedPercentToSucceed = 51;
 
         public Merge(string name, int depth, int id)
             : base(name, depth, id) { }
@@ -43,7 +43,7 @@ namespace Assets.Scripts.AI.Components
                         new { total = acc.total + 1, acc.succeeded };
                 })
                 .Select(a => 100 * ((float)a.succeeded / a.total))
-                .Select(ratio => ratio >= SucceedFailPercentForSucceess ?
+                .Select(ratio => ratio >= SucceedPercentToSucceed ?
                                     BehaviorState.Success : BehaviorState.Fail)
                 .Publish(srcLast =>
                             src.Select(s => BehaviorState.Running)

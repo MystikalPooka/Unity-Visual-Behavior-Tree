@@ -178,6 +178,7 @@ namespace Assets.Editor.BehaviorTreeViewEditor.BackendData
 
         public void OnMenuTypeSelected(object itemTypeSelected)
         {
+            Debug.Log(itemTypeSelected);
             object[] obj = itemTypeSelected as object[];
             BehaviorTreeElement element = obj[0] as BehaviorTreeElement;
             element.ElementType = obj[1].ToString();
@@ -221,13 +222,13 @@ namespace Assets.Editor.BehaviorTreeViewEditor.BackendData
                         case ShowParameters.Active:
                             if (IsSelected(item.id))
                             {
-                                cellRect.height = TypeDependantDrawer.GetTotalHeightOfProperties(item.data);
-                                TypeDependantDrawer.DrawAllFields(item.data, cellRect);
+                                //cellRect.height = TypeDependantDrawer.GetTotalHeightOfProperties(item.data);
+                                //TypeDependantDrawer.DrawAllFields(item.data, cellRect);
                             }
                             break;
                         case ShowParameters.All:
-                            cellRect.height = TypeDependantDrawer.GetTotalHeightOfProperties(item.data);
-                            TypeDependantDrawer.DrawAllFields(item.data, cellRect);
+                            //cellRect.height = TypeDependantDrawer.GetTotalHeightOfProperties(item.data);
+                            //TypeDependantDrawer.DrawAllFields(item.data, cellRect);
                             break;
                         default:
                             break;
@@ -249,7 +250,7 @@ namespace Assets.Editor.BehaviorTreeViewEditor.BackendData
             if((ShowParams.HasFlag(ShowParameters.Active) && IsSelected(item.id)) ||
                 ShowParams.HasFlag(ShowParameters.All))
             {
-                maxHeight = TypeDependantDrawer.GetTotalHeightOfProperties((item as TreeViewItem<BehaviorTreeElement>).data);
+                //maxHeight = TypeDependantDrawer.GetTotalHeightOfProperties((item as TreeViewItem<BehaviorTreeElement>).data);
             }
             return Math.Max(20f, maxHeight);
         }

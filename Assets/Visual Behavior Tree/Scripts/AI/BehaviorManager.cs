@@ -97,7 +97,6 @@ namespace Assets.Scripts.AI
                 message: "Ticked!",
                 behaviorID: xr.ID,
                 newState: xr.CurrentState,
-                ticknum: xr.NumberOfTicksReceived.Value,
                 context: this,
                 state: xr);
                 BehaviorLogger.Raw(logEntry);
