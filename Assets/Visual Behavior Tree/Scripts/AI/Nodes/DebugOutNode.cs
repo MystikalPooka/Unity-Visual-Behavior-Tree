@@ -17,9 +17,9 @@ namespace Assets.Scripts.AI.Nodes
 
         public override IObservable<BehaviorState> Start()
         {
-            base.Initialize();
+            //base.Initialize();
 
-            CurrentState = BehaviorState.Running; //Forces an update on the state between succeeds.
+            CurrentState = BehaviorState.Null; //Forces an update on the state between succeeds.
             //DO STUFF HERE
             Debug.Log(debugOutText);
             //DO MORE STUFF?!

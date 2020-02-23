@@ -10,6 +10,7 @@ using Assets.Scripts.AI.Tree;
 using System.Linq;
 using Assets.Scripts.AI.Behavior_Logger;
 using UniRx.Diagnostics;
+using Assets.Visual_Behavior_Tree.Scripts;
 
 namespace Assets.Scripts.AI
 {
@@ -22,7 +23,7 @@ namespace Assets.Scripts.AI
             {
                 if(behaviorLogger == null)
                 {
-                    behaviorLogger = new BehaviorLogger(gameObject.name + ": " + BehaviorTreeFile.name + " Tree");
+                    behaviorLogger = new BehaviorLogger(gameObject.name + ": " + BehaviorTreeFiles.Count + " Trees");
                 }
                 return behaviorLogger;
             }
@@ -37,10 +38,10 @@ namespace Assets.Scripts.AI
         /// The file to actually save/load to/from.
         /// </summary>
         [JsonIgnore]
-        [Description("The currently loaded tree asset that will be run.")]
-        public BehaviorTreeManagerAsset BehaviorTreeFile;
+        [Description("The currently loaded tree assets that will be run concurrently.")]
+        public List<TreeNodeAsset> BehaviorTreeFiles;
 
-        public Merge Runner { get; set; } = new Merge("Main Root", -1, -1);
+        public BehaviorTreeElement Runner { get; set; }
 
         /// <summary>
         /// Seconds between every tick. At "0" this will tick every frame (basically an update loop)
@@ -57,14 +58,6 @@ namespace Assets.Scripts.AI
         [Description("Times to tick this tree before stopping. Negative values indicate infinitely running behavior.")]
         public int TimesToTick = 10;
 
-        [Description("Open a list to splice other trees into this tree.")]
-        public bool spliceNewIntoTree = false;
-        /// <summary>
-        /// A list of trees to splice into the current tree. These trees are not directly editable from here.
-        /// </summary>
-        [JsonIgnore]
-        public List<BehaviorTreeManagerAsset> SpliceList;
-
         private bool initialized = false;
 
         public void InitIfNeeded()
@@ -80,13 +73,21 @@ namespace Assets.Scripts.AI
         public void Reinitialize()
         {
             //TODO: Change to runner extension
-            Runner = BehaviorTreeFile.LoadFromJSON(this);
 
-            if(spliceNewIntoTree) SpliceIntoRunner();
+            if(BehaviorTreeFiles.Count > 1)
+            {
+                Runner = ScriptableObject.CreateInstance<Merge>();
+                Runner.Depth = -1;
+                Runner.ID = -1;
+                foreach (var asset in BehaviorTreeFiles)
+                {
+                    var childRoot = asset.LoadRoot();
+                    Debug.Log("child root: " + childRoot);
+                    ((Merge)Runner).AddChild(childRoot);
+                }
+            } 
+            else Runner = BehaviorTreeFiles.First().LoadRoot();
 
-            TreeElementUtility.TreeToList(Runner, treeList);
-
-            var treeQuery = treeList.AsEnumerable();
             TreeSubject = new Subject<BehaviorTreeElement>();
             TreeSubject.Subscribe(xr =>
             {
@@ -100,7 +101,7 @@ namespace Assets.Scripts.AI
                 context: this,
                 state: xr);
                 BehaviorLogger.Raw(logEntry);
-                Debug.Log("xr debug initialize");
+                Debug.Log(logEntry);
             }).AddTo(this);
 
             initialized = true;
@@ -120,44 +121,13 @@ namespace Assets.Scripts.AI
                 .Do(cx =>
                 {
                     if (TimesToTick > 0) --TimesToTick;
-                    Debug.Log(TimesToTick);
-                    Runner.Start();
-                    TreeSubject.OnNext(Runner);
+                    Runner.Start().Subscribe();
+
+                    //TreeSubject.OnNext(Runner);
                 })
-                .Debug("")
+                //.Debug("")
                 .Subscribe()
                 .AddTo(this);
-        }
-
-        /// <summary>
-        /// Splice all trees in the "splice" area of the editor and return "true" if new trees were spliced.
-        /// </summary>
-        /// <returns></returns>
-        /// 
-        //TODO: Swap this to a reactive approach.
-        public bool SpliceIntoRunner()
-        {
-            if (SpliceList != null)
-            {
-                foreach (var behaviorAsset in SpliceList)
-                {
-                    if (behaviorAsset == null) return false;
-
-                    var spliceTree = behaviorAsset.LoadFromJSON();
-                    
-                    foreach (var behavior in spliceTree.Children)
-                    {
-                        if (behavior.Depth == -1 || behavior.Name == "root") continue;
-
-                        dynamic newBehavior = Activator.CreateInstance(Type.GetType(((BehaviorTreeElement)behavior).ElementType),
-                                                                        behavior.Name, behavior.Depth, behavior.ID);
-                        newBehavior.BehaviorTreeManager = this;
-                        Runner.AddChild(newBehavior);
-                    }
-                }
-                return true;
-            }
-            else return false;
         }
 
         public void Dispose()

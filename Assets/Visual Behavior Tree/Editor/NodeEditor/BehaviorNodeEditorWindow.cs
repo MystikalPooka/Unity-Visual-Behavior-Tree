@@ -226,7 +226,17 @@ namespace Assets.Visual_Behavior_Tree.Editor.NodeEditor
 
                 for (int i = 0; i < connectionsToRemove.Count; i++)
                 {
-                    connections.Remove(connectionsToRemove[i]);
+                    var connection = connectionsToRemove[i];
+                    connections.Remove(connection);
+                    if(connection.inPoint.connections.Contains(connection))
+                    {
+                        connection.inPoint.connections.Remove(connection);
+                    }
+
+                    if (connection.outPoint.connections.Contains(connection))
+                    {
+                        connection.outPoint.connections.Remove(connection);
+                    }
                 }
 
                 connectionsToRemove = null;
@@ -307,17 +317,15 @@ namespace Assets.Visual_Behavior_Tree.Editor.NodeEditor
 
         private void SaveAllNodesToFile()
         {
-            var path = EditorUtility.SaveFilePanelInProject(
+            if (IsValidTree())
+            {
+                var path = EditorUtility.SaveFilePanelInProject(
                 "Save behavior tree",
                 "New Behavior Tree.asset",
                 "asset",
                 "Save behavior tree asset");
 
-            var validator = new TreeValidator(selectedNodeStyle);
-
-            if (IsValidTree())
-            {
-                TreeSaver saver = new TreeSaver(validator);
+                TreeSaver saver = new TreeSaver();
                 saver.SaveTree(nodes, path);
             }
         }
@@ -329,13 +337,10 @@ namespace Assets.Visual_Behavior_Tree.Editor.NodeEditor
                 "",
                 "asset");
 
-
             TreeLoader loader = new TreeLoader();
             var root = loader.LoadFromAsset(path);
             nodes = loader.GetNodes(OnClickInPoint, OnClickOutPoint, OnClickRemoveNode);
             connections = loader.GetConnectionsFromRoot(root, OnClickRemoveConnection);
-
-
         }
 
         private bool IsValidTree()

@@ -54,11 +54,6 @@ namespace Assets.Editor
                         field.SetValue(target, EditorGUILayout.FloatField(
                             MakeLabel(field), (float)field.GetValue(target)));
                     }
-                    else if(field.FieldType == typeof(List<BehaviorTreeManagerAsset>))
-                    {
-                        var fieldProp = serializedObject.FindProperty(field.Name);
-                        EditorList.Show(fieldProp, EditorListOption.Buttons | EditorListOption.ElementLabels);
-                    }
                     else if(field.FieldType == typeof(GameObject[]))
                     {
                         var fieldProp = serializedObject.FindProperty(field.Name);

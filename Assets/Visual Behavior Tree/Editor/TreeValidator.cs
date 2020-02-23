@@ -10,6 +10,7 @@ namespace Assets.Visual_Behavior_Tree.Editor
 {
     public class TreeValidator
     {
+        private List<BehaviorEditorNode> checkNodes;
         private GUIStyle errorHighlightStyle;
 
         public TreeValidator(GUIStyle errorStyle)
@@ -19,17 +20,33 @@ namespace Assets.Visual_Behavior_Tree.Editor
 
         public bool IsValidTreeByNodes(List<BehaviorEditorNode> nodes)
         {
-            return HasExactlyOneRootNode(nodes);
+            checkNodes = nodes;
+            return HasExactlyOneRootNode() && NoChildHasTwoParents();
         }
 
-        private bool HasExactlyOneRootNode(List<BehaviorEditorNode> nodes)
+        private bool HasExactlyOneRootNode()
         {
-            var rootNodes = nodes.FindAll(node => node.inPoint.connections.Count() == 0);
+            var rootNodes = checkNodes.FindAll(node => node.inPoint.connections.Count() == 0);
 
             if(rootNodes.Count > 1)
             {
                 Debug.LogError("Behavior Tree Is INVALID! You cannot have more than one root node (node with no inConnections)!  Check Highlighted nodes.");
                 HighlightErrorNodes(rootNodes);
+                return false;
+            }
+
+            return true;
+        }
+
+        private bool NoChildHasTwoParents()
+        {
+            var errorChildNodes = checkNodes.FindAll(node => node.inPoint.connections.Count() > 1);
+
+            if(errorChildNodes.Count > 0)
+            {
+                Debug.LogError("Behavior Tree Is INVALID! You cannot have more than one parent node for a child! Check Highlighted nodes.");
+
+                HighlightErrorNodes(errorChildNodes);
                 return false;
             }
 

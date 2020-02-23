@@ -27,14 +27,12 @@ namespace Assets.Scripts.AI.Components
                 Debug.LogWarning("Children Null in " + this.Name);
                 return Observable.Return(BehaviorState.Fail);
             }
-
             var sourceConcat = Children.ToObservable()
                                        .Select(child => 
                                             ((BehaviorTreeElement)child).Start()
                                                                         .Where(st => st != BehaviorState.Running))
                                        .Concat(); //Sequentially run children and select the final value (should be fail/succeed/error)
 
-            //
             return sourceConcat.Publish(src =>
                 src.Any(e => e == BehaviorState.Success) //true if any succeed, false if none succeed
                    .Select(e => e ? BehaviorState.Success : BehaviorState.Fail) //Success if any succeed, fail if all fail

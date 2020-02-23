@@ -14,18 +14,13 @@ namespace Assets.Visual_Behavior_Tree.Editor
 {
     public class TreeSaver
     {
-        private TreeValidator treeValidator;
-
         private List<Rect> positions;
-
-        public TreeSaver(TreeValidator validator)
-        {
-            treeValidator = validator;
-        }
 
         public void SaveTree(List<BehaviorEditorNode> nodes, string path)
         {
             BehaviorEditorNode rootNode = nodes.Find(node => node.inPoint.connections.Count == 0);
+
+            rootNode.treeElement.Depth = -1;
 
             positions = new List<Rect>();
             positions.Add(rootNode.fullRect);

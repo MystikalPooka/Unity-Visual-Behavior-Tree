@@ -1,6 +1,7 @@
 ﻿using Assets.Scripts.AI;
 using Assets.Scripts.AI.Components;
 using Assets.Scripts.AI.Tree;
+using Assets.Visual_Behavior_Tree.Scripts;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -84,10 +85,10 @@ namespace Assets.Editor
         /// <param name="filePath"></param>
         /// <param name="asset"></param>
         public static void SaveBehaviorAsset(this BehaviorManager behaviorManager, string filePath, 
-            BehaviorTreeManagerAsset asset, Merge root = null)
+            TreeNodeAsset asset, Merge root = null)
         {
             if (asset == null)
-                asset = ScriptableObject.CreateInstance<BehaviorTreeManagerAsset>();
+                asset = ScriptableObject.CreateInstance<TreeNodeAsset>();
 
             var runnerElementList = new List<BehaviorTreeElement>();
 
@@ -98,13 +99,13 @@ namespace Assets.Editor
 
             asset.name = filePath.Substring(indexS, indexD);
 
-            var json = asset.RunnerElementsJSON;
+            var json = asset.treeElements;
 
             if(behaviorManager != null)
             {
                 behaviorManager.Reinitialize();
-                asset.MilliSecondsBetweenTicks =behaviorManager.MilliSecondsBetweenTicks;
-                asset.TimesToTick = behaviorManager.TimesToTick;
+                //asset.MilliSecondsBetweenTicks =behaviorManager.MilliSecondsBetweenTicks;
+                //asset.TimesToTick = behaviorManager.TimesToTick;
 
                 TreeElementUtility.TreeToList(behaviorManager.Runner, runnerElementList);  
             }
@@ -120,9 +121,9 @@ namespace Assets.Editor
                 runnerElementList.Add(runner);
             }
             json = JsonConvert.SerializeObject(runnerElementList, Formatting.Indented);
-            asset.RunnerElementsJSON = json;
+            asset.treeElements = json;
 
-            Debug.Log("JSON Saved: " + asset.RunnerElementsJSON);
+            Debug.Log("JSON Saved: " + asset.treeElements);
 
             var curPath = AssetDatabase.GetAssetPath(asset);
 

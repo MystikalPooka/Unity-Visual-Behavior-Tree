@@ -128,15 +128,16 @@ namespace Assets.Visual_Behavior_Tree.Editor.NodeEditor
             {
                 var box = boxes[i];
                 box.x = box.x + 7;
-                box.y = box.y + 7;
-                box.xMax = box.xMax - 15;
+                box.y = box.y + 9;
+                box.xMax = subInspectorRect.xMax - 10;
                 using (new GUILayout.AreaScope(box, ""))
                 {
                     var prop = elementObject.FindProperty(items[i]);
 
                     GUILayout.BeginHorizontal();
-                    GUILayout.Label(prop.displayName, EditorStyles.whiteLabel, GUILayout.MinWidth(50), GUILayout.ExpandWidth(true));
-                    EditorGUILayout.PropertyField(prop, GUIContent.none, true, GUILayout.MinWidth(100), GUILayout.ExpandWidth(true));
+                    var label = new GUIContent(prop.displayName,prop.displayName);
+                    EditorGUILayout.LabelField(label, EditorStyles.whiteLabel, GUILayout.MinWidth(45), GUILayout.ExpandWidth(true));
+                    EditorGUILayout.PropertyField(prop, GUIContent.none, true, GUILayout.MinWidth(95), GUILayout.ExpandWidth(true));
                     GUILayout.EndHorizontal();
                 }
             }

@@ -1,6 +1,7 @@
 using Assets.Scripts.AI;
 using Assets.Scripts.AI.Components;
 using Assets.Scripts.AI.Tree;
+using Assets.Visual_Behavior_Tree.Scripts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +19,7 @@ namespace Assets.Editor.BehaviorTreeViewEditor.BackendData
         [SerializeField] MultiColumnHeaderState _MultiColumnHeaderState;
         SearchField _SearchField;
         MultiColumnBehaviorTreeView _TreeView;
-        [SerializeField] BehaviorTreeManagerAsset _BehaviorTreeManagerAsset;
+        [SerializeField] TreeNodeAsset _TreeNodeAsset;
 
         string FilePath = "";
         private static string FileDir = "Assets/Behaviors/";
@@ -36,7 +37,7 @@ namespace Assets.Editor.BehaviorTreeViewEditor.BackendData
         [OnOpenAsset]
         public static bool OnOpenAsset(int instanceID, int line)
         {
-            var BTreeAsset = EditorUtility.InstanceIDToObject(instanceID) as BehaviorTreeManagerAsset;
+            var BTreeAsset = EditorUtility.InstanceIDToObject(instanceID) as TreeNodeAsset;
             if (BTreeAsset != null)
             {
                 var window = GetWindow();
@@ -46,13 +47,13 @@ namespace Assets.Editor.BehaviorTreeViewEditor.BackendData
             return false; // we did not handle the open
         }
 
-        public void SetTreeAsset(BehaviorTreeManagerAsset BehaviorTreeAsset)
+        public void SetTreeAsset(TreeNodeAsset BehaviorTreeAsset)
         {
-            if(BehaviorTreeAsset == null || BehaviorTreeAsset.RunnerElementsJSON == "")
+            if(BehaviorTreeAsset == null || BehaviorTreeAsset.treeElements == "")
             {
                 CreateNewTree();
             }
-            _BehaviorTreeManagerAsset = BehaviorTreeAsset;
+            _TreeNodeAsset = BehaviorTreeAsset;
             _Initialized = false;
         }
 
@@ -112,12 +113,12 @@ namespace Assets.Editor.BehaviorTreeViewEditor.BackendData
 
         IList<BehaviorTreeElement> GetData()
         {
-            if (_BehaviorTreeManagerAsset == null)
+            if (_TreeNodeAsset == null)
             {
                 CreateNewTree();
             }
 
-            var treeRoot = _BehaviorTreeManagerAsset.LoadFromJSON();
+            var treeRoot = _TreeNodeAsset.LoadRoot();
             if(treeRoot == null)
             {
                 treeRoot = new Merge("New Root",-1, -1);
@@ -131,11 +132,11 @@ namespace Assets.Editor.BehaviorTreeViewEditor.BackendData
 
         void CreateNewTree()
         {
-            CustomAssetUtility.CreateAsset<BehaviorTreeManagerAsset>();
-            _BehaviorTreeManagerAsset = (BehaviorTreeManagerAsset)Selection.activeObject;
+            CustomAssetUtility.CreateAsset<TreeNodeAsset>();
+            _TreeNodeAsset = (TreeNodeAsset)Selection.activeObject;
             var root =new Merge("root",-1,-1);
-            BehaviorExtensions.SaveBehaviorAsset(null, AssetDatabase.GetAssetPath(_BehaviorTreeManagerAsset),
-                                                _BehaviorTreeManagerAsset,(Merge)root);
+            //BehaviorExtensions.SaveBehaviorAsset(null, AssetDatabase.GetAssetPath(_TreeNodeAsset),
+            //                                    _TreeNodeAsset,(Merge)root);
         }
 
         void OnSelectionChange()
@@ -143,10 +144,10 @@ namespace Assets.Editor.BehaviorTreeViewEditor.BackendData
             if (!_Initialized)
                 return;
 
-            var BehaviorTreeAsset = Selection.activeObject as BehaviorTreeManagerAsset;
-            if (BehaviorTreeAsset != null && BehaviorTreeAsset != _BehaviorTreeManagerAsset)
+            var BehaviorTreeAsset = Selection.activeObject as TreeNodeAsset;
+            if (BehaviorTreeAsset != null && BehaviorTreeAsset != _TreeNodeAsset)
             {
-                _BehaviorTreeManagerAsset = BehaviorTreeAsset;
+                _TreeNodeAsset = BehaviorTreeAsset;
                 _TreeView.treeModel.SetData(GetData());
                 _TreeView.Reload();
             }
@@ -195,7 +196,7 @@ namespace Assets.Editor.BehaviorTreeViewEditor.BackendData
                 if (GUILayout.Button("Save Tree"))
                 {
                     FilePath = EditorUtility.SaveFilePanel("", FileDir, "New Behavior Tree", "asset");
-                    BehaviorExtensions.SaveBehaviorAsset(null, FilePath, _BehaviorTreeManagerAsset, (Merge)_TreeView.treeModel.Root);
+                    //BehaviorExtensions.SaveBehaviorAsset(null, FilePath, _TreeNodeAsset, (Merge)_TreeView.treeModel.Root);
                 }
             }
 

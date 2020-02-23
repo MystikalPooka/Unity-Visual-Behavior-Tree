@@ -14,7 +14,7 @@ namespace Assets.Scripts.AI.Components
     {
         [Range(0, 100)]
         [SerializeField]
-        public float SucceedPercentToSucceed = 51;
+        public float SucceedPercent = 51;
 
         public Merge(string name, int depth, int id)
             : base(name, depth, id) { }
@@ -23,7 +23,7 @@ namespace Assets.Scripts.AI.Components
         {
             if (Children == null || Children.Count == 0)
             {
-                Debug.LogWarning("Children Null in parallel runner");
+                Debug.LogWarning("Children Null in merge component");
                 return Observable.Return(BehaviorState.Fail);
             }
 
@@ -33,8 +33,8 @@ namespace Assets.Scripts.AI.Components
                                                                        .Where(st => st != BehaviorState.Running));
 
 
-            //should take all streams and publish running until last stream finishes...
-            //once last stream finishes, must emit "success" or "fail" based on set ratio...
+            //takes all children streams and publishes running until last stream finishes.
+            //once last stream finishes, emits "success" or "fail" based on set success ratio.
             return source.Publish(src =>
                 src.Aggregate(new { total = 0, succeeded = 0 }, (acc, childResult) =>
                 {
@@ -43,7 +43,7 @@ namespace Assets.Scripts.AI.Components
                         new { total = acc.total + 1, acc.succeeded };
                 })
                 .Select(a => 100 * ((float)a.succeeded / a.total))
-                .Select(ratio => ratio >= SucceedPercentToSucceed ?
+                .Select(ratio => ratio >= SucceedPercent ?
                                     BehaviorState.Success : BehaviorState.Fail)
                 .Publish(srcLast =>
                             src.Select(s => BehaviorState.Running)
