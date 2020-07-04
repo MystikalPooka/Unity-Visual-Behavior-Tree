@@ -1,0 +1,87 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7130206f8e2d7e4b94035cb63f37007, type: 3}
+  m_Name: New Behavior Tree4
+  m_EditorClassIdentifier: 
+  positions:
+  - serializedVersion: 2
+    x: 424
+    y: 38
+    width: 200
+    height: 100
+  - serializedVersion: 2
+    x: 439
+    y: 218
+    width: 200
+    height: 100
+  - serializedVersion: 2
+    x: 339
+    y: 389
+    width: 200
+    height: 100
+  - serializedVersion: 2
+    x: 547
+    y: 390
+    width: 200
+    height: 100
+  - serializedVersion: 2
+    x: 215
+    y: 219
+    width: 200
+    height: 100
+  - serializedVersion: 2
+    x: 783
+    y: 211
+    width: 200
+    height: 100
+  - serializedVersion: 2
+    x: 787
+    y: 394
+    width: 200
+    height: 100
+  - serializedVersion: 2
+    x: 882
+    y: 560
+    width: 200
+    height: 100
+  - serializedVersion: 2
+    x: 658
+    y: 557
+    width: 200
+    height: 100
+  treeElements: "[\r\n  {\r\n    \"SucceedPercent\": 100.0,\r\n    \"ElementType\":
+    \"Assets.Scripts.AI.Components.Merge\",\r\n    \"HasChildren\": true,\r\n   
+    \"Name\": \"Merge\",\r\n    \"ID\": 0,\r\n    \"Depth\": -1,\r\n    \"name\":
+    \"\",\r\n    \"hideFlags\": 0\r\n  },\r\n  {\r\n    \"ElementType\": \"Assets.Scripts.AI.Components.Selector\",\r\n   
+    \"HasChildren\": true,\r\n    \"Name\": \"Selector\",\r\n    \"ID\": 0,\r\n   
+    \"Depth\": 0,\r\n    \"name\": \"\",\r\n    \"hideFlags\": 0\r\n  },\r\n  {\r\n   
+    \"logMessage\": \"MEOW\",\r\n    \"ElementType\": \"Assets.Scripts.AI.Nodes.DebugOutNode\",\r\n   
+    \"HasChildren\": false,\r\n    \"Name\": \"DebugOutNode\",\r\n    \"ID\": 0,\r\n   
+    \"Depth\": 1,\r\n    \"name\": \"\",\r\n    \"hideFlags\": 0\r\n  },\r\n  {\r\n   
+    \"logMessage\": null,\r\n    \"ElementType\": \"Assets.Scripts.AI.Nodes.DebugOutNode\",\r\n   
+    \"HasChildren\": false,\r\n    \"Name\": \"DebugOutNode\",\r\n    \"ID\": 0,\r\n   
+    \"Depth\": 1,\r\n    \"name\": \"\",\r\n    \"hideFlags\": 0\r\n  },\r\n  {\r\n   
+    \"logMessage\": \"AWOO\",\r\n    \"ElementType\": \"Assets.Scripts.AI.Nodes.DebugOutNode\",\r\n   
+    \"HasChildren\": false,\r\n    \"Name\": \"DebugOutNode\",\r\n    \"ID\": 0,\r\n   
+    \"Depth\": 0,\r\n    \"name\": \"\",\r\n    \"hideFlags\": 0\r\n  },\r\n  {\r\n   
+    \"ElementType\": \"Assets.Scripts.AI.Decorators.Inverter\",\r\n    \"HasChildren\":
+    true,\r\n    \"Name\": \"Inverter\",\r\n    \"ID\": 0,\r\n    \"Depth\": 0,\r\n   
+    \"name\": \"\",\r\n    \"hideFlags\": 0\r\n  },\r\n  {\r\n    \"ElementType\":
+    \"Assets.Scripts.AI.Decorators.Inverter\",\r\n    \"HasChildren\": true,\r\n   
+    \"Name\": \"Inverter\",\r\n    \"ID\": 0,\r\n    \"Depth\": 1,\r\n    \"name\":
+    \"\",\r\n    \"hideFlags\": 0\r\n  },\r\n  {\r\n    \"logMessage\": \"WOOF\",\r\n   
+    \"ElementType\": \"Assets.Scripts.AI.Nodes.DebugOutNode\",\r\n    \"HasChildren\":
+    false,\r\n    \"Name\": \"DebugOutNode\",\r\n    \"ID\": 0,\r\n    \"Depth\":
+    2,\r\n    \"name\": \"\",\r\n    \"hideFlags\": 0\r\n  },\r\n  {\r\n    \"TimeBetweenChecks\":
+    1,\r\n    \"destReachedThreshold\": 0.9,\r\n    \"ElementType\": \"Assets.Visual_Behavior_Tree.Scripts.AI.Nodes.MoveToNode\",\r\n   
+    \"HasChildren\": false,\r\n    \"Name\": \"MoveToNode\",\r\n    \"ID\": 0,\r\n   
+    \"Depth\": 2,\r\n    \"name\": \"\",\r\n    \"hideFlags\": 0\r\n  }\r\n]"

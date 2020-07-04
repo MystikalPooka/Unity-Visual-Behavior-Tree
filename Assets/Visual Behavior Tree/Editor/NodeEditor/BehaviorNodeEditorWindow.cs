@@ -22,8 +22,6 @@ namespace Assets.Visual_Behavior_Tree.Editor.NodeEditor
         private Vector2 offset;
         private Vector2 drag;
 
-        private int nodeID = -1;
-
         [MenuItem("Window/uVBT/Node Editor")]
         private static void OpenWindow()
         {
@@ -38,7 +36,7 @@ namespace Assets.Visual_Behavior_Tree.Editor.NodeEditor
             selectedNodeStyle.border = new RectOffset(10, 10, 10, 10);
         }
 
-        private void OnGUI()
+        protected virtual void OnGUI()
         {
             DrawToolbar();
 
@@ -56,7 +54,7 @@ namespace Assets.Visual_Behavior_Tree.Editor.NodeEditor
             if (GUI.changed) Repaint();
         }
 
-        private void DrawToolbar()
+        protected void DrawToolbar()
         {
             if(GUILayout.Button("Save")) {
                 SaveAllNodesToFile();
@@ -67,7 +65,7 @@ namespace Assets.Visual_Behavior_Tree.Editor.NodeEditor
             }
         }
 
-        private void DrawGrid(float gridSpacing, float gridOpacity, Color gridColor)
+        protected void DrawGrid(float gridSpacing, float gridOpacity, Color gridColor)
         {
             int widthDivs = Mathf.CeilToInt(position.width / gridSpacing);
             int heightDivs = Mathf.CeilToInt(position.height / gridSpacing);
@@ -92,7 +90,7 @@ namespace Assets.Visual_Behavior_Tree.Editor.NodeEditor
             Handles.EndGUI();
         }
 
-        private void DrawNodes()
+        protected void DrawNodes()
         {
             if(nodes != null)
             {
@@ -103,7 +101,7 @@ namespace Assets.Visual_Behavior_Tree.Editor.NodeEditor
             }
         }
 
-        private void DrawConnections()
+        protected void DrawConnections()
         {
             if (connections != null)
             {
@@ -114,40 +112,25 @@ namespace Assets.Visual_Behavior_Tree.Editor.NodeEditor
             }
         }
 
-        private void DrawConnectionLine(Event e)
+        protected void DrawConnectionLine(Event e)
         {
-            if (selectedInPoint != null && selectedOutPoint == null)
+            if (selectedInPoint != null)
             {
-                Handles.DrawBezier(
-                    selectedInPoint.rect.center,
-                    e.mousePosition,
-                    selectedInPoint.rect.center + Vector2.left * 50f,
-                    e.mousePosition - Vector2.left * 50f,
-                    Color.white,
-                    null,
-                    2f
-                );
-
+                Handles.DrawLine(selectedInPoint.rect.center,
+                                 e.mousePosition);
                 GUI.changed = true;
             }
 
-            if (selectedOutPoint != null && selectedInPoint == null)
+            if (selectedOutPoint != null)
             {
-                Handles.DrawBezier(
-                    selectedOutPoint.rect.center,
-                    e.mousePosition,
-                    selectedOutPoint.rect.center - Vector2.left * 50f,
-                    e.mousePosition + Vector2.left * 50f,
-                    Color.white,
-                    null,
-                    2f
-                );
+                Handles.DrawLine(selectedOutPoint.rect.center,
+                                 e.mousePosition);
 
                 GUI.changed = true;
             }
         }
 
-        private void ProcessEvents(Event e)
+        protected void ProcessEvents(Event e)
         {
             drag = Vector2.zero;
 
@@ -169,7 +152,7 @@ namespace Assets.Visual_Behavior_Tree.Editor.NodeEditor
             }
         }
 
-        private void ProcessNodeEvents(Event e)
+        protected void ProcessNodeEvents(Event e)
         {
             if (nodes != null)
             {
@@ -185,20 +168,20 @@ namespace Assets.Visual_Behavior_Tree.Editor.NodeEditor
             }
         }
 
-        private void ProcessContextMenu(Vector2 mousePosition)
+        protected void ProcessContextMenu(Vector2 mousePosition)
         {
             GenericMenu genericMenu = new GenericMenu();
             genericMenu.CreateTypeMenu<BehaviorTreeElement>((typeName) => OnClickAddNode(mousePosition, typeName));
             genericMenu.ShowAsContext();
         }
 
-        private void OnClickAddNode(Vector2 mousePosition, object itemTypeSelected)
+        protected void OnClickAddNode(Vector2 mousePosition, object itemTypeSelected)
         {
             if (nodes == null)
             {
                 nodes = new List<BehaviorEditorNode>();
             }
-
+            Debug.Log((string)itemTypeSelected);
             Type type = typeof(BehaviorTreeElement).Assembly.GetType((string)itemTypeSelected, true);
 
             var treeElement = (BehaviorTreeElement)CreateInstance(type);
@@ -260,7 +243,7 @@ namespace Assets.Visual_Behavior_Tree.Editor.NodeEditor
             GUI.changed = true;
         }
 
-        private void OnClickInPoint(ConnectionPoint inPoint)
+        protected void OnClickInPoint(ConnectionPoint inPoint)
         {
             selectedInPoint = inPoint;
 
@@ -330,7 +313,7 @@ namespace Assets.Visual_Behavior_Tree.Editor.NodeEditor
             }
         }
 
-        private void LoadNodesFromFile()
+        protected void LoadNodesFromFile()
         {
             var path = EditorUtility.OpenFilePanel(
                 "Save behavior tree",

@@ -79,26 +79,6 @@ namespace Assets.Visual_Behavior_Tree.Editor.NodeEditor
             OnRemoveNode = OnClickRemoveNode;
         }
 
-        public void AddInConnection(Connection connection)
-        {
-            inPoint.connections.Add(connection);
-        }
-
-        public void RemoveInConnection(Connection connection)
-        {
-            inPoint.connections.Remove(connection);
-        }
-
-        public void AddOutConnection(Connection connection)
-        {
-            outPoint.connections.Add(connection);
-        }
-
-        public void RemoveOutConnection(Connection connection)
-        {
-            outPoint.connections.Remove(connection);
-        }
-
         public void Drag(Vector2 delta)
         {
             fullRect.position += delta;
@@ -108,7 +88,8 @@ namespace Assets.Visual_Behavior_Tree.Editor.NodeEditor
         public void Draw()
         {
             inPoint.Draw();
-            outPoint.Draw();
+            if(treeElement.CanHaveChildren)
+                outPoint.Draw();
 
             GUI.Box(fullRect, title, style);
             GUI.Box(subInspectorRect, "", selectedNodeStyle);

@@ -14,11 +14,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   positions:
   - serializedVersion: 2
-    x: 355
-    y: 158
+    x: 175
+    y: 92
     width: 200
     height: 150
-  treeElements: "[\r\n  {\r\n    \"debugOutText\": \"AWOO\",\r\n    \"ElementType\":
-    \"Assets.Scripts.AI.Nodes.DebugOutNode\",\r\n    \"HasChildren\": false,\r\n   
-    \"Name\": \"DebugOutNode\",\r\n    \"ID\": 0,\r\n    \"Depth\": -1,\r\n    \"name\":
-    \"\",\r\n    \"hideFlags\": 0\r\n  }\r\n]"
+  - serializedVersion: 2
+    x: 160
+    y: 277
+    width: 200
+    height: 150
+  treeElements: "[\r\n  {\r\n    \"ElementType\": \"Assets.Scripts.AI.Components.Sequencer\",\r\n   
+    \"HasChildren\": true,\r\n    \"Name\": \"Sequencer\",\r\n    \"ID\": 0,\r\n   
+    \"Depth\": -1,\r\n    \"name\": \"\",\r\n    \"hideFlags\": 0\r\n  },\r\n  {\r\n   
+    \"TimeBetweenChecks\": 100,\r\n    \"destReachedThreshold\": 1.0,\r\n    \"ElementType\":
+    \"Assets.Visual_Behavior_Tree.Scripts.AI.Nodes.MoveToNode\",\r\n    \"HasChildren\":
+    false,\r\n    \"Name\": \"MoveToNode\",\r\n    \"ID\": 0,\r\n    \"Depth\": 0,\r\n   
+    \"name\": \"\",\r\n    \"hideFlags\": 0\r\n  }\r\n]"

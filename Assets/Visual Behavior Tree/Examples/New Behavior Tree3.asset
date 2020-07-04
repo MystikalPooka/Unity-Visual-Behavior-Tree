@@ -14,39 +14,39 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   positions:
   - serializedVersion: 2
-    x: -156
-    y: 88
+    x: 142
+    y: 97
     width: 200
     height: 150
   - serializedVersion: 2
-    x: 85
-    y: 190
+    x: 141
+    y: 286
     width: 200
     height: 150
   - serializedVersion: 2
-    x: 325
-    y: 192
+    x: 138
+    y: 457
     width: 200
     height: 150
   - serializedVersion: 2
-    x: 83
-    y: 38
+    x: -79
+    y: 292
     width: 200
     height: 150
   - serializedVersion: 2
-    x: 86
-    y: 348
+    x: 352
+    y: 277
     width: 200
     height: 150
   - serializedVersion: 2
-    x: 311
-    y: 346
+    x: 353
+    y: 446
     width: 200
     height: 150
   - serializedVersion: 2
-    x: 539
-    y: 350
-    width: 200
+    x: 352
+    y: 614
+    width: 250
     height: 150
   treeElements: "[\r\n  {\r\n    \"SucceedPercent\": 100.0,\r\n    \"ElementType\":
     \"Assets.Scripts.AI.Components.Merge\",\r\n    \"HasChildren\": true,\r\n   
@@ -54,10 +54,10 @@ MonoBehaviour:
     \"\",\r\n    \"hideFlags\": 0\r\n  },\r\n  {\r\n    \"ElementType\": \"Assets.Scripts.AI.Components.Selector\",\r\n   
     \"HasChildren\": true,\r\n    \"Name\": \"Selector\",\r\n    \"ID\": 0,\r\n   
     \"Depth\": 0,\r\n    \"name\": \"\",\r\n    \"hideFlags\": 0\r\n  },\r\n  {\r\n   
-    \"debugOutText\": \"SELECT AWOO\",\r\n    \"ElementType\": \"Assets.Scripts.AI.Nodes.DebugOutNode\",\r\n   
+    \"logMessage\": \"MEOW\",\r\n    \"ElementType\": \"Assets.Scripts.AI.Nodes.DebugOutNode\",\r\n   
     \"HasChildren\": false,\r\n    \"Name\": \"DebugOutNode\",\r\n    \"ID\": 0,\r\n   
     \"Depth\": 1,\r\n    \"name\": \"\",\r\n    \"hideFlags\": 0\r\n  },\r\n  {\r\n   
-    \"debugOutText\": \"AWOO\",\r\n    \"ElementType\": \"Assets.Scripts.AI.Nodes.DebugOutNode\",\r\n   
+    \"logMessage\": \"AWOO\",\r\n    \"ElementType\": \"Assets.Scripts.AI.Nodes.DebugOutNode\",\r\n   
     \"HasChildren\": false,\r\n    \"Name\": \"DebugOutNode\",\r\n    \"ID\": 0,\r\n   
     \"Depth\": 0,\r\n    \"name\": \"\",\r\n    \"hideFlags\": 0\r\n  },\r\n  {\r\n   
     \"ElementType\": \"Assets.Scripts.AI.Decorators.Inverter\",\r\n    \"HasChildren\":
@@ -65,7 +65,7 @@ MonoBehaviour:
     \"name\": \"\",\r\n    \"hideFlags\": 0\r\n  },\r\n  {\r\n    \"ElementType\":
     \"Assets.Scripts.AI.Decorators.Inverter\",\r\n    \"HasChildren\": true,\r\n   
     \"Name\": \"Inverter\",\r\n    \"ID\": 0,\r\n    \"Depth\": 1,\r\n    \"name\":
-    \"\",\r\n    \"hideFlags\": 0\r\n  },\r\n  {\r\n    \"debugOutText\": \"ALSO
-    AWOO\",\r\n    \"ElementType\": \"Assets.Scripts.AI.Nodes.DebugOutNode\",\r\n   
-    \"HasChildren\": false,\r\n    \"Name\": \"DebugOutNode\",\r\n    \"ID\": 0,\r\n   
-    \"Depth\": 2,\r\n    \"name\": \"\",\r\n    \"hideFlags\": 0\r\n  }\r\n]"
+    \"\",\r\n    \"hideFlags\": 0\r\n  },\r\n  {\r\n    \"logMessage\": \"WOOF\",\r\n   
+    \"ElementType\": \"Assets.Scripts.AI.Nodes.DebugOutNode\",\r\n    \"HasChildren\":
+    false,\r\n    \"Name\": \"DebugOutNode\",\r\n    \"ID\": 0,\r\n    \"Depth\":
+    2,\r\n    \"name\": \"\",\r\n    \"hideFlags\": 0\r\n  }\r\n]"

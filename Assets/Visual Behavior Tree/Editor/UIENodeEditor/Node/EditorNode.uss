@@ -1,0 +1,63 @@
+#RootContainer {
+	background-color: rgba(242, 246, 250,1);
+	flex-direction: column;
+	width: auto;
+}
+
+#ParentConnectorContainer {
+	height: 20px;
+	width: auto;
+	background-color: rgb(150, 25, 150);
+
+	justify-content: space-between;
+	align-items: center;
+	flex-direction: row;
+}
+
+#NameLabel {
+	width: auto;
+	flex: 0 1 auto;
+
+}
+
+.NodeButton {
+	flex: 1 1 auto;
+}
+
+#TypeLabel {
+	width: auto;
+	flex: 0 1 auto;
+}
+
+#NodeContainer {
+	height: 60px;
+	background-color: rgba(242, 246, 250,1);
+	display: flex;
+	flex-direction: column;
+	width: auto;
+}
+
+#ChildrenConnectorContainer {
+	height: 20px;
+	width: auto;
+	background-color: rgb(150, 25, 150);
+
+	align-items: center;
+}
+
+.Property {
+	width: auto;
+	height: auto;
+	flex: 0 1 auto;
+}
+
+.Selected {
+	border-color: green;
+	border-width: 5;
+}
+
+.Error {
+	border-color: red;
+	border-width: 5;
+}
+
