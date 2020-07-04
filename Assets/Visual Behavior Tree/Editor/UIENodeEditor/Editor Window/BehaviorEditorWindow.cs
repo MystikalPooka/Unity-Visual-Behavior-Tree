@@ -20,7 +20,7 @@ namespace Assets.Visual_Behavior_Tree.Editor.UIENodeEditor
         private ConnectionPoint selectedInPoint;
         private ConnectionPoint selectedOutPoint;
 
-        [MenuItem("Testies/Behavior Editor Window")]
+        [MenuItem("Testing/Behavior Editor Window")]
         public static void ShowExample()
         {
             BehaviorEditorWindow wnd = GetWindow<BehaviorEditorWindow>();
