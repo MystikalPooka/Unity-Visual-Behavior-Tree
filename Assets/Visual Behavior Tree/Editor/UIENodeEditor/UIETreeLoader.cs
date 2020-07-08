@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEditor;
+using UnityEngine;
 
 namespace Assets.Visual_Behavior_Tree.Editor.UIENodeEditor
 {
@@ -32,7 +33,8 @@ namespace Assets.Visual_Behavior_Tree.Editor.UIENodeEditor
             {
                 string typeName = el.ElementType;
                 Type type = Assembly.GetAssembly(typeof(BehaviorTreeElement)).GetType(typeName);
-                dynamic newBehavior = Activator.CreateInstance(type, (string)el.Name, (int)el.Depth, (int)el.ID);
+                //dynamic newBehavior = Activator.CreateInstance(type, (string)el.Name, (int)el.Depth, (int)el.ID);
+                dynamic newBehavior = ScriptableObject.CreateInstance(type);
                 JsonConvert.PopulateObject(JsonConvert.SerializeObject(el), newBehavior);
                 behaviorElements.Add(newBehavior);
             }
@@ -40,14 +42,14 @@ namespace Assets.Visual_Behavior_Tree.Editor.UIENodeEditor
             return root;
         }
 
-        public List<EditorNode> GetNodes(Action<ConnectionPoint> OnClickInPoint, Action<ConnectionPoint> OnClickOutPoint, Action<EditorNode> OnClickRemoveNode)
+        public List<EditorNode> GetNodes(Action<ConnectionPoint> onClickInPoint, Action<ConnectionPoint> onClickOutPoint, Action<EditorNode> onClickAddNode, Action<EditorNode> onClickRemoveNode)
         {
             nodes = new List<EditorNode>();
 
             for(int i = 0; i < behaviorElements.Count; ++i)
             {
                 var nodeRect = asset.positions[i];
-                var newNode = new EditorNode(behaviorElements[i], nodeRect.position, OnClickInPoint, OnClickOutPoint, OnClickRemoveNode);
+                var newNode = new EditorNode(behaviorElements[i], nodeRect.position, onClickInPoint, onClickOutPoint, onClickAddNode, onClickRemoveNode);
 
                 nodes.Add(newNode);
             }

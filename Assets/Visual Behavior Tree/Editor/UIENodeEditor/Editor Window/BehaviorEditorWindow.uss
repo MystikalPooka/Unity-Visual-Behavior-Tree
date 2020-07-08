@@ -23,4 +23,5 @@
 	background-color: rgba(242, 246, 250,1);
 	width: auto;
 	height: auto;
+	overflow: hidden;
 }

@@ -23,7 +23,10 @@ namespace Assets.Visual_Behavior_Tree.Editor.UIENodeEditor
         public ConnectionPoint inPoint;
         public ConnectionPoint outPoint;
 
-        public EditorNode(BehaviorTreeElement wrappedElement, Vector2 position, Action<ConnectionPoint> OnClickInPoint, Action<ConnectionPoint> OnClickOutPoint, Action<EditorNode> OnClickRemoveNode)
+        private Action<EditorNode> OnClickAddNode;
+        private Action<EditorNode> OnClickRemoveNode;
+
+        public EditorNode(BehaviorTreeElement wrappedElement, Vector2 position, Action<ConnectionPoint> onClickInPoint, Action<ConnectionPoint> onClickOutPoint, Action<EditorNode> onClickAddNode, Action<EditorNode> onClickRemoveNode)
         {
             var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/Visual Behavior Tree/Editor/UIENodeEditor/Node/EditorNode.uss");
             this.styleSheets.Add(styleSheet);
@@ -33,11 +36,11 @@ namespace Assets.Visual_Behavior_Tree.Editor.UIENodeEditor
             this.Add(uxmlRoot);
 
             var parentContainer = uxmlRoot.Q<VisualElement>("ParentConnectorContainer");
-            inPoint = new ConnectionPoint(this, ConnectionPointType.In, OnClickInPoint);
+            inPoint = new ConnectionPoint(this, ConnectionPointType.In, onClickInPoint);
             inPoint.AddToClassList("NodeButton");
             parentContainer.Insert(1,inPoint);
 
-            outPoint = new ConnectionPoint(this, ConnectionPointType.Out, OnClickOutPoint);
+            outPoint = new ConnectionPoint(this, ConnectionPointType.Out, onClickOutPoint);
 
             this.AddToClassList("EditorNode");
 
@@ -51,6 +54,9 @@ namespace Assets.Visual_Behavior_Tree.Editor.UIENodeEditor
             TreeElement = wrappedElement;
             ElementObject = new SerializedObject(wrappedElement);
 
+            OnClickAddNode = onClickAddNode;
+            OnClickRemoveNode = onClickRemoveNode;
+
             ReBindAllProperties();
         }
 
@@ -62,16 +68,24 @@ namespace Assets.Visual_Behavior_Tree.Editor.UIENodeEditor
             {
                 var menuStrings = type.ToString().Split('.');
                 evt.menu.AppendAction("Change/" + menuStrings[menuStrings.Length - 2] +
-                      "/" + menuStrings.Last(), OnMenuAction);
+                      "/" + menuStrings.Last(), OnMenuChangeAction);
+                evt.menu.AppendAction("Remove", OnMenuRemoveAction);
             }
         }
 
-        void OnMenuAction(DropdownMenuAction action)
+        private void OnMenuRemoveAction(DropdownMenuAction obj)
+        {
+            OnClickRemoveNode(this);
+        }
+
+        void OnMenuChangeAction(DropdownMenuAction action)
         {
             string selectedName = action.name.Split('/').Last();
             var typeName = from type in typeof(BehaviorTreeElement).Assembly.GetTypes()
                            where type.Name.Contains(selectedName)
                            select type;
+
+            OnClickRemoveNode(this);
 
             var treeElement = (BehaviorTreeElement)ScriptableObject.CreateInstance(typeName.First());
             treeElement.ID = 0;
@@ -79,6 +93,7 @@ namespace Assets.Visual_Behavior_Tree.Editor.UIENodeEditor
             treeElement.ElementType = typeName.First().ToString();
             this.TreeElement = treeElement;
             ElementObject = new SerializedObject(TreeElement);
+            OnClickAddNode(this);
             ReBindAllProperties();
         }
 
@@ -87,54 +102,23 @@ namespace Assets.Visual_Behavior_Tree.Editor.UIENodeEditor
             this.Bind(ElementObject);
 
             var nodeContainer = this.Q<VisualElement>("NodeContainer");
-            foreach(var child in nodeContainer.Children())
-            {
-                Debug.Log("Removing 1 element");
-                nodeContainer.Remove(child);
-            }
+
+            nodeContainer.Clear();
 
             foreach (var element in GetAllPropertyFields())
             {
-                Debug.Log("Adding one");
                 nodeContainer.Add(element);
                 element.Bind(ElementObject);
             }
 
             var childContainer = this.Q<VisualElement>("ChildrenConnectorContainer");
+
+            if (childContainer.Contains(outPoint)) childContainer.Remove(outPoint);
+
             if (this.TreeElement.CanHaveChildren)
             {
                 outPoint.AddToClassList("NodeButton");
                 childContainer.Add(outPoint);
-            }
-            else if(childContainer.Contains(outPoint))
-            {
-                Debug.Log("Removing connections");
-                var connections = outPoint.connections;
-                List<Connection> connectionsToRemove = new List<Connection>();
-
-                for (int i = 0; i < connections.Count; i++)
-                {
-                    if (connections[i].inPoint.Equals(this.inPoint) || connections[i].outPoint.Equals(this.outPoint))
-                    {
-                        connectionsToRemove.Add(connections[i]);
-                    }
-                }
-
-                for (int i = 0; i < connectionsToRemove.Count; i++)
-                {
-                    var connection = connectionsToRemove[i];
-                    connections.Remove(connection);
-                    if (connection.inPoint.connections.Contains(connection))
-                    {
-                        connection.inPoint.connections.Remove(connection);
-                    }
-
-                    if (connection.outPoint.connections.Contains(connection))
-                    {
-                        connection.outPoint.connections.Remove(connection);
-                    }
-                }
-                childContainer.Remove(outPoint);
             }
         }
 

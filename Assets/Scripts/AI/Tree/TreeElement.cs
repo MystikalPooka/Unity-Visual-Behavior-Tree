@@ -46,8 +46,7 @@ namespace Assets.Scripts.AI.Tree
         public int Depth { get => _Depth; set => _Depth = value; }
 
         public TreeElement ()
-		{
-		}
+		{}
 
 		public TreeElement (string name, int depth, int id)
 		{

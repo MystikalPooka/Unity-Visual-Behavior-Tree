@@ -15,15 +15,15 @@ namespace Assets.Visual_Behavior_Tree.Editor.UIENodeEditor
         public ConnectionPoint outPoint;
         public Action<Connection> OnClickRemoveConnection;
 
-        Button removeButton;
+        readonly Button removeButton;
 
         public float lineWidth = 3;
 
-        public Connection(ConnectionPoint inPoint, ConnectionPoint outPoint, Action<Connection> OnClickRemoveConnection)
+        public Connection(ConnectionPoint inPoint, ConnectionPoint outPoint, Action<Connection> onClickRemoveConnection)
         {
             this.inPoint = inPoint;
             this.outPoint = outPoint;
-            this.OnClickRemoveConnection = OnClickRemoveConnection;
+            this.OnClickRemoveConnection = onClickRemoveConnection;
 
             this.AddToClassList("Connection");
 

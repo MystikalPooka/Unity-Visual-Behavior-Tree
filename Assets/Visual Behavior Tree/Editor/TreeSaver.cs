@@ -59,18 +59,16 @@ namespace Assets.Visual_Behavior_Tree.Editor
         {
             EditorNode rootNode = nodes.Find(node => node.inPoint.connections.Count == 0);
 
-            Debug.Log(rootNode.TreeElement.Name);
-
             rootNode.TreeElement.Depth = -1;
 
-            positions = new List<Rect>();
-            positions.Add(rootNode.layout);
+            positions = new List<Rect>
+            {
+                rootNode.layout
+            };
 
             RecursiveAddChildren(rootNode);
 
             var json = GetJsonSaveDataFromRoot(rootNode.TreeElement);
-
-            Debug.Log(json);
 
             SaveAssetToDatabase(path, positions, json);
         }

@@ -31,7 +31,6 @@ namespace Assets.Visual_Behavior_Tree.Editor.UIENodeEditor
         {
             VisualElement root = rootVisualElement;
 
-            // Import UXML
             var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Visual Behavior Tree/Editor/UIENodeEditor/Editor Window/BehaviorEditorWindow.uxml");
             VisualElement uxmlRoot = visualTree.CloneTree();
 
@@ -48,8 +47,6 @@ namespace Assets.Visual_Behavior_Tree.Editor.UIENodeEditor
             var loadButton = (Button)rootVisualElement.Q<VisualElement>("LoadButton");
             loadButton.clicked += LoadNodesFromFile;
 
-            // A stylesheet can be added to a VisualElement.
-            // The style will be applied to the VisualElement and all of its children.
             var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/Visual Behavior Tree/Editor/UIENodeEditor/Editor Window/BehaviorEditorWindow.uss");
             root.styleSheets.Add(styleSheet);
 
@@ -87,12 +84,13 @@ namespace Assets.Visual_Behavior_Tree.Editor.UIENodeEditor
             treeElement.Name = selectedName;
             treeElement.ElementType = typeName.First().ToString();
 
-            EditorNode item = new EditorNode(treeElement, action.eventInfo.localMousePosition, OnClickInPoint, OnClickOutPoint, OnClickRemoveNode);
+            EditorNode item = new EditorNode(treeElement, action.eventInfo.localMousePosition, OnClickInPoint, OnClickOutPoint, OnClickAddNode, OnClickRemoveNode);
             OnClickAddNode(item);
         }
 
         void OnClickAddNode(EditorNode node)
         {
+            Debug.Log("Adding " + node.TreeElement.Name);
             nodes.Add(node);
             rootVisualElement.Q<VisualElement>("GridContainer").Add(node);
         }
@@ -201,7 +199,7 @@ namespace Assets.Visual_Behavior_Tree.Editor.UIENodeEditor
 
             UIETreeLoader loader = new UIETreeLoader();
             var root = loader.LoadFromAsset(path);
-            nodes = loader.GetNodes(OnClickInPoint, OnClickOutPoint, OnClickRemoveNode);
+            nodes = loader.GetNodes(OnClickInPoint, OnClickOutPoint, OnClickAddNode, OnClickRemoveNode);
             connections = loader.GetConnectionsFromRoot(root, OnClickRemoveConnection);
 
             foreach(var node in nodes)
@@ -223,6 +221,8 @@ namespace Assets.Visual_Behavior_Tree.Editor.UIENodeEditor
 
         private void OnClickRemoveNode(EditorNode node)
         {
+            Debug.Log("Removing " + node.TreeElement.Name);
+            var container = rootVisualElement.Q<VisualElement>("GridContainer");
             if (connections != null)
             {
                 List<Connection> connectionsToRemove = new List<Connection>();
@@ -238,24 +238,21 @@ namespace Assets.Visual_Behavior_Tree.Editor.UIENodeEditor
                 for (int i = 0; i < connectionsToRemove.Count; i++)
                 {
                     var connection = connectionsToRemove[i];
-                    connections.Remove(connection);
+
                     if (connection.inPoint.connections.Contains(connection))
                     {
                         connection.inPoint.connections.Remove(connection);
-                        rootVisualElement.Q<VisualElement>("GridContainer").Remove(connection);
-
                     }
 
                     if (connection.outPoint.connections.Contains(connection))
                     {
                         connection.outPoint.connections.Remove(connection);
-                        rootVisualElement.Q<VisualElement>("GridContainer").Remove(connection);
                     }
+                    connections.Remove(connection);
+                    container.Remove(connection);
                 }
-
-                connectionsToRemove = null;
             }
-
+            container.Remove(node);
             nodes.Remove(node);
         }
 
