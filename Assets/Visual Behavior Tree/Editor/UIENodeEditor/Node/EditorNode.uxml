@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<engine:UXML
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:engine="UnityEngine.UIElements"
+    xmlns:editor="UnityEditor.UIElements"
+    xsi:noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd"
+>
+  <engine:Box name="RootContainer">
+    <engine:VisualElement name="ParentConnectorContainer">
+      <engine:TextField name="NameLabel" text="" binding-path="_Name"/>
+      <engine:Label name="TypeLabel" text=""/>
+    </engine:VisualElement>
+    
+    <engine:VisualElement name="NodeContainer">
+    </engine:VisualElement>
+    
+    <engine:VisualElement name="ChildrenConnectorContainer">
+    </engine:VisualElement>
+  </engine:Box>
+
+</engine:UXML>

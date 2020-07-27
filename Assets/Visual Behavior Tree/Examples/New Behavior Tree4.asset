@@ -1,0 +1,88 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7130206f8e2d7e4b94035cb63f37007, type: 3}
+  m_Name: New Behavior Tree4
+  m_EditorClassIdentifier: 
+  positions:
+  - serializedVersion: 2
+    x: 309
+    y: 44
+    width: 207
+    height: 102
+  - serializedVersion: 2
+    x: 40
+    y: 220
+    width: 245
+    height: 171
+  - serializedVersion: 2
+    x: 306
+    y: 222
+    width: 200
+    height: 102
+  - serializedVersion: 2
+    x: 528
+    y: 219
+    width: 200
+    height: 102
+  - serializedVersion: 2
+    x: 740
+    y: 383
+    width: 217
+    height: 102
+  - serializedVersion: 2
+    x: 512
+    y: 383
+    width: 218
+    height: 102
+  - serializedVersion: 2
+    x: 309
+    y: 382
+    width: 200
+    height: 102
+  - serializedVersion: 2
+    x: 174
+    y: 520
+    width: 200
+    height: 102
+  - serializedVersion: 2
+    x: 389
+    y: 517
+    width: 217
+    height: 102
+  treeElements: "[\r\n  {\r\n    \"SucceedPercent\": 100.0,\r\n    \"ElementType\":
+    \"Assets.Scripts.AI.Components.Merge\",\r\n    \"HasChildren\": true,\r\n   
+    \"Name\": \"Merge\",\r\n    \"ID\": 0,\r\n    \"Depth\": -1,\r\n    \"name\":
+    \"\",\r\n    \"hideFlags\": 0\r\n  },\r\n  {\r\n    \"logMessage\": \"AWOO\",\r\n   
+    \"ElementType\": \"Assets.Scripts.AI.Nodes.DebugOutNode\",\r\n    \"HasChildren\":
+    false,\r\n    \"Name\": \"1234567890123456\",\r\n    \"ID\": 0,\r\n    \"Depth\":
+    0,\r\n    \"name\": \"\",\r\n    \"hideFlags\": 0\r\n  },\r\n  {\r\n    \"TimeBetweenChecks\":
+    0,\r\n    \"destReachedThreshold\": 0.0,\r\n    \"ElementType\": \"Assets.Visual_Behavior_Tree.Scripts.AI.Nodes.MoveToNode\",\r\n   
+    \"HasChildren\": false,\r\n    \"Name\": \"MoveToNode\",\r\n    \"ID\": 0,\r\n   
+    \"Depth\": 0,\r\n    \"name\": \"\",\r\n    \"hideFlags\": 0\r\n  },\r\n  {\r\n   
+    \"ElementType\": \"Assets.Scripts.AI.Components.Selector\",\r\n    \"HasChildren\":
+    true,\r\n    \"Name\": \"Selector\",\r\n    \"ID\": 0,\r\n    \"Depth\": 0,\r\n   
+    \"name\": \"\",\r\n    \"hideFlags\": 0\r\n  },\r\n  {\r\n    \"logMessage\":
+    \"MEOW\",\r\n    \"ElementType\": \"Assets.Scripts.AI.Nodes.DebugOutNode\",\r\n   
+    \"HasChildren\": false,\r\n    \"Name\": \"DebugOutNode\",\r\n    \"ID\": 0,\r\n   
+    \"Depth\": 1,\r\n    \"name\": \"\",\r\n    \"hideFlags\": 0\r\n  },\r\n  {\r\n   
+    \"logMessage\": null,\r\n    \"ElementType\": \"Assets.Scripts.AI.Nodes.DebugOutNode\",\r\n   
+    \"HasChildren\": false,\r\n    \"Name\": \"DebugOutNode\",\r\n    \"ID\": 0,\r\n   
+    \"Depth\": 1,\r\n    \"name\": \"\",\r\n    \"hideFlags\": 0\r\n  },\r\n  {\r\n   
+    \"ElementType\": \"Assets.Scripts.AI.Components.Sequencer\",\r\n    \"HasChildren\":
+    true,\r\n    \"Name\": \"Sequencer\",\r\n    \"ID\": 0,\r\n    \"Depth\": 1,\r\n   
+    \"name\": \"\",\r\n    \"hideFlags\": 0\r\n  },\r\n  {\r\n    \"TimeBetweenChecks\":
+    1,\r\n    \"destReachedThreshold\": 0.9,\r\n    \"ElementType\": \"Assets.Visual_Behavior_Tree.Scripts.AI.Nodes.MoveToNode\",\r\n   
+    \"HasChildren\": false,\r\n    \"Name\": \"MoveToNode\",\r\n    \"ID\": 0,\r\n   
+    \"Depth\": 2,\r\n    \"name\": \"\",\r\n    \"hideFlags\": 0\r\n  },\r\n  {\r\n   
+    \"logMessage\": \"WOOF\",\r\n    \"ElementType\": \"Assets.Scripts.AI.Nodes.DebugOutNode\",\r\n   
+    \"HasChildren\": false,\r\n    \"Name\": \"DebugOutNode\",\r\n    \"ID\": 0,\r\n   
+    \"Depth\": 2,\r\n    \"name\": \"\",\r\n    \"hideFlags\": 0\r\n  }\r\n]"

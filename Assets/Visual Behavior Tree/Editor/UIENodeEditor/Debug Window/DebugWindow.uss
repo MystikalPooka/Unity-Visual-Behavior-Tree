@@ -1,0 +1,31 @@
+#Toolbar 
+{
+	height: 40px;
+	width: auto;
+	background-color: rgb(21, 132, 67);
+
+	display: flex;
+	flex-direction: row;
+}
+
+#TabContainer 
+{
+	background-color: rgba(242, 246, 250,1);
+	width: auto;
+	height: auto;
+	overflow: hidden;
+}
+
+.EditorNode {
+	width: auto;
+	height: auto;
+	position: absolute;
+}
+
+.Connection {
+	position: absolute;
+}
+
+.Selector {
+	align-self: flex-end;
+}
