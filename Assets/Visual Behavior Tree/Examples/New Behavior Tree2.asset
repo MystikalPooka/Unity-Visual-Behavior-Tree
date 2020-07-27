@@ -14,13 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   positions:
   - serializedVersion: 2
-    x: 175
-    y: 92
+    x: 536
+    y: 106
     width: 200
     height: 150
   - serializedVersion: 2
-    x: 160
-    y: 277
+    x: 521
+    y: 291
     width: 200
     height: 150
   treeElements: "[\r\n  {\r\n    \"ElementType\": \"Assets.Scripts.AI.Components.Sequencer\",\r\n   
