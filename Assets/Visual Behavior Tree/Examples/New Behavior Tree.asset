@@ -14,23 +14,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   positions:
   - serializedVersion: 2
-    x: 80
-    y: 144
+    x: 237
+    y: 13
     width: 200
     height: 150
   - serializedVersion: 2
-    x: 321
-    y: 246
+    x: 325
+    y: 272
     width: 200
     height: 150
   - serializedVersion: 2
-    x: 603
-    y: 246
-    width: 200
-    height: 150
+    x: 328
+    y: 505
+    width: 277
+    height: 175
   - serializedVersion: 2
-    x: 319
-    y: 94
+    x: 68
+    y: 260
     width: 200
     height: 150
   treeElements: "[\r\n  {\r\n    \"SucceedPercent\": 100.0,\r\n    \"ElementType\":
@@ -39,9 +39,9 @@ MonoBehaviour:
     \"\",\r\n    \"hideFlags\": 0\r\n  },\r\n  {\r\n    \"ElementType\": \"Assets.Scripts.AI.Components.Selector\",\r\n   
     \"HasChildren\": true,\r\n    \"Name\": \"Selector\",\r\n    \"ID\": 0,\r\n   
     \"Depth\": 0,\r\n    \"name\": \"\",\r\n    \"hideFlags\": 0\r\n  },\r\n  {\r\n   
-    \"debugOutText\": \"SELECT AWOO\",\r\n    \"ElementType\": \"Assets.Scripts.AI.Nodes.DebugOutNode\",\r\n   
+    \"logMessage\": \"MEOW\",\r\n    \"ElementType\": \"Assets.Scripts.AI.Nodes.DebugOutNode\",\r\n   
     \"HasChildren\": false,\r\n    \"Name\": \"DebugOutNode\",\r\n    \"ID\": 0,\r\n   
     \"Depth\": 1,\r\n    \"name\": \"\",\r\n    \"hideFlags\": 0\r\n  },\r\n  {\r\n   
-    \"debugOutText\": \"AWOO\",\r\n    \"ElementType\": \"Assets.Scripts.AI.Nodes.DebugOutNode\",\r\n   
+    \"logMessage\": \"AWOO\",\r\n    \"ElementType\": \"Assets.Scripts.AI.Nodes.DebugOutNode\",\r\n   
     \"HasChildren\": false,\r\n    \"Name\": \"DebugOutNode\",\r\n    \"ID\": 0,\r\n   
     \"Depth\": 0,\r\n    \"name\": \"\",\r\n    \"hideFlags\": 0\r\n  }\r\n]"
