@@ -30,7 +30,6 @@ namespace Assets.Visual_Behavior_Tree.Editor.UIENodeEditor
             var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/Visual Behavior Tree/Editor/UIENodeEditor/Connection/Connection.uss");
             this.styleSheets.Add(styleSheet);
 
-
             removeButton = new Button();
             removeButton.AddToClassList("ConnectionButton");
             removeButton.clicked += OnClicked;

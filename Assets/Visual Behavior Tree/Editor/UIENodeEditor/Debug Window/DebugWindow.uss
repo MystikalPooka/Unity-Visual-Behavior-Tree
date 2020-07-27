@@ -1,13 +1,3 @@
-.EditorNode {
-	width: auto;
-	height: auto;
-	position: absolute;
-}
-
-.Connection {
-	position: absolute;
-}
-
 #Toolbar 
 {
 	height: 40px;
@@ -18,10 +8,24 @@
 	flex-direction: row;
 }
 
-#GridContainer 
+#TabContainer 
 {
 	background-color: rgba(242, 246, 250,1);
 	width: auto;
 	height: auto;
 	overflow: hidden;
+}
+
+.EditorNode {
+	width: auto;
+	height: auto;
+	position: absolute;
+}
+
+.Connection {
+	position: absolute;
+}
+
+.Selector {
+	align-self: flex-end;
 }

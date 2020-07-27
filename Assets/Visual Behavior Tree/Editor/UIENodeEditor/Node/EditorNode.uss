@@ -1,7 +1,12 @@
+:root {
+	border-width: 1px;
+}
+
 #RootContainer {
-	background-color: rgba(242, 246, 250,1);
 	flex-direction: column;
 	width: auto;
+	height: auto;
+
 }
 
 #ParentConnectorContainer {
@@ -16,12 +21,13 @@
 
 #NameLabel {
 	width: auto;
+	max-width: 100px;
 	flex: 0 1 auto;
-
 }
 
 .NodeButton {
 	flex: 1 1 auto;
+	max-width: 25px;
 }
 
 #TypeLabel {
@@ -30,11 +36,14 @@
 }
 
 #NodeContainer {
-	height: 60px;
+	min-height: 60px;
+	height: auto;
 	background-color: rgba(242, 246, 250,1);
 	display: flex;
 	flex-direction: column;
 	width: auto;
+
+	flex: 1 1 auto;
 }
 
 #ChildrenConnectorContainer {
@@ -42,7 +51,9 @@
 	width: auto;
 	background-color: rgb(150, 25, 150);
 
+	flex-direction: row;
 	align-items: center;
+	justify-content: space-between;
 }
 
 .Property {
@@ -53,11 +64,17 @@
 
 .Selected {
 	border-color: green;
-	border-width: 5;
+	border-width: 5px;
 }
 
 .Error {
 	border-color: red;
-	border-width: 5;
+	border-width: 5px;
+}
+
+.Resizer {
+	width: 20px;
+	height: 20px;
+	cursor: resize-up-left;
 }
 

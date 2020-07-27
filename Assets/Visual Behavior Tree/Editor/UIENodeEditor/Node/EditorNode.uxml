@@ -5,10 +5,10 @@
     xmlns:editor="UnityEditor.UIElements"
     xsi:noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd"
 >
-  <engine:VisualElement name="RootContainer">
+  <engine:Box name="RootContainer">
     <engine:VisualElement name="ParentConnectorContainer">
-      <engine:TextField name="NameLabel" text=""/>
-      <engine:Label name="TypeLabel" text="" binding-path="_Name"/>
+      <engine:TextField name="NameLabel" text="" binding-path="_Name"/>
+      <engine:Label name="TypeLabel" text=""/>
     </engine:VisualElement>
     
     <engine:VisualElement name="NodeContainer">
@@ -16,5 +16,6 @@
     
     <engine:VisualElement name="ChildrenConnectorContainer">
     </engine:VisualElement>
-  </engine:VisualElement>
+  </engine:Box>
+
 </engine:UXML>

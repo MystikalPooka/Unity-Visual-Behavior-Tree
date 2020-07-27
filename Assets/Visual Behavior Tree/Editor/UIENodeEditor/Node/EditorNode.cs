@@ -1,20 +1,18 @@
-using UnityEditor;
-using UnityEngine;
-using UnityEngine.UIElements;
-using UnityEditor.UIElements;
 using Assets.Scripts.AI;
-using Assets.Scripts.AI.Components;
-using UnityEditor.Experimental.GraphView;
+using Assets.Visual_Behavior_Tree.Editor.UIENodeEditor.Manipulators;
+using Assets.Visual_Behavior_Tree.Editor.UIENodeEditor.Node.EditorResizer;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
-using UnityEngine.Analytics;
-using Assets.Visual_Behavior_Tree.Editor.UIENodeEditor.Manipulators;
 using System.Linq;
+using System.Reflection;
+using UnityEditor;
+using UnityEditor.UIElements;
+using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace Assets.Visual_Behavior_Tree.Editor.UIENodeEditor
 {
-    public class EditorNode : Box
+    public class EditorNode : VisualElement
     {
         public BehaviorTreeElement TreeElement;
 
@@ -26,26 +24,19 @@ namespace Assets.Visual_Behavior_Tree.Editor.UIENodeEditor
         private Action<EditorNode> OnClickAddNode;
         private Action<EditorNode> OnClickRemoveNode;
 
-        public EditorNode(BehaviorTreeElement wrappedElement, Vector2 position, Action<ConnectionPoint> onClickInPoint, Action<ConnectionPoint> onClickOutPoint, Action<EditorNode> onClickAddNode, Action<EditorNode> onClickRemoveNode)
+        public EditorNode(BehaviorTreeElement wrappedElement, Rect content, Action<ConnectionPoint> onClickInPoint, Action<ConnectionPoint> onClickOutPoint, Action<EditorNode> onClickAddNode, Action<EditorNode> onClickRemoveNode)
         {
             var styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/Visual Behavior Tree/Editor/UIENodeEditor/Node/EditorNode.uss");
             this.styleSheets.Add(styleSheet);
 
-            var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Visual Behavior Tree/Editor/UIENodeEditor/Node/EditorNode.uxml");
-            VisualElement uxmlRoot = visualTree.Instantiate();
-            this.Add(uxmlRoot);
-
-            var parentContainer = uxmlRoot.Q<VisualElement>("ParentConnectorContainer");
             inPoint = new ConnectionPoint(this, ConnectionPointType.In, onClickInPoint);
-            inPoint.AddToClassList("NodeButton");
-            parentContainer.Insert(1,inPoint);
-
             outPoint = new ConnectionPoint(this, ConnectionPointType.Out, onClickOutPoint);
 
             this.AddToClassList("EditorNode");
-
-            this.style.left = position.x;
-            this.style.top = position.y;
+            if(content.width > 0) this.style.width = content.width;
+            if(content.height > 0) this.style.height = content.height;
+            this.style.left = content.position.x;
+            this.style.top = content.position.y;
 
             this.AddManipulator(new NodeDragger());
             this.AddManipulator(new EditorNodeSelector(this));
@@ -93,13 +84,31 @@ namespace Assets.Visual_Behavior_Tree.Editor.UIENodeEditor
             treeElement.ElementType = typeName.First().ToString();
             this.TreeElement = treeElement;
             ElementObject = new SerializedObject(TreeElement);
+
             OnClickAddNode(this);
             ReBindAllProperties();
         }
 
         internal void ReBindAllProperties()
         {
+            this.Clear();
             this.Bind(ElementObject);
+
+            var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Visual Behavior Tree/Editor/UIENodeEditor/Node/EditorNode.uxml");
+            VisualElement uxmlRoot = visualTree.Instantiate();
+            this.Add(uxmlRoot);
+
+            var rootContainer = uxmlRoot.Q<VisualElement>("RootContainer");
+
+            rootContainer.style.width = this.style.width;
+            rootContainer.style.height = this.style.height;
+
+            var parentContainer = uxmlRoot.Q<VisualElement>("ParentConnectorContainer");
+            inPoint.AddToClassList("NodeButton");
+            parentContainer.Insert(1, inPoint);
+
+            var typeLabel = this.Q<Label>("TypeLabel");
+            typeLabel.text = TreeElement.ElementType.Split('.').Last();
 
             var nodeContainer = this.Q<VisualElement>("NodeContainer");
 
@@ -113,6 +122,12 @@ namespace Assets.Visual_Behavior_Tree.Editor.UIENodeEditor
 
             var childContainer = this.Q<VisualElement>("ChildrenConnectorContainer");
 
+            childContainer.Clear();
+
+            var resizerBuffer = new EditorResizer(this);
+            resizerBuffer.visible = false;
+            childContainer.Add(resizerBuffer);
+
             if (childContainer.Contains(outPoint)) childContainer.Remove(outPoint);
 
             if (this.TreeElement.CanHaveChildren)
@@ -120,6 +135,9 @@ namespace Assets.Visual_Behavior_Tree.Editor.UIENodeEditor
                 outPoint.AddToClassList("NodeButton");
                 childContainer.Add(outPoint);
             }
+
+            var resizer = new EditorResizer(this);
+            childContainer.Add(resizer);
         }
 
         public List<VisualElement> GetAllPropertyFields()

@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
-using UnityEngine.UIElements;
+﻿using UnityEngine.UIElements;
 
 namespace Assets.Visual_Behavior_Tree.Editor.UIENodeEditor.Manipulators
 {
@@ -32,15 +25,17 @@ namespace Assets.Visual_Behavior_Tree.Editor.UIENodeEditor.Manipulators
 
         private void OnMouseDown(MouseDownEvent evt)
         {
+            var root = Node.Q<Box>("RootContainer");
+
             if (isSelected)
             {
-                Node.RemoveFromClassList("Selected");
+                root.RemoveFromClassList("Selected");
                 isSelected = false;
                 evt.StopImmediatePropagation();
                 return;
             }
 
-            Node.AddToClassList("Selected");
+            root.AddToClassList("Selected");
 
             isSelected = true;
             evt.StopPropagation();

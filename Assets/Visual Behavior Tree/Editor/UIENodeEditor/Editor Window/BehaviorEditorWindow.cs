@@ -27,7 +27,7 @@ namespace Assets.Visual_Behavior_Tree.Editor.UIENodeEditor
             wnd.titleContent = new GUIContent("Behavior Node Editor");
         }
 
-        public void OnEnable()
+        private void OnEnable()
         {
             VisualElement root = rootVisualElement;
 
@@ -84,13 +84,14 @@ namespace Assets.Visual_Behavior_Tree.Editor.UIENodeEditor
             treeElement.Name = selectedName;
             treeElement.ElementType = typeName.First().ToString();
 
-            EditorNode item = new EditorNode(treeElement, action.eventInfo.localMousePosition, OnClickInPoint, OnClickOutPoint, OnClickAddNode, OnClickRemoveNode);
+            Rect contentRect = new Rect(action.eventInfo.localMousePosition, Vector2.zero);
+
+            EditorNode item = new EditorNode(treeElement, contentRect, OnClickInPoint, OnClickOutPoint, OnClickAddNode, OnClickRemoveNode);
             OnClickAddNode(item);
         }
 
-        void OnClickAddNode(EditorNode node)
+        private void OnClickAddNode(EditorNode node)
         {
-            Debug.Log("Adding " + node.TreeElement.Name);
             nodes.Add(node);
             rootVisualElement.Q<VisualElement>("GridContainer").Add(node);
         }
@@ -100,7 +101,7 @@ namespace Assets.Visual_Behavior_Tree.Editor.UIENodeEditor
             rootVisualElement.Q<VisualElement>("GridContainer").style.height = new StyleLength(position.height);
         }
 
-        protected void OnClickInPoint(ConnectionPoint inPoint)
+        private void OnClickInPoint(ConnectionPoint inPoint)
         {
             selectedInPoint = inPoint;
 
@@ -198,7 +199,7 @@ namespace Assets.Visual_Behavior_Tree.Editor.UIENodeEditor
                 "asset");
 
             UIETreeLoader loader = new UIETreeLoader();
-            var root = loader.LoadFromAsset(path);
+            var root = loader.LoadFromPath(path);
             nodes = loader.GetNodes(OnClickInPoint, OnClickOutPoint, OnClickAddNode, OnClickRemoveNode);
             connections = loader.GetConnectionsFromRoot(root, OnClickRemoveConnection);
 
@@ -221,7 +222,6 @@ namespace Assets.Visual_Behavior_Tree.Editor.UIENodeEditor
 
         private void OnClickRemoveNode(EditorNode node)
         {
-            Debug.Log("Removing " + node.TreeElement.Name);
             var container = rootVisualElement.Q<VisualElement>("GridContainer");
             if (connections != null)
             {
