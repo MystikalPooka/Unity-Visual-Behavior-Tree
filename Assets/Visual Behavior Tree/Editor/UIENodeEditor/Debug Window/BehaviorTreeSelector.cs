@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.AI;
+using Assets.Scripts.AI.Components;
 using System;
 using System.Collections.Generic;
 using System.Linq;

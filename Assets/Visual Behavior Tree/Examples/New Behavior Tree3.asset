@@ -14,38 +14,38 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   positions:
   - serializedVersion: 2
-    x: 142
-    y: 97
+    x: 462
+    y: 50
     width: 200
     height: 150
   - serializedVersion: 2
-    x: 141
-    y: 286
+    x: 461
+    y: 239
     width: 200
     height: 150
   - serializedVersion: 2
-    x: 138
-    y: 457
+    x: 458
+    y: 410
     width: 200
     height: 150
   - serializedVersion: 2
-    x: -79
-    y: 292
+    x: 241
+    y: 245
     width: 200
     height: 150
   - serializedVersion: 2
-    x: 352
-    y: 277
+    x: 672
+    y: 230
     width: 200
     height: 150
   - serializedVersion: 2
-    x: 353
-    y: 446
+    x: 673
+    y: 399
     width: 200
     height: 150
   - serializedVersion: 2
-    x: 352
-    y: 614
+    x: 672
+    y: 567
     width: 250
     height: 150
   treeElements: "[\r\n  {\r\n    \"SucceedPercent\": 100.0,\r\n    \"ElementType\":

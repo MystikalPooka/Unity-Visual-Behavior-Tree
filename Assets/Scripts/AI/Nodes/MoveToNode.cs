@@ -43,7 +43,6 @@ namespace Assets.Visual_Behavior_Tree.Scripts.AI.Nodes
                 .TakeWhile(_ => !IsDestinationReached())
                 .Select(x =>
                 {
-                    Debug.Log("Selected");
                     if (agent == null)
                     {
                         Debug.LogWarning("Unable to find agent in " + Name);

@@ -1,16 +1,13 @@
-﻿using Assets.Scripts.AI.Components;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using Newtonsoft.Json;
-using System.ComponentModel;
-using UniRx;
-using Assets.Scripts.AI.Tree;
-using System.Linq;
-using Assets.Scripts.AI.Behavior_Logger;
-using UniRx.Diagnostics;
+﻿using Assets.Scripts.AI.Behavior_Logger;
+using Assets.Scripts.AI.Components;
 using Assets.Visual_Behavior_Tree.Scripts;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using UniRx;
+using UnityEngine;
 
 namespace Assets.Scripts.AI
 {
@@ -70,7 +67,7 @@ namespace Assets.Scripts.AI
         }
 
         public Subject<BehaviorTreeElement> TreeSubject { get; private set; }
-        List<BehaviorTreeElement> treeList = new List<BehaviorTreeElement>();
+        public Dictionary<BehaviorTreeElement, TreeNodeAsset> rootList = new Dictionary<BehaviorTreeElement, TreeNodeAsset>();
         public void Reinitialize()
         {
             //TODO: Change to runner extension
@@ -85,9 +82,15 @@ namespace Assets.Scripts.AI
                     var childRoot = asset.LoadRoot();
                     Debug.Log("child root: " + childRoot);
                     ((Merge)Runner).AddChild(childRoot);
+                    rootList.Add(childRoot, asset);
                 }
             }
-            else Runner = BehaviorTreeFiles.First().LoadRoot();
+            else
+            {
+                var treeFile = BehaviorTreeFiles.First();
+                Runner = treeFile.LoadRoot();
+                rootList.Add(Runner, treeFile);
+            }
 
             var logStream = ObservableBehaviorLogger.Listener.Subscribe(log => Debug.Log("Manager: " + log));
 
