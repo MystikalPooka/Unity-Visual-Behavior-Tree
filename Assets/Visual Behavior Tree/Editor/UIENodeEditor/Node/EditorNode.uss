@@ -1,0 +1,80 @@
+:root {
+	border-width: 1px;
+}
+
+#RootContainer {
+	flex-direction: column;
+	width: auto;
+	height: auto;
+
+}
+
+#ParentConnectorContainer {
+	height: 20px;
+	width: auto;
+	background-color: rgb(150, 25, 150);
+
+	justify-content: space-between;
+	align-items: center;
+	flex-direction: row;
+}
+
+#NameLabel {
+	width: auto;
+	max-width: 100px;
+	flex: 0 1 auto;
+}
+
+.NodeButton {
+	flex: 1 1 auto;
+	max-width: 25px;
+}
+
+#TypeLabel {
+	width: auto;
+	flex: 0 1 auto;
+}
+
+#NodeContainer {
+	min-height: 60px;
+	height: auto;
+	background-color: rgba(242, 246, 250,1);
+	display: flex;
+	flex-direction: column;
+	width: auto;
+
+	flex: 1 1 auto;
+}
+
+#ChildrenConnectorContainer {
+	height: 20px;
+	width: auto;
+	background-color: rgb(150, 25, 150);
+
+	flex-direction: row;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.Property {
+	width: auto;
+	height: auto;
+	flex: 0 1 auto;
+}
+
+.Selected {
+	border-color: green;
+	border-width: 5px;
+}
+
+.Error {
+	border-color: red;
+	border-width: 5px;
+}
+
+.Resizer {
+	width: 20px;
+	height: 20px;
+	cursor: resize-up-left;
+}
+

@@ -20,7 +20,7 @@ namespace Assets.Visual_Behavior_Tree.Tests
         public void TestMergeSucceedRatioSucceeds()
         {
             var runner = new Merge("", 1, 1);
-            runner.SucceedFailPercentForSucceess = 51; //over 50% succeed should succeed
+            runner.SucceedPercent = 51; //over 50% succeed should succeed
 
             runner.AddChild(TestingResources.GetRunRunSuccess()); //publish running, success = 1/1
             runner.AddChild(TestingResources.GetRunRunSuccess()); //publish running, success = 2/2
@@ -44,7 +44,7 @@ namespace Assets.Visual_Behavior_Tree.Tests
         public void TestMergeFailRatioFails()
         {
             var runner = new Merge("", 1, 1);
-            runner.SucceedFailPercentForSucceess = 40; //under 40% succeed should fail
+            runner.SucceedPercent = 40; //under 40% succeed should fail
 
             runner.AddChild(TestingResources.GetRunRunSuccess()); //success = 1/1
             runner.AddChild(TestingResources.GetRunRunFail()); //success = 1/2
